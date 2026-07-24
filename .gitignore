@@ -1,0 +1,51 @@
+# Environment variables and credentials
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# macOS and editors
+.DS_Store
+.vscode/
+.idea/
+
+# Model data
+**/00_Data/*
+!**/00_Data/.gitkeep
+
+# Model results
+**/01_Results/*
+!**/01_Results/.gitkeep
+
+# Logs and temporary files
+*.log
+tmp/
+temp/
+
+# Model artifacts
+*.pkl
+*.pickle
+*.joblib
+*.pt
+*.pth
+*.ckpt
+*.onnx
+
+# Large data files
+*.parquet
+*.feather
+*.db
+*.sqlite
+*.sqlite3

@@ -1,0 +1,99 @@
+{
+  "m1": {
+    "sbp": {
+      "n_users": 59,
+      "mae_model": 8.78,
+      "mae_cf": 10.83,
+      "diff": -2.05,
+      "diff_ci95": [
+        -2.94,
+        -1.24
+      ],
+      "significant": true
+    },
+    "dbp": {
+      "n_users": 59,
+      "mae_model": 6.97,
+      "mae_cf": 8.07,
+      "diff": -1.1,
+      "diff_ci95": [
+        -1.76,
+        -0.45
+      ],
+      "significant": true
+    },
+    "fasting_glucose": {
+      "n_users": 59,
+      "mae_model": 12.1,
+      "mae_cf": 15.17,
+      "diff": -3.07,
+      "diff_ci95": [
+        -4.79,
+        -1.61
+      ],
+      "significant": true
+    }
+  },
+  "clf": {
+    "hypertension_140_90": {
+      "n_users": 59,
+      "auroc": 0.82,
+      "auroc_ci95": [
+        0.68,
+        0.916
+      ],
+      "prior_auroc": 0.77,
+      "diff_vs_prior": 0.05,
+      "diff_ci95": [
+        -0.037,
+        0.122
+      ],
+      "significant": false
+    },
+    "fasting_glucose_ge100": {
+      "n_users": 59,
+      "auroc": 0.819,
+      "auroc_ci95": [
+        0.732,
+        0.888
+      ],
+      "prior_auroc": 0.77,
+      "diff_vs_prior": 0.049,
+      "diff_ci95": [
+        -0.004,
+        0.096
+      ],
+      "significant": false
+    },
+    "obesity_bmi_ge25": {
+      "n_users": 59,
+      "auroc": 0.962,
+      "auroc_ci95": [
+        0.923,
+        0.985
+      ],
+      "prior_auroc": 0.863,
+      "diff_vs_prior": 0.099,
+      "diff_ci95": [
+        0.043,
+        0.163
+      ],
+      "significant": true
+    },
+    "abdominal_obesity": {
+      "n_users": 59,
+      "auroc": 0.955,
+      "auroc_ci95": [
+        0.907,
+        0.983
+      ],
+      "prior_auroc": 0.861,
+      "diff_vs_prior": 0.094,
+      "diff_ci95": [
+        0.045,
+        0.164
+      ],
+      "significant": true
+    }
+  }
+}

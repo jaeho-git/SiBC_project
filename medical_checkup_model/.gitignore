@@ -1,0 +1,43 @@
+.DS_Store
+.env
+.env.*
+!.env.example
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+node_modules/
+
+# Local secrets and environment-scoped pseudonym material
+00_Data/*
+!00_Data/.gitkeep
+
+# Environment/run-scoped user results, reports, models and logs
+01_Results/*
+!01_Results/.gitkeep
+
+# Aggregate metric summaries only (no user-level rows) are tracked for reproducibility
+!01_Results/significance.json
+!01_Results/model_audit.json
+!01_Results/m0_forward_eval.jsonl
+!01_Results/model_registry.jsonl
+
+# Model binaries if created outside the normal result directory
+*.joblib
+*.pkl
+*.onnx
+*.pt
+*.pth
+*.ckpt
+
+# Rendered document QA intermediates
+*.pdf
+docx_render/
+
+# Public datasets are downloaded locally, never committed
+!00_Data/public/
+00_Data/public/*
+!00_Data/public/.gitkeep

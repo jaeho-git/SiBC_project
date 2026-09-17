@@ -1,0 +1,209 @@
+{
+  "tuned_at": "2026-09-09T06:19:30.669877+00:00",
+  "algorithm": "HistGradientBoostingRegressor",
+  "n_iter": 25,
+  "targets": {
+    "sbp": {
+      "n": 10297,
+      "best_mae": 11.666,
+      "best_params": {
+        "learning_rate": 0.03,
+        "max_depth": 3,
+        "max_leaf_nodes": 63,
+        "l2_regularization": 1.0,
+        "max_iter": 200,
+        "min_samples_leaf": 50
+      }
+    },
+    "dbp": {
+      "n": 10297,
+      "best_mae": 8.648,
+      "best_params": {
+        "learning_rate": 0.03,
+        "max_depth": 3,
+        "max_leaf_nodes": 63,
+        "l2_regularization": 1.0,
+        "max_iter": 200,
+        "min_samples_leaf": 50
+      }
+    },
+    "weight": {
+      "n": 10482,
+      "best_mae": 14.308,
+      "best_params": {
+        "learning_rate": 0.03,
+        "max_depth": 4,
+        "max_leaf_nodes": 31,
+        "l2_regularization": 0.0,
+        "max_iter": 400,
+        "min_samples_leaf": 100
+      }
+    },
+    "bmi": {
+      "n": 10460,
+      "best_mae": 4.905,
+      "best_params": {
+        "learning_rate": 0.03,
+        "max_depth": 4,
+        "max_leaf_nodes": 63,
+        "l2_regularization": 1.0,
+        "max_iter": 200,
+        "min_samples_leaf": 50
+      }
+    },
+    "waist": {
+      "n": 10144,
+      "best_mae": 11.726,
+      "best_params": {
+        "learning_rate": 0.03,
+        "max_depth": 4,
+        "max_leaf_nodes": 15,
+        "l2_regularization": 0.0,
+        "max_iter": 200,
+        "min_samples_leaf": 50
+      }
+    },
+    "fasting_glucose": {
+      "n": 5247,
+      "best_mae": 16.578,
+      "best_params": {
+        "learning_rate": 0.03,
+        "max_depth": 3,
+        "max_leaf_nodes": 63,
+        "l2_regularization": 1.0,
+        "max_iter": 200,
+        "min_samples_leaf": 100
+      }
+    },
+    "total_cholesterol": {
+      "n": 10043,
+      "best_mae": 30.298,
+      "best_params": {
+        "learning_rate": 0.05,
+        "max_depth": 3,
+        "max_leaf_nodes": 63,
+        "l2_regularization": 5.0,
+        "max_iter": 200,
+        "min_samples_leaf": 50
+      }
+    },
+    "hdl": {
+      "n": 10043,
+      "best_mae": 10.852,
+      "best_params": {
+        "learning_rate": 0.03,
+        "max_depth": 3,
+        "max_leaf_nodes": 31,
+        "l2_regularization": 0.0,
+        "max_iter": 200,
+        "min_samples_leaf": 20
+      }
+    },
+    "ldl": {
+      "n": 4747,
+      "best_mae": 26.323,
+      "best_params": {
+        "learning_rate": 0.03,
+        "max_depth": 3,
+        "max_leaf_nodes": 63,
+        "l2_regularization": 1.0,
+        "max_iter": 200,
+        "min_samples_leaf": 50
+      }
+    },
+    "triglyceride": {
+      "n": 5203,
+      "best_mae": 58.43,
+      "best_params": {
+        "learning_rate": 0.03,
+        "max_depth": 3,
+        "max_leaf_nodes": 15,
+        "l2_regularization": 0.0,
+        "max_iter": 200,
+        "min_samples_leaf": 50
+      }
+    }
+  },
+  "best_params": {
+    "sbp": {
+      "learning_rate": 0.03,
+      "max_depth": 3,
+      "max_leaf_nodes": 63,
+      "l2_regularization": 1.0,
+      "max_iter": 200,
+      "min_samples_leaf": 50
+    },
+    "dbp": {
+      "learning_rate": 0.03,
+      "max_depth": 3,
+      "max_leaf_nodes": 63,
+      "l2_regularization": 1.0,
+      "max_iter": 200,
+      "min_samples_leaf": 50
+    },
+    "weight": {
+      "learning_rate": 0.03,
+      "max_depth": 4,
+      "max_leaf_nodes": 31,
+      "l2_regularization": 0.0,
+      "max_iter": 400,
+      "min_samples_leaf": 100
+    },
+    "bmi": {
+      "learning_rate": 0.03,
+      "max_depth": 4,
+      "max_leaf_nodes": 63,
+      "l2_regularization": 1.0,
+      "max_iter": 200,
+      "min_samples_leaf": 50
+    },
+    "waist": {
+      "learning_rate": 0.03,
+      "max_depth": 4,
+      "max_leaf_nodes": 15,
+      "l2_regularization": 0.0,
+      "max_iter": 200,
+      "min_samples_leaf": 50
+    },
+    "fasting_glucose": {
+      "learning_rate": 0.03,
+      "max_depth": 3,
+      "max_leaf_nodes": 63,
+      "l2_regularization": 1.0,
+      "max_iter": 200,
+      "min_samples_leaf": 100
+    },
+    "total_cholesterol": {
+      "learning_rate": 0.05,
+      "max_depth": 3,
+      "max_leaf_nodes": 63,
+      "l2_regularization": 5.0,
+      "max_iter": 200,
+      "min_samples_leaf": 50
+    },
+    "hdl": {
+      "learning_rate": 0.03,
+      "max_depth": 3,
+      "max_leaf_nodes": 31,
+      "l2_regularization": 0.0,
+      "max_iter": 200,
+      "min_samples_leaf": 20
+    },
+    "ldl": {
+      "learning_rate": 0.03,
+      "max_depth": 3,
+      "max_leaf_nodes": 63,
+      "l2_regularization": 1.0,
+      "max_iter": 200,
+      "min_samples_leaf": 50
+    },
+    "triglyceride": {
+      "learning_rate": 0.03,
+      "max_depth": 3,
+      "max_leaf_nodes": 15,
+      "l2_regularization": 0.0,
+      "max_iter": 200,
+      "min_samples_leaf": 50
+    }
+  }
+}

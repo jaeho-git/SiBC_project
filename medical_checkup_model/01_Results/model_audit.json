@@ -1,0 +1,504 @@
+{
+  "serving": {
+    "file": "m1_predictions_2026-09-10.parquet",
+    "n_users": 394,
+    "route_counts": {
+      "sbp": {
+        "MODEL": 323,
+        "ABSTAIN": 71
+      },
+      "dbp": {
+        "MODEL": 323,
+        "ABSTAIN": 71
+      },
+      "fasting_glucose": {
+        "MODEL": 320,
+        "ABSTAIN": 74
+      },
+      "weight": {
+        "CARRY_FORWARD": 357,
+        "ABSTAIN": 37
+      },
+      "bmi": {
+        "CARRY_FORWARD": 357,
+        "ABSTAIN": 37
+      },
+      "waist": {
+        "CARRY_FORWARD": 356,
+        "ABSTAIN": 38
+      },
+      "total_cholesterol": {
+        "MODEL_CROSS": 206,
+        "CARRY_FORWARD": 187,
+        "ABSTAIN": 1
+      },
+      "hdl": {
+        "MODEL_CROSS": 207,
+        "CARRY_FORWARD": 186,
+        "ABSTAIN": 1
+      },
+      "ldl": {
+        "MODEL_CROSS": 208,
+        "CARRY_FORWARD": 185,
+        "ABSTAIN": 1
+      },
+      "triglyceride": {
+        "MODEL_CROSS": 207,
+        "CARRY_FORWARD": 186,
+        "ABSTAIN": 1
+      }
+    },
+    "flag_rows": {
+      "flag_hypertension_140_90_prob": 323,
+      "flag_fasting_glucose_ge100_prob": 320,
+      "flag_obesity_bmi_ge25_prob": 357,
+      "flag_abdominal_obesity_prob": 356,
+      "flag_high_triglyceride_ge150_prob": 0
+    },
+    "measured_coverage": {
+      "measured_sbp_30d": 0.31,
+      "measured_dbp_30d": 0.31,
+      "measured_weight_30d": 0.236,
+      "measured_steps_30d": 0.655,
+      "measured_rest_hr_30d": 0.442,
+      "measured_night_hr_30d": 0.353
+    },
+    "coverage_grade": {
+      "A": 183,
+      "none": 136,
+      "B": 41,
+      "C": 34
+    },
+    "abstain_reasons_sbp": {
+      "stale_anchor": 37,
+      "no_prior_checkup": 34
+    }
+  },
+  "importance": {
+    "sbp": [
+      [
+        "anchor_prev_label__sbp",
+        1.297
+      ],
+      [
+        "trend_prev2__sbp",
+        0.451
+      ],
+      [
+        "demo_age",
+        0.275
+      ],
+      [
+        "anchor_prev_label__dbp",
+        0.101
+      ],
+      [
+        "anchor_prev_label__bmi",
+        0.069
+      ],
+      [
+        "anchor_prev_label__weight",
+        0.044
+      ]
+    ],
+    "dbp": [
+      [
+        "anchor_prev_label__dbp",
+        1.176
+      ],
+      [
+        "trend_prev2__dbp",
+        0.508
+      ],
+      [
+        "demo_sex",
+        0.123
+      ],
+      [
+        "demo_age",
+        0.061
+      ],
+      [
+        "anchor_prev_label__sbp",
+        0.0
+      ],
+      [
+        "anchor_days_since__sbp",
+        0.0
+      ]
+    ],
+    "fasting_glucose": [
+      [
+        "anchor_prev_label__fasting_glucose",
+        3.761
+      ],
+      [
+        "trend_prev2__fasting_glucose",
+        2.444
+      ],
+      [
+        "demo_age",
+        0.107
+      ],
+      [
+        "demo_sex",
+        0.039
+      ],
+      [
+        "anchor_prev_label__sbp",
+        0.0
+      ],
+      [
+        "anchor_days_since__sbp",
+        0.0
+      ]
+    ]
+  },
+  "subgroup": {
+    "sbp": {
+      "sex": {
+        "1.0": {
+          "n": 93,
+          "bias": 2.28,
+          "mae": 7.8,
+          "cf_mae": 10.05
+        },
+        "2.0": {
+          "n": 109,
+          "bias": 2.87,
+          "mae": 9.63,
+          "cf_mae": 11.5
+        }
+      },
+      "age": {
+        "<40": {
+          "n": 44,
+          "bias": 4.78,
+          "mae": 7.37,
+          "cf_mae": 9.7
+        },
+        "40s": {
+          "n": 41,
+          "bias": -0.11,
+          "mae": 10.15,
+          "cf_mae": 9.93
+        },
+        "50s": {
+          "n": 21,
+          "bias": 2.33,
+          "mae": 9.8,
+          "cf_mae": 9.76
+        },
+        "60s": {
+          "n": 61,
+          "bias": 2.5,
+          "mae": 8.4,
+          "cf_mae": 11.8
+        },
+        "70+": {
+          "n": 35,
+          "bias": 3.35,
+          "mae": 9.01,
+          "cf_mae": 12.26
+        }
+      },
+      "anchor_gap": {
+        "<=400d": {
+          "n": 49,
+          "bias": 0.37,
+          "mae": 7.32,
+          "cf_mae": 9.31
+        },
+        "400-800d": {
+          "n": 116,
+          "bias": 2.58,
+          "mae": 9.21,
+          "cf_mae": 11.29
+        },
+        "800-1200d": {
+          "n": 37,
+          "bias": 5.61,
+          "mae": 9.4,
+          "cf_mae": 11.41
+        }
+      },
+      "high_range": {
+        "n": 13,
+        "bias": -13.19,
+        "mae": 13.65
+      }
+    },
+    "dbp": {
+      "sex": {
+        "1.0": {
+          "n": 93,
+          "bias": 1.35,
+          "mae": 6.76,
+          "cf_mae": 8.23
+        },
+        "2.0": {
+          "n": 109,
+          "bias": 1.22,
+          "mae": 7.14,
+          "cf_mae": 7.94
+        }
+      },
+      "age": {
+        "<40": {
+          "n": 44,
+          "bias": 1.98,
+          "mae": 6.15,
+          "cf_mae": 5.93
+        },
+        "40s": {
+          "n": 41,
+          "bias": -2.37,
+          "mae": 7.97,
+          "cf_mae": 8.34
+        },
+        "50s": {
+          "n": 21,
+          "bias": 3.58,
+          "mae": 7.47,
+          "cf_mae": 9.95
+        },
+        "60s": {
+          "n": 61,
+          "bias": 2.04,
+          "mae": 6.66,
+          "cf_mae": 8.39
+        },
+        "70+": {
+          "n": 35,
+          "bias": 1.97,
+          "mae": 7.04,
+          "cf_mae": 8.74
+        }
+      },
+      "anchor_gap": {
+        "<=400d": {
+          "n": 49,
+          "bias": 0.45,
+          "mae": 6.93,
+          "cf_mae": 7.16
+        },
+        "400-800d": {
+          "n": 116,
+          "bias": 1.11,
+          "mae": 7.66,
+          "cf_mae": 8.88
+        },
+        "800-1200d": {
+          "n": 37,
+          "bias": 2.9,
+          "mae": 4.82,
+          "cf_mae": 6.73
+        }
+      },
+      "high_range": {
+        "n": 11,
+        "bias": -9.08,
+        "mae": 10.61
+      }
+    },
+    "fasting_glucose": {
+      "sex": {
+        "1.0": {
+          "n": 131,
+          "bias": -1.11,
+          "mae": 11.74,
+          "cf_mae": 15.21
+        },
+        "2.0": {
+          "n": 88,
+          "bias": -2.49,
+          "mae": 12.63,
+          "cf_mae": 15.11
+        }
+      },
+      "age": {
+        "<40": {
+          "n": 46,
+          "bias": 1.12,
+          "mae": 12.69,
+          "cf_mae": 15.7
+        },
+        "40s": {
+          "n": 48,
+          "bias": -4.8,
+          "mae": 11.73,
+          "cf_mae": 15.4
+        },
+        "50s": {
+          "n": 21,
+          "bias": -1.99,
+          "mae": 6.21,
+          "cf_mae": 6.24
+        },
+        "60s": {
+          "n": 67,
+          "bias": -1.38,
+          "mae": 14.71,
+          "cf_mae": 18.93
+        },
+        "70+": {
+          "n": 37,
+          "bias": -1.4,
+          "mae": 10.44,
+          "cf_mae": 12.51
+        }
+      },
+      "anchor_gap": {
+        "<=400d": {
+          "n": 69,
+          "bias": 2.02,
+          "mae": 9.96,
+          "cf_mae": 13.71
+        },
+        "400-800d": {
+          "n": 116,
+          "bias": -4.81,
+          "mae": 13.44,
+          "cf_mae": 15.48
+        },
+        "800-1200d": {
+          "n": 34,
+          "bias": 1.54,
+          "mae": 11.85,
+          "cf_mae": 17.09
+        }
+      },
+      "high_range": {
+        "n": 23,
+        "bias": -35.76,
+        "mae": 45.17
+      }
+    }
+  },
+  "joint_on_forward_pairs": {
+    "sbp": {
+      "n": 7,
+      "mae_joint": 8.22,
+      "mae_carry_forward": 8.86,
+      "n_with_anchor": 7
+    },
+    "dbp": {
+      "n": 7,
+      "mae_joint": 4.67,
+      "mae_carry_forward": 6.71,
+      "n_with_anchor": 7
+    },
+    "weight": {
+      "n": 15,
+      "mae_joint": 6.84,
+      "mae_carry_forward": 6.35,
+      "n_with_anchor": 11
+    },
+    "bmi": {
+      "n": 15,
+      "mae_joint": 1.86,
+      "mae_carry_forward": 1.97,
+      "n_with_anchor": 11
+    },
+    "fasting_glucose": {
+      "n": 6,
+      "mae_joint": 8.41,
+      "mae_carry_forward": 13.0,
+      "n_with_anchor": 6
+    }
+  },
+  "stability": {
+    "sbp": [
+      {
+        "seed": 42,
+        "best": "elasticnet",
+        "route": "MODEL",
+        "cv_mae": 9.44,
+        "cf_mae": 11.16
+      },
+      {
+        "seed": 7,
+        "best": "elasticnet",
+        "route": "MODEL",
+        "cv_mae": 9.41,
+        "cf_mae": 11.04
+      },
+      {
+        "seed": 2024,
+        "best": "elasticnet",
+        "route": "MODEL",
+        "cv_mae": 9.04,
+        "cf_mae": 10.86
+      }
+    ],
+    "dbp": [
+      {
+        "seed": 42,
+        "best": "mixed_effects",
+        "route": "MODEL",
+        "cv_mae": 6.42,
+        "cf_mae": 7.65
+      },
+      {
+        "seed": 7,
+        "best": "mixed_effects",
+        "route": "MODEL",
+        "cv_mae": 6.51,
+        "cf_mae": 7.66
+      },
+      {
+        "seed": 2024,
+        "best": "mixed_effects",
+        "route": "MODEL",
+        "cv_mae": 6.41,
+        "cf_mae": 7.67
+      }
+    ],
+    "fasting_glucose": [
+      {
+        "seed": 42,
+        "best": "mixed_effects",
+        "route": "MODEL",
+        "cv_mae": 8.74,
+        "cf_mae": 9.74
+      },
+      {
+        "seed": 7,
+        "best": "mixed_effects",
+        "route": "MODEL",
+        "cv_mae": 9.71,
+        "cf_mae": 11.13
+      },
+      {
+        "seed": 2024,
+        "best": "mixed_effects",
+        "route": "MODEL",
+        "cv_mae": 9.79,
+        "cf_mae": 11.11
+      }
+    ],
+    "weight": [
+      {
+        "seed": 42,
+        "best": "mixed_effects",
+        "route": "CARRY_FORWARD",
+        "cv_mae": 2.21,
+        "cf_mae": 2.2
+      },
+      {
+        "seed": 7,
+        "best": "mixed_effects",
+        "route": "CARRY_FORWARD",
+        "cv_mae": 2.17,
+        "cf_mae": 2.19
+      },
+      {
+        "seed": 2024,
+        "best": "mixed_effects",
+        "route": "CARRY_FORWARD",
+        "cv_mae": 2.11,
+        "cf_mae": 2.12
+      }
+    ]
+  }
+}

@@ -1,0 +1,28 @@
+# 모델링 정책 (구축가이드 v1.3 준거)
+frame: joint_training   # 통합 학습: 공공+자체 데이터를 한 테이블로 단일 모델 학습
+
+evaluation:
+  eval_on_own_labels_only: true     # 평가 세트에 공공데이터 행 금지
+  time_leakage_forbidden: true      # 검진일(measuredDt) 이전 특징만 사용
+  user_level_split: true            # 동일 사용자가 학습/평가 양쪽에 못 들어감
+  sealed_test_min_users: 30
+  train_min_users: 100
+
+joint_training:
+  domain_indicator: true            # 출처(own/knhanes/nhanes)를 모델 특징으로 투입
+  own_weight_cap_initial: 0.2       # 자체 라벨 소량일 때 과적합 방지 상한
+  knhanes_weight: 3.0               # 한국인 공공(도메인 정합) 가중치 > nhanes(=1)
+  retrain_cadence: quarterly
+  lineage_registry: 01_Results/model_registry.jsonl   # 버전별 공공/자체 구성비 기록
+
+schema_anchoring:
+  feature_schema: configs/schema.yaml
+  public_only_features_forbidden: true   # 공공 전용 변수는 입력 금지
+  unit_conversion_direction: public_to_sibc
+
+prohibited:
+  - substitute_synthetic_performance_for_missing_labels
+  - train_or_eval_on_synthetic_wearable_data
+  - serve_pred_before_sealed_validation
+  - merge_env_user_data          # release/dev/stg 사용자 데이터 병합 금지
+  - store_raw_user_ids_or_raw_health_json

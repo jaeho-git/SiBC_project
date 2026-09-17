@@ -1,0 +1,92 @@
+# =============================================================================
+# 스키마 앵커링 (구축가이드 v1.3, 7.2절)
+# - 입력 특징과 예측 목표는 SiBC가 수집하는(수집 가능한) 항목 기준으로 고정한다.
+# - 공공데이터 전용 변수(NHANES 주변광·인종, LifeSnaps EDA·VO2max 등)는
+#   이 파일에 존재하지 않으며, 통합 학습 테이블에 들어갈 수 없다.
+# - 단위 변환은 항상 공공 -> SiBC 방향으로만 수행한다.
+# =============================================================================
+
+# 예측 목표: SiBC 표준 검진 항목과 매핑되는 것만 생성한다.
+# (판정/소견형 항목과 예측 비단정 항목은 목표에서 제외)
+targets:
+  sbp:            { unit: mmHg,   kind: regression }
+  dbp:            { unit: mmHg,   kind: regression }
+  weight:         { unit: kg,     kind: regression }
+  bmi:            { unit: kg/m2,  kind: regression }
+  waist:          { unit: cm,     kind: regression }
+  fasting_glucose: { unit: mg/dL, kind: regression }
+  total_cholesterol: { unit: mg/dL, kind: regression }
+  hdl:            { unit: mg/dL,  kind: regression }
+  ldl:            { unit: mg/dL,  kind: regression }
+  triglyceride:   { unit: mg/dL,  kind: regression }
+
+# 예측을 단정하지 않는 검진 항목 (라벨 추출은 하되 목표 생성 금지)
+non_target_labels: [ast, alt, ggt, hemoglobin, creatinine, egfr, urinary_protein, height]
+
+# SiBC 검진 fieldNm 별칭 -> 표준 라벨 (DB 실측 기반, 2026-09-01 감사)
+label_aliases:
+  fastingbloodsuger: fasting_glucose
+  fastingglucose: fasting_glucose
+  totalcholesterol: total_cholesterol
+  hdlcholesterol: hdl
+  ldlcholesterol: ldl
+  triglyceride: triglyceride
+  bloodpressure: bloodpressure_combined   # "120/80" -> sbp/dbp 분리
+  systolic: sbp
+  diastolic: dbp
+  weight: weight
+  height: height
+  bmi: bmi
+  waist: waist
+  hemoglobin: hemoglobin
+  ast: ast
+  alt: alt
+  ygtp: ggt
+  serumcreatinine: creatinine
+  creatinine: creatinine
+  gfr: egfr
+  urinaryprotein: urinary_protein
+  urineprotein: urinary_protein
+
+# 입력 특징 스키마 (SiBC 수집 가능 항목만; 관측창 7/30/90일 요약으로 전개)
+# provider: own  = 자체 lifelog에서만 생성 (공공 행에서는 결측 마스크)
+# provider: both = 자체 + NHANES 브리징으로 생성 (공공 행에도 존재)
+features:
+  demo_age:            { provider: both, desc: "나이(세)" }
+  demo_sex:            { provider: both, desc: "성별(1=남,2=여)" }
+  activity_daily_volume: { provider: both, desc: "일별 활동량 지표(브리징: NHANES PAXHR MIMS -> 일별 z-활동량, 자체: 걸음 기반)" }
+  activity_active_hours: { provider: both, desc: "일별 활동 시간(시간 단위 활동 임계 초과 수)" }
+  # 활동량 브리징: 소스별 활동 지표(NHANES MIMS / KNHANES·자체 걸음)를 성별 층화 백분위로
+  # 정렬한 공통 척도. 단위가 다른 소스를 같은 특징 공간에 올리는 분포 정합(quantile mapping).
+  activity_pct:        { provider: both, desc: "활동량 백분위(0~1): NHANES는 MIMS 내부 백분위, 자체·KNHANES는 KNHANES 걸음 ECDF" }
+  grip_strength_kg:    { provider: both, desc: "악력 합산(kg, 좌+우 최대)" }
+  step_count:          { provider: own,  desc: "일별 걸음 수" }
+  heartrate_rest:      { provider: own,  desc: "안정 심박(일별 하위 분위)" }
+  heartrate_median:    { provider: own,  desc: "일별 심박 중앙값" }
+  # 고해상도 심박 특징(단일 패스 집계): 야간·변동성 — 혈압 대리학습용
+  heartrate_p90:       { provider: own,  desc: "일별 심박 상위 분위(활동 반응)" }
+  heartrate_sd_day:    { provider: own,  desc: "일별 심박 표준편차(SDNN 대리)" }
+  heartrate_night_median: { provider: own, desc: "야간(00~05시) 심박 중앙값" }
+  heartrate_night_min: { provider: own,  desc: "야간 최저 심박" }
+  heartrate_rmssd_night: { provider: own, desc: "야간 연속차 RMS(RMSSD 대리, HR 시계열 근사)" }
+  heartrate_rest_device: { provider: own, desc: "기기 산출 휴지기 심박수(코드 20301202)" }
+  sleep_duration_min:  { provider: own,  desc: "일별 수면 시간(분)" }
+  sleep_regularity:    { provider: own,  desc: "취침 시각 표준편차" }
+  spo2_median:         { provider: own,  desc: "일별 산소포화도 중앙값" }
+  bp_systolic_measured: { provider: own, desc: "웨어러블 수축기 혈압(일별 중앙값)" }
+  bp_diastolic_measured: { provider: own, desc: "웨어러블 이완기 혈압(일별 중앙값)" }
+  body_weight_measured: { provider: own, desc: "체중 최근 측정(kg)" }
+  bodyfat_pct:         { provider: own,  desc: "체지방률 최근 측정(%)" }
+  anchor_prev_label:   { provider: own,  desc: "동일 항목 직전 검진 실제값(M1 개인 앵커)" }
+  anchor_days_since:   { provider: own,  desc: "직전 검진 경과일" }
+  # 자기지도 사전학습 임베딩(16차원). 웨어러블 시계열 요약이므로 own-provider.
+  # 시간 누출 방지: 검진일 이전 웨어러블 관측창이 있는 행에만 부여(features_own).
+  ssl_emb: { provider: own, desc: "자기지도 인코더 임베딩 ssl_emb_0..15 (누출 방지 부여)" }
+
+# 관측창 (일). 특징 요약은 각 창에 대해 mean/median/std/slope를 생성한다.
+windows: [7, 30, 90]
+
+# 통합 학습 테이블 메타 컬럼
+meta_columns:
+  source: { values: [own, nhanes], desc: "출처 표시 변수(domain indicator)" }
+  sample_weight: { desc: "재학습 주기마다 자체 비중 상향" }

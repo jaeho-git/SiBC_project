@@ -1,0 +1,285 @@
+# =============================================================================
+# 건강검진 예측 항목별 임상 판정 기준 (초안 — 의료진 승인 전)
+# - 모든 수치는 아래 sources 의 원문에서 2026-09-18에 직접 확인한 값이다(기억·추정 금지).
+# - 구조: sources(출처) / items(항목별 · 출처별 구간) / default_tiers(기저질환 미상 기본 3단계)
+#         / disease_profiles(기저질환별 조절 목표) / model_flags(분류기 재학습 대상 임계값)
+# - 원칙: 출처별 구간은 합치지 않고 그대로 보존한다. 기본 3단계는 출처 간 경계가 다르면
+#         가장 보수적인(가장 이른) 경계를 쓴다. 기저질환이 확인되면 disease_profiles 를 적용한다.
+# - lower_is_worse: true 인 항목(HDL)은 값이 낮을수록 위험.
+# =============================================================================
+version: guideline_v1
+verified_on: "2026-09-18"
+status: DRAFT_PENDING_CLINICIAN_APPROVAL
+
+sources:
+  KSH2026:
+    org: 대한고혈압학회 (Korean Society of Hypertension)
+    title: "Highlights of the 2026 Korean Society of Hypertension guidelines for the management of hypertension: what's new and what has changed"
+    citation: "Lee EM, et al. Clin Hypertens. 2026;32:e31"
+    pmid: "42183028"
+    doi: "10.5646/ch.2026.32.e31"
+    pmcid: PMC13197191
+  KSH2022:
+    org: 대한고혈압학회
+    title: "The 2022 focused update of the 2018 Korean Hypertension Society Guidelines for the management of hypertension"
+    citation: "Kim HL, et al. Clin Hypertens. 2023;29(1):11"
+    pmid: "36788612"
+    doi: "10.1186/s40885-023-00234-9"
+    pmcid: PMC9930285
+  KSH2018:
+    org: 대한고혈압학회
+    title: "2018 Korean Society of Hypertension Guidelines for the management of hypertension: part II-diagnosis and treatment of hypertension"
+    citation: "Lee HY, et al. Clin Hypertens. 2019;25:20"
+    pmid: "31388453"
+    doi: "10.1186/s40885-019-0124-x"
+    pmcid: PMC6670135
+  KDA2025:
+    org: 대한당뇨병학회 (Korean Diabetes Association)
+    title: "2025 Clinical Practice Guidelines for Diabetes Management in Korea: Recommendation of the Korean Diabetes Association"
+    citation: "Kang S, et al. Diabetes Metab J. 2025;49(4):582-783"
+    pmid: "40631460"
+    doi: "10.4093/dmj.2025.0469"
+    pmcid: PMC12270580
+  KDA2023:
+    org: 대한당뇨병학회
+    title: "2023 Clinical Practice Guidelines for Diabetes Mellitus of the Korean Diabetes Association"
+    citation: "Choi JH, et al. Diabetes Metab J. 2023;47(5):575-594"
+    pmid: "37793979"
+    doi: "10.4093/dmj.2023.0282"
+    pmcid: PMC10555541
+  KDA_KSoLA2023:
+    org: 대한당뇨병학회 · 한국지질동맥경화학회 공동
+    title: "Lipid Management in Korean People With Type 2 Diabetes Mellitus: Korean Diabetes Association and Korean Society of Lipid and Atherosclerosis Consensus Statement"
+    citation: "Yang YS, et al. J Lipid Atheroscler. 2023;12(1):12-22 (동시 게재 Diabetes Metab J. 2023;47(1):1-9, PMID 36727160)"
+    pmid: "36761063"
+    doi: "10.12997/jla.2023.12.1.12"
+    pmcid: PMC9884550
+  KSoLA2022:
+    org: 한국지질동맥경화학회 (Korean Society of Lipid and Atherosclerosis)
+    title: "Korean Guidelines for the Management of Dyslipidemia, 5th edition (2022) — summary"
+    citation: "KSoLA Committee of Clinical Practice Guideline. 2022"
+    pmid: null            # 학회 발간물. PubMed 등재 논문을 확인하지 못함
+    doi: null
+    url: "https://lipid.or.kr/eng/pub/images/guidlines_2022.pdf"
+  KSoLA2018:
+    org: 한국지질동맥경화학회
+    title: "2018 Guidelines for the Management of Dyslipidemia in Korea"
+    citation: "Rhee EJ, et al. J Lipid Atheroscler. 2019;8(2):78-131"
+    pmid: "32821702"
+    doi: "10.12997/jla.2019.8.2.78"
+    note: "4판. 구간 수치의 직접 확인은 5판(KSoLA2022) 요약본으로 수행. 참고 문헌으로만 수록"
+  KSSO2022:
+    org: 대한비만학회 (Korean Society for the Study of Obesity)
+    title: "Diagnosis of Obesity: 2022 Update of Clinical Practice Guidelines for Obesity by the Korean Society for the Study of Obesity"
+    citation: "Haam JH, et al. J Obes Metab Syndr. 2023;32(2):121-129"
+    pmid: "37386771"
+    doi: "10.7570/jomes23031"
+    pmcid: PMC10327686
+  KSSO2024:
+    org: 대한비만학회
+    title: "2024 Clinical Practice Guidelines for the Diagnosis and Pharmacologic Treatment of Overweight and Obesity by the Korean Society for the Study of Obesity"
+    citation: "Bae JH, et al. J Obes Metab Syndr. 2025;34(4):322-343"
+    pmid: "40819841"
+    doi: "10.7570/jomes25042"
+    pmcid: PMC12583794
+    note: "BMI 23/25 기준 유지 확인(초록·검색 요약 수준). 구간표 원문 확인은 KSSO2022로 수행"
+  LEE2007:
+    org: 원저 (허리둘레 기준의 근거 연구)
+    title: "Appropriate waist circumference cutoff points for central obesity in Korean adults"
+    citation: "Lee SY, et al. Diabetes Res Clin Pract. 2007;75(1):72-80"
+    pmid: "16735075"
+    doi: "10.1016/j.diabres.2006.04.013"
+  NHS_KR:
+    org: 보건복지부 (국가건강검진)
+    title: "건강검진 실시기준 [별표 4의 별첨] 검사항목별 판정기준"
+    citation: "보건복지부 고시 「건강검진 실시기준」, 국가법령정보센터 수록본 (최신 고시 번호는 미확인)"
+    pmid: null
+    doi: null
+    url: "https://www.law.go.kr/LSW/admRulInfoP.do?admRulSeq=2000000118324"
+
+# ---------------------------------------------------------------------------
+# 항목별 · 출처별 구간. band: [하한(포함), 상한(미포함)] — null 은 제한 없음
+# ---------------------------------------------------------------------------
+items:
+  blood_pressure:
+    unit: mmHg
+    combine: "수축기·이완기 중 더 나쁜 단계를 적용 (and/or 규칙)"
+    by_source:
+      KSH2026:
+        - { stage: 정상혈압,        sbp: [null, 120], dbp: [null, 80], rule: and }
+        - { stage: 주의혈압,        sbp: [120, 130],  dbp: [null, 80], rule: and }
+        - { stage: 고혈압전단계,    sbp: [130, 140],  dbp: [80, 90],   rule: or }
+        - { stage: 고혈압 1기,      sbp: [140, 160],  dbp: [90, 100],  rule: or }
+        - { stage: 고혈압 2기,      sbp: [160, null], dbp: [100, null], rule: or }
+      KSH2018:
+        note: "전단계 130–139/80–89, 1기 140–159/90–99, 2기 ≥160/100 (2026과 동일 경계). 가정혈압 고혈압 기준 ≥135/85"
+      NHS_KR:
+        - { stage: 정상A,     sbp: [null, 120], dbp: [null, 80], rule: and }
+        - { stage: 정상B(경계), sbp: [120, 140],  dbp: [80, 90],   rule: or }
+        - { stage: 질환의심,   sbp: [140, null], dbp: [90, null], rule: or }
+    out_of_office:
+      home_bp_hypertension: { sbp: 135, dbp: 85, source: [KSH2018, KSH2022] }
+  fasting_glucose:
+    unit: mg/dL
+    by_source:
+      KDA2025:
+        - { stage: 정상,            band: [null, 100] }
+        - { stage: 공복혈당장애(당뇨병전단계), band: [100, 126] }
+        - { stage: 당뇨병 진단 범위, band: [126, null] }
+      NHS_KR:
+        - { stage: 정상A,     band: [null, 100] }
+        - { stage: 정상B(경계), band: [100, 126] }
+        - { stage: 질환의심,   band: [126, null] }
+  bmi:
+    unit: kg/m2
+    by_source:
+      KSSO2022:
+        - { stage: 저체중,        band: [null, 18.5] }
+        - { stage: 정상,          band: [18.5, 23] }
+        - { stage: 비만전단계(과체중), band: [23, 25] }
+        - { stage: 1단계 비만,    band: [25, 30] }
+        - { stage: 2단계 비만,    band: [30, 35] }
+        - { stage: 3단계 비만,    band: [35, null] }
+      NHS_KR:
+        - { stage: 질환의심(저체중), band: [null, 18.5] }
+        - { stage: 정상A,        band: [18.5, 25] }
+        - { stage: 정상B(경계),   band: [25, 30] }
+        - { stage: 질환의심,      band: [30, null] }
+  waist:
+    unit: cm
+    by_source:
+      KSSO2022: { abdominal_obesity: { male: 90, female: 85 }, evidence: LEE2007 }
+      NHS_KR:   { abdominal_obesity: { male: 90, female: 85 } }
+  total_cholesterol:
+    unit: mg/dL
+    by_source:
+      KSoLA2022:
+        - { stage: 적정, band: [null, 200] }
+        - { stage: 경계, band: [200, 240] }
+        - { stage: 높음, band: [240, null] }
+      NHS_KR:
+        - { stage: 정상A, band: [null, 200] }
+        - { stage: 정상B(경계), band: [200, 240] }
+        - { stage: 질환의심, band: [240, null] }
+  ldl:
+    unit: mg/dL
+    by_source:
+      KSoLA2022:
+        - { stage: 적정,     band: [null, 100] }
+        - { stage: 정상,     band: [100, 130] }
+        - { stage: 경계,     band: [130, 160] }
+        - { stage: 높음,     band: [160, 190] }
+        - { stage: 매우 높음, band: [190, null] }
+      NHS_KR:
+        - { stage: 정상A, band: [null, 130] }
+        - { stage: 정상B(경계), band: [130, 160] }
+        - { stage: 질환의심, band: [160, null] }
+        - { note: "당뇨병 동반 시 LDL 100 미만 (의사 판단 시 수정 가능)" }
+  triglyceride:
+    unit: mg/dL
+    by_source:
+      KSoLA2022:
+        - { stage: 적정,     band: [null, 150] }
+        - { stage: 경계,     band: [150, 200] }
+        - { stage: 높음,     band: [200, 500] }
+        - { stage: 매우 높음, band: [500, null] }
+      NHS_KR:
+        - { stage: 정상A, band: [null, 150] }
+        - { stage: 정상B(경계), band: [150, 200] }
+        - { stage: 질환의심, band: [200, null] }
+  hdl:
+    unit: mg/dL
+    lower_is_worse: true
+    by_source:
+      KSoLA2022:
+        - { stage: 낮음, band: [null, 40] }
+        - { stage: 높음(바람직), band: [60, null] }
+      NHS_KR:
+        - { stage: 질환의심, band: [null, 40] }
+        - { stage: 정상B(경계), band: [40, 60] }
+        - { stage: 정상A, band: [60, null] }
+
+# ---------------------------------------------------------------------------
+# 기저질환 미상 사용자에게 적용하는 기본 3단계 (정상 / 주의 / 위험)
+# caution·risk = 해당 단계가 시작되는 값. 출처 간 경계가 다르면 가장 보수적인 값.
+# ---------------------------------------------------------------------------
+default_tiers:
+  sbp:               { caution: 120, risk: 140, basis: [KSH2026, NHS_KR] }
+  dbp:               { caution: 80,  risk: 90,  basis: [KSH2026, NHS_KR] }
+  fasting_glucose:   { caution: 100, risk: 126, basis: [KDA2025, NHS_KR] }
+  bmi:               { caution: 23,  risk: 25,  basis: [KSSO2022], note: "국가검진은 25/30 — 학회 기준이 더 보수적이라 채택. 30 이상은 2단계 비만으로 별도 표기" }
+  waist:             { risk_male: 90, risk_female: 85, basis: [KSSO2022, NHS_KR, LEE2007], note: "주의 구간 정의 없음(2단계)" }
+  total_cholesterol: { caution: 200, risk: 240, basis: [KSoLA2022, NHS_KR] }
+  ldl:               { caution: 130, risk: 160, basis: [KSoLA2022, NHS_KR], note: "190 이상은 '매우 높음'으로 별도 표기" }
+  triglyceride:      { caution: 150, risk: 200, basis: [KSoLA2022, NHS_KR], note: "500 이상은 '매우 높음'으로 별도 표기" }
+  hdl:               { caution_below: 60, risk_below: 40, basis: [KSoLA2022, NHS_KR] }
+
+# ---------------------------------------------------------------------------
+# 기저질환별 조절 목표 (목표 미달성 = '조절 필요'). 출처별로 다르면 모두 보존하고 strictest 를 기본 적용.
+# ---------------------------------------------------------------------------
+disease_profiles:
+  diabetes:
+    label: 당뇨병
+    blood_pressure:
+      - { goal: "<130/80", sbp: 130, dbp: 80, source: KSH2026 }
+      - { goal: "<130/80", sbp: 130, dbp: 80, source: KDA2025 }
+      - { goal: "<140/90 (심혈관질환·위험인자 없음) / <130/80 (있음)", sbp: 140, dbp: 90, source: KDA2023 }
+      - { goal: "<140/90 (저·중위험) / <130/80 (고위험)", sbp: 140, dbp: 90, source: KSH2022 }
+    fasting_glucose:
+      - { goal: "80–130", low: 80, high: 130, source: KDA2025 }
+    ldl:
+      - { goal: "<100 (유병 10년 미만, 주요 위험인자 없음)", value: 100, source: [KDA2025, KSoLA2022, KDA_KSoLA2023] }
+      - { goal: "<70 (유병 10년 이상 또는 주요 위험인자·표적장기 손상)", value: 70, source: [KDA2025, KSoLA2022, KDA_KSoLA2023] }
+      - { goal: "<55 (심혈관질환 동반, 또는 표적장기 손상·위험인자 3개 이상)", value: 55, source: [KDA2025, KSoLA2022] }
+    applied_default: { sbp: 130, dbp: 80, fasting_glucose_high: 130, ldl: 100 }
+  hypertension:
+    label: 고혈압 (치료 중)
+    blood_pressure:
+      - { goal: "<140/90 (합병증 없는 저·중위험, 노인)", sbp: 140, dbp: 90, source: [KSH2026, KSH2022] }
+      - { goal: "<130/80 (고위험: 무증상 장기손상 또는 위험인자 3개 이상)", sbp: 130, dbp: 80, source: [KSH2026, KSH2022] }
+    applied_default: { sbp: 140, dbp: 90 }
+  cardiovascular_disease:
+    label: 심혈관질환 (관상동맥질환 등)
+    blood_pressure:
+      - { goal: "<130/80", sbp: 130, dbp: 80, source: [KSH2026, KSH2022] }
+    ldl:
+      - { goal: "<55 (관상동맥질환, 기저 대비 50% 이상 감소)", value: 55, source: KSoLA2022 }
+      - { goal: "<70 (죽상경화성 뇌졸중·경동맥·말초동맥질환·복부대동맥류)", value: 70, source: KSoLA2022 }
+    applied_default: { sbp: 130, dbp: 80, ldl: 55 }
+  chronic_kidney_disease:
+    label: 만성콩팥병
+    blood_pressure:
+      - { goal: "<130/80", sbp: 130, dbp: 80, source: KSH2026 }
+      - { goal: "<140/90 (알부민뇨 없음) / <130/80 (알부민뇨 있음)", sbp: 140, dbp: 90, source: KSH2022 }
+    applied_default: { sbp: 130, dbp: 80 }
+  stroke:
+    label: 뇌졸중
+    blood_pressure:
+      - { goal: "<130/80 (두개내 동맥 협착 동반 허혈성 뇌졸중은 <140/90)", sbp: 130, dbp: 80, source: KSH2026 }
+    applied_default: { sbp: 130, dbp: 80 }
+  dyslipidemia_primary_prevention:
+    label: 이상지질혈증 (일차 예방)
+    ldl:
+      - { goal: "<130 (중등도 위험: 주요 위험인자 2개 이상)", value: 130, source: KSoLA2022 }
+      - { goal: "<160 (저위험: 주요 위험인자 1개 이하)", value: 160, source: KSoLA2022 }
+    applied_default: { ldl: 130 }
+
+# ---------------------------------------------------------------------------
+# 분류기 재학습 대상: '다음 검진에서 이 기준을 넘는가'. name 은 flag_<name> 로 서빙된다.
+# ---------------------------------------------------------------------------
+model_flags:
+  bp_caution_120_80:        { base: sbp, tier: caution, rule: "sbp>=120 or dbp>=80" }
+  hypertension_140_90:      { base: sbp, tier: risk,    rule: "sbp>=140 or dbp>=90" }
+  fasting_glucose_ge100:    { base: fasting_glucose, tier: caution, rule: ">=100" }
+  fasting_glucose_ge126:    { base: fasting_glucose, tier: risk,    rule: ">=126" }
+  bmi_ge23:                 { base: bmi, tier: caution, rule: ">=23" }
+  obesity_bmi_ge25:         { base: bmi, tier: risk,    rule: ">=25" }
+  obesity2_bmi_ge30:        { base: bmi, tier: risk2,   rule: ">=30" }
+  abdominal_obesity:        { base: waist, tier: risk,  rule: "male>=90, female>=85" }
+  total_cholesterol_ge200:  { base: total_cholesterol, tier: caution, rule: ">=200" }
+  total_cholesterol_ge240:  { base: total_cholesterol, tier: risk,    rule: ">=240" }
+  ldl_ge130:                { base: ldl, tier: caution, rule: ">=130" }
+  ldl_ge160:                { base: ldl, tier: risk,    rule: ">=160" }
+  high_triglyceride_ge150:  { base: triglyceride, tier: caution, rule: ">=150" }
+  triglyceride_ge200:       { base: triglyceride, tier: risk,    rule: ">=200" }
+  low_hdl_lt40:             { base: hdl, tier: risk, rule: "<40" }

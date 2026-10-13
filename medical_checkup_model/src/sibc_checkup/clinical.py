@@ -32,23 +32,42 @@ OUT_DIR = PROJECT_ROOT / "01_Results" / "clinical"
 MIN_CLASS_EVENTS = 30
 
 # 임계값 정의: (기준 항목, 라벨 함수(df)->bool, 직전상태 함수(df)->bool)
-THRESHOLDS = {
-    "hypertension_140_90": ("sbp",
-        lambda d: (d["sbp"] >= 140) | (d["dbp"] >= 90),
-        lambda d: (d["anchor_prev_label__sbp"] >= 140) | (d["anchor_prev_label__dbp"] >= 90)),
-    "fasting_glucose_ge100": ("fasting_glucose",
-        lambda d: d["fasting_glucose"] >= 100,
-        lambda d: d["anchor_prev_label__fasting_glucose"] >= 100),
-    "obesity_bmi_ge25": ("bmi",
-        lambda d: d["bmi"] >= 25,
-        lambda d: d["anchor_prev_label__bmi"] >= 25),
-    "abdominal_obesity": ("waist",
-        lambda d: d["waist"] >= np.where(d["demo_sex"] == 1, 90, 85),
-        lambda d: d["anchor_prev_label__waist"] >= np.where(d["demo_sex"] == 1, 90, 85)),
-    "high_triglyceride_ge150": ("triglyceride",
-        lambda d: d["triglyceride"] >= 150,
-        lambda d: d["anchor_prev_label__triglyceride"] >= 150),
-}
+def _ge(col: str, v: float):
+    return (lambda d: d[col] >= v), (lambda d: d[f"anchor_prev_label__{col}"] >= v)
+
+
+def _lt(col: str, v: float):
+    return (lambda d: d[col] < v), (lambda d: d[f"anchor_prev_label__{col}"] < v)
+
+
+def _build_thresholds() -> dict:
+    """임계값은 configs/clinical_guidelines.yaml(default_tiers)에서 읽는다 — 코드에 수치를 직접 쓰지 않는다."""
+    from .guideline import load
+    T = load()["default_tiers"]
+    bp = lambda c, r: ((lambda d: (d["sbp"] >= T["sbp"][c]) | (d["dbp"] >= T["dbp"][c])),
+                       (lambda d: (d["anchor_prev_label__sbp"] >= T["sbp"][c]) | (d["anchor_prev_label__dbp"] >= T["dbp"][c])))
+    wc = lambda col: (lambda d: d[col] >= np.where(d["demo_sex"] == 1, T["waist"]["risk_male"], T["waist"]["risk_female"]))
+    out = {
+        "bp_caution_120_80": ("sbp", *bp("caution", None)),
+        "hypertension_140_90": ("sbp", *bp("risk", None)),
+        "fasting_glucose_ge100": ("fasting_glucose", *_ge("fasting_glucose", T["fasting_glucose"]["caution"])),
+        "fasting_glucose_ge126": ("fasting_glucose", *_ge("fasting_glucose", T["fasting_glucose"]["risk"])),
+        "bmi_ge23": ("bmi", *_ge("bmi", T["bmi"]["caution"])),
+        "obesity_bmi_ge25": ("bmi", *_ge("bmi", T["bmi"]["risk"])),
+        "obesity2_bmi_ge30": ("bmi", *_ge("bmi", 30)),
+        "abdominal_obesity": ("waist", wc("waist"), wc("anchor_prev_label__waist")),
+        "total_cholesterol_ge200": ("total_cholesterol", *_ge("total_cholesterol", T["total_cholesterol"]["caution"])),
+        "total_cholesterol_ge240": ("total_cholesterol", *_ge("total_cholesterol", T["total_cholesterol"]["risk"])),
+        "ldl_ge130": ("ldl", *_ge("ldl", T["ldl"]["caution"])),
+        "ldl_ge160": ("ldl", *_ge("ldl", T["ldl"]["risk"])),
+        "high_triglyceride_ge150": ("triglyceride", *_ge("triglyceride", T["triglyceride"]["caution"])),
+        "triglyceride_ge200": ("triglyceride", *_ge("triglyceride", T["triglyceride"]["risk"])),
+        "low_hdl_lt40": ("hdl", *_lt("hdl", T["hdl"]["risk_below"])),
+    }
+    return out
+
+
+THRESHOLDS = _build_thresholds()
 # 변화 방향 τ (임상적으로 의미 있는 최소 변화)
 DIRECTION_TAU = {"sbp": 5.0, "dbp": 5.0, "fasting_glucose": 5.0,
                  "weight": 2.0, "bmi": 0.7, "waist": 3.0}

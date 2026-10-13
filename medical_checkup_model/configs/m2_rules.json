@@ -1,0 +1,62 @@
+{
+ "version": "m2_v1",
+ "generated_at": "2026-09-17T23:15:10.496346+00:00",
+ "serve_lookback_days": 180,
+ "fusion": {
+  "sbp": {
+   "with_prior": false,
+   "with_prior_gate": "REJECT",
+   "no_prior": true,
+   "no_prior_gate": "ADOPT",
+   "artifact": "fusion_sbp.joblib"
+  },
+  "dbp": {
+   "with_prior": false,
+   "with_prior_gate": "REJECT",
+   "no_prior": false,
+   "no_prior_gate": "REJECT",
+   "artifact": "fusion_dbp.joblib"
+  },
+  "weight": {
+   "with_prior": true,
+   "with_prior_gate": "PROVISIONAL",
+   "no_prior": true,
+   "no_prior_gate": "ADOPT",
+   "artifact": "fusion_weight.joblib"
+  }
+ },
+ "referral": {
+  "bp_caution_120_80": {
+   "threshold": 0.51,
+   "base_target": "sbp"
+  },
+  "hypertension_140_90": {
+   "threshold": 0.066,
+   "base_target": "sbp"
+  },
+  "fasting_glucose_ge100": {
+   "threshold": 0.266,
+   "base_target": "fasting_glucose"
+  },
+  "fasting_glucose_ge126": {
+   "threshold": 0.042,
+   "base_target": "fasting_glucose"
+  },
+  "bmi_ge23": {
+   "threshold": 0.774,
+   "base_target": "bmi"
+  },
+  "obesity_bmi_ge25": {
+   "threshold": 0.486,
+   "base_target": "bmi"
+  },
+  "obesity2_bmi_ge30": {
+   "threshold": 0.085,
+   "base_target": "bmi"
+  },
+  "abdominal_obesity": {
+   "threshold": 0.238,
+   "base_target": "waist"
+  }
+ }
+}

@@ -3,6 +3,12 @@
 - 분류: AUROC 95% CI, 직전상태 AUROC 대비 차이 CI
 """
 import json, warnings, numpy as np, pandas as pd, joblib
+
+import json as _json, re as _re
+from pathlib import Path as _Path
+_ROOT = _Path(__file__).resolve().parents[1]
+M1_VERSION = _json.loads((_ROOT/"configs/m1_serving_rules.json").read_text())["version"]
+JOINT_VERSION = sorted([d.name for d in (_ROOT/"01_Results").glob("v*") if (d/"train_report.json").is_file()], key=lambda v: [int(x) for x in _re.findall(r"\d+", v)])[-1]
 from sklearn.metrics import mean_absolute_error, roc_auc_score
 from sibc_checkup.m1 import build_m1_dataset, _sealed_split, RESULTS_DIR
 from sibc_checkup.clinical import THRESHOLDS, OUT_DIR as CDIR
@@ -24,7 +30,7 @@ for t, r in rules.items():
     if r.get("route") not in ("MODEL",): continue
     d, feats = build_m1_dataset(t); d = d[~d["abstain"]]
     _, sealed = _sealed_split(d)
-    art = joblib.load(RESULTS_DIR/"m1_v3"/r["model_file"])
+    art = joblib.load(RESULTS_DIR/M1_VERSION/r["model_file"])
     sealed = sealed.copy(); sealed["pred"] = art["model"].predict(sealed[art["features"]])
     sealed["cf"] = sealed[f"anchor_prev_label__{t}"]
     diff = lambda s: mean_absolute_error(s[t], s["pred"]) - mean_absolute_error(s[t], s["cf"])

@@ -250,3 +250,36 @@ PART/장·진청 표·파란 강조상자·전폭 차트·푸터 페이지번호
 ### 분석 보고서 v3.1 (2026-09-17, 필수 내용 위주 축약 → 10p)
 - 같은 스크립트(`build_analysis_report_v3_docx.js`)·같은 파일명. 제거: 준비도 매트릭스 그림(3장 표와 중복), 7장 입력 의존도 표(본문 한 문단으로), 6장 남녀 행, 5장 고중성지방 행(본문 언급), 부록(근거 파일·한계 고지를 끝 한 줄로), 10장 과제 9→8행. 9장·10장 병합(갖춰진 것=한 문단, 빠진 것=결함 표) → 장 번호 1~11, 그림 1~5로 재부여(차트 제목 동일).
 - 레이아웃 교훈: 콜아웃 뒤 빈 스페이서 문단이 PART pageBreakBefore 직전에 오면 빈 페이지 생성 → 스페이서 제거하고 다음 요소의 spacing.before로 대체. 그림은 표 앞 배치 + 필요 시 540~600pt 폭으로 축소해 표 행 낙오 방지.
+
+## 2026-09-17 재구축 + M2 고도화 (커밋 1920810 이후 작업, 미커밋)
+- 데이터 현황: `scripts/data_status.py` → `01_Results/data_status_<date>.json`. 비교 기준은 날짜가 아니라 '이전 데이터셋(직전 모델이 학습한 데이터, 이후 미최신화)' 대 '현재 데이터셋(2026-09-17 조회)'. 웨어러블 469→493명, 검진 394→420명(1,606건), '착용 뒤 검진' 정답지 13→15명(게이트 30 미달).
+- 재구축: 통합 v1.4, 개인화 m1_v4, 플래그 재학습. `scripts/significance.py`·`audit_model.py`는 버전 하드코딩 제거(서빙 규칙의 version, 최신 v* 폴더 자동 선택). 이전 결과는 `01_Results/snapshots/2026-09-10_before_rebuild/`.
+- M2(`src/sibc_checkup/m2.py`, 규칙 `configs/m2_rules.json`, 산출 `01_Results/m2/`):
+  - 진단: 예측값 기준 기울기 0.88~0.99, 예측 상위 10% 간극 ±3 이내 → 고위험 과소예측은 평균 회귀(재보정 무효). 개인 내 변동 기반 오차 하한 수축기 7.7 / 이완기 5.5.
+  - 안내 기준점(민감도 0.85 사전 고정): 고혈압 놓침 21/23 → 2/23(기준점 0.066, 안내 대상 47%, PPV 21%), 3단계 등급(low/caution/high).
+  - 측정값 융합(±180일 쌍, 반복 5겹 CV): 혈압 REJECT, 체중 PROVISIONAL(2.41→2.03), 이력 없음 체중 ADOPT(2.16kg)·수축기 ADOPT(참고, 11.3).
+  - 시간 순서 검증(2025-01-01 분할): 수축기·이완기 통과, 혈당 경계. 음성 실험: 방문 이력·타 혈액 항목 입력 추가 ≤1.2%.
+  - 서빙: `serve_m2()` → `01_Results/serving/m2_predictions_<date>.parquet` (495명 = 검진 보유 420 + 웨어러블만 75).
+- 보고서: `scripts/make_upgrade_charts.py`(그림 5종, `scripts/upgrade_assets/`) + `scripts/build_upgrade_report_docx.js` → `Downloads/SiBC_건강검진예측모델_고도화결과보고서_20260917.docx` (11p). 테스트 32개.
+- 고도화 결과 보고서 v2(경영진 보고용 간결판, 7p): `scripts/build_upgrade_report_v2_docx.js`. 2쪽에 결론 1문단 + 핵심 수치 카드 4개 + 결과 요약표 + 결정 필요 사항. 본문 6장, 그림 4개(차트 PNG 내부 제목에서 그림 번호 제거 — 번호는 문서 캡션이 관리). 표지 설명 문구 삭제.
+- 결과 보고서(첫 보고용, 7p): `scripts/make_result_charts.py`(그림 5종, `scripts/result_assets/`) + `scripts/build_result_report_docx.js` → `Downloads/SiBC_건강검진예측모델_결과보고서_20260918.docx`. 과거 데이터셋·이전 모델 비교, '재구축/고도화 전후' 표현 없음. 구성: 핵심 요약 → 모델 개요·데이터 → 수치 예측 → 고위험 안내 → 웨어러블 측정값 활용 → 활용 수준·산출 범위 → 제한·보완.
+
+## 2026-09-18 임상 가이드라인 기반 판정 (미커밋)
+- `configs/clinical_guidelines.yaml`: 출처(sources: 학회 4곳+국가검진, PMID/DOI/PMCID/URL) · 항목별·출처별 구간 · 기본 3단계(default_tiers, 출처 간 상이 시 가장 이른 경계) · 기저질환별 조절 목표(disease_profiles) · 분류기 대상(model_flags). 수치는 2026-09-18 원문 확인분만(PMC 전문, KSoLA 5판 PDF, 법령정보센터 별표 4 별첨 PDF). 의료진 승인 전 초안.
+- `src/sibc_checkup/guideline.py`: grade_value / grade_bp / bp_stage / stage_by_source / grade_prediction(구간 상한 반영) / goal_status. `clinical.THRESHOLDS`는 yaml에서 생성(15문제: 8개 학습·채택, 지질 7개 BLOCKED_BY_POLICY).
+- `m2.tier_validation`·`combine_tier`: 최종 3단계 = 수치 판정(예측+상한)과 확률 판정의 나쁜 쪽. 검증: 실제 위험 174건 중 정상 판정 0건(직전 단계 그대로는 16건). 단 혈압 '주의' 65%, 위험→위험 17%.
+- `serve_m2`: tier_pred_*/tier_actual_*/stage_pred_* 컬럼 추가(495명, 전원 기본 기준; DB에 진단명 구조화 필드 없음 — discovery 복약·문진 테이블만 존재).
+- 보고서: `scripts/build_result_report_v2_docx.js`(js-yaml로 참고문헌 자동 생성) → `Downloads/SiBC_건강검진예측모델_결과보고서_20260918.docx` (12p: 본문 8p + 부록 A-1~A-6). 테스트 38개.
+
+## 2026-09-18 수치 예측 전용 재구축 (최종 방향, 미커밋)
+- 방향 정정: 모델은 항목별 **예측 수치**만 산출. 정상/주의/위험 판정·기준 초과 플래그·안내·변화 방향은 후단 **판단 Agent** 담당 → 모델 산출물에서 제거.
+- `src/sibc_checkup/predict.py` + CLI `predict`: `01_Results/predictions/predictions_long_<date>.parquet|csv`(사용자×항목 4,950행) / `predictions_wide_<date>`; 필드 = value/lower/upper(85%)/route/evidence_level(A·B·C)/abstain_reason/basis_*(직전 검진값·경과일, 웨어러블 측정 중앙값·횟수·기간)/model_version. 명세: `configs/prediction_output_schema.json` v1.0.
+- `serve.serve_all(include_clinical=False)` 기본, `m2.run(include_judgment=False)` 기본. clinical.py·guideline.py·m2.referral/tier_validation·configs/clinical_guidelines.yaml 은 판단 Agent 측 참고용 자산으로만 보존(모델 산출 경로에서 미사용).
+- 보고서: `scripts/make_prediction_charts.py`(P1~P5) + `scripts/build_result_report_v3_docx.js` → `Downloads/SiBC_건강검진예측모델_결과보고서_20260918.docx` (8p: 요약·개요·수치 성능+구간·출력 명세·웨어러블 활용·제한). 테스트 40개.
+
+## 2026-09-18 실측·예측 분리 재구축 (최종 방향 v2, 미커밋)
+- 사용자 지적: 혈압계·체중계로 잰 값을 입력에 넣어 같은 항목을 '예측'했다고 부르는 것은 오류. 예측 = 다른 데이터로만 추정한 값.
+- `predict.py` v2: kind=MEASURED(DEVICE/DEVICE_DERIVED: 혈압계·체중계 180일 중앙값, BMI는 체중계×직전 검진 신장비) / PREDICTED(method=HISTORY[M1, 검증됨, 웨어러블 미사용] · HISTORY_WEARABLE[통합 v1.4: 앵커+7일 걸음·활동량 백분위·활동시간·악력, REFERENCE_ONLY] · WEARABLE_ONLY[이력 없음, UNVALIDATED]). `joint_inputs_are_clean()`로 예측 입력에 같은 항목 측정값 없음을 강제. 서빙 시 활동량 백분위는 `_add_activity_pct`(KNHANES 걸음 ECDF). 명세 v2.0.
+- 근거: `scripts/wearable_contribution.py` → `01_Results/wearable_contribution.json`. 공공 홀드아웃 2,115건 절제: 활동 신호 기여 혈압·혈당·지질 ≤1%, 체중 +9.0%(악력 포함), BMI +5.5%, 허리 +7.4%. 자체 대리(심박·수면·걸음→혈압계) R² 0.05/0.09. 착용 뒤 검진 15명 → 자체 검증 불가.
+- 산출(2026-09-18): 518명(검진 보유 420 + 웨어러블만 98). 실측 혈압 400·체중 357·BMI 286명, 이력 예측 338~417명, 이력+웨어러블 243명, 웨어러블만 33명. 실측 대 예측 참고 일치도: 수축기 HISTORY 10.17 / +웨어러블 9.47 mmHg.
+- 보고서: `scripts/make_v2_charts.py`(Q1~Q4) + `scripts/build_result_report_v4_docx.js` → 같은 파일명 (7p). 이전 v3(수치 전용, FUSION/M0_MEASURED 경로)은 폐기 — 측정값 통과를 예측으로 표기한 오류. 테스트 42개.

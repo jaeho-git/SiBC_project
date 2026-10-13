@@ -78,45 +78,45 @@
     "sbp": [
       [
         "anchor_prev_label__sbp",
-        1.297
+        1.714
       ],
       [
         "trend_prev2__sbp",
-        0.451
+        0.941
       ],
       [
-        "demo_age",
-        0.275
+        "demo_sex",
+        0.02
+      ],
+      [
+        "anchor_days_since__sbp",
+        0.0
       ],
       [
         "anchor_prev_label__dbp",
-        0.101
+        0.0
       ],
       [
-        "anchor_prev_label__bmi",
-        0.069
-      ],
-      [
-        "anchor_prev_label__weight",
-        0.044
+        "anchor_days_since__dbp",
+        0.0
       ]
     ],
     "dbp": [
       [
         "anchor_prev_label__dbp",
-        1.176
+        1.19
       ],
       [
         "trend_prev2__dbp",
-        0.508
+        0.781
       ],
       [
         "demo_sex",
-        0.123
+        0.111
       ],
       [
         "demo_age",
-        0.061
+        0.068
       ],
       [
         "anchor_prev_label__sbp",
@@ -130,19 +130,19 @@
     "fasting_glucose": [
       [
         "anchor_prev_label__fasting_glucose",
-        3.761
+        3.887
       ],
       [
         "trend_prev2__fasting_glucose",
-        2.444
-      ],
-      [
-        "demo_age",
-        0.107
+        2.521
       ],
       [
         "demo_sex",
-        0.039
+        0.082
+      ],
+      [
+        "demo_age",
+        0.056
       ],
       [
         "anchor_prev_label__sbp",
@@ -158,277 +158,277 @@
     "sbp": {
       "sex": {
         "1.0": {
-          "n": 93,
-          "bias": 2.28,
-          "mae": 7.8,
-          "cf_mae": 10.05
+          "n": 104,
+          "bias": 1.85,
+          "mae": 8.71,
+          "cf_mae": 10.45
         },
         "2.0": {
-          "n": 109,
-          "bias": 2.87,
-          "mae": 9.63,
-          "cf_mae": 11.5
+          "n": 111,
+          "bias": 0.19,
+          "mae": 9.57,
+          "cf_mae": 11.34
         }
       },
       "age": {
         "<40": {
-          "n": 44,
-          "bias": 4.78,
-          "mae": 7.37,
-          "cf_mae": 9.7
+          "n": 43,
+          "bias": -2.02,
+          "mae": 8.21,
+          "cf_mae": 10.77
         },
         "40s": {
-          "n": 41,
-          "bias": -0.11,
-          "mae": 10.15,
-          "cf_mae": 9.93
+          "n": 29,
+          "bias": 0.88,
+          "mae": 8.83,
+          "cf_mae": 8.66
         },
         "50s": {
-          "n": 21,
-          "bias": 2.33,
-          "mae": 9.8,
-          "cf_mae": 9.76
+          "n": 24,
+          "bias": 1.48,
+          "mae": 8.81,
+          "cf_mae": 9.71
         },
         "60s": {
-          "n": 61,
-          "bias": 2.5,
-          "mae": 8.4,
-          "cf_mae": 11.8
+          "n": 74,
+          "bias": 1.53,
+          "mae": 9.66,
+          "cf_mae": 11.55
         },
         "70+": {
-          "n": 35,
-          "bias": 3.35,
-          "mae": 9.01,
-          "cf_mae": 12.26
+          "n": 43,
+          "bias": 3.59,
+          "mae": 9.43,
+          "cf_mae": 12.02
         }
       },
       "anchor_gap": {
         "<=400d": {
-          "n": 49,
-          "bias": 0.37,
-          "mae": 7.32,
-          "cf_mae": 9.31
+          "n": 52,
+          "bias": 0.26,
+          "mae": 9.44,
+          "cf_mae": 11.0
         },
         "400-800d": {
-          "n": 116,
-          "bias": 2.58,
-          "mae": 9.21,
-          "cf_mae": 11.29
+          "n": 129,
+          "bias": 0.82,
+          "mae": 9.05,
+          "cf_mae": 10.99
         },
         "800-1200d": {
-          "n": 37,
-          "bias": 5.61,
-          "mae": 9.4,
-          "cf_mae": 11.41
+          "n": 34,
+          "bias": 2.79,
+          "mae": 9.13,
+          "cf_mae": 10.47
         }
       },
       "high_range": {
-        "n": 13,
-        "bias": -13.19,
-        "mae": 13.65
+        "n": 20,
+        "bias": -13.63,
+        "mae": 13.99
       }
     },
     "dbp": {
       "sex": {
         "1.0": {
-          "n": 93,
-          "bias": 1.35,
-          "mae": 6.76,
-          "cf_mae": 8.23
+          "n": 104,
+          "bias": 1.07,
+          "mae": 6.31,
+          "cf_mae": 7.34
         },
         "2.0": {
-          "n": 109,
-          "bias": 1.22,
-          "mae": 7.14,
-          "cf_mae": 7.94
+          "n": 111,
+          "bias": 0.37,
+          "mae": 7.35,
+          "cf_mae": 8.51
         }
       },
       "age": {
         "<40": {
-          "n": 44,
-          "bias": 1.98,
-          "mae": 6.15,
-          "cf_mae": 5.93
+          "n": 43,
+          "bias": -2.06,
+          "mae": 6.66,
+          "cf_mae": 7.91
         },
         "40s": {
-          "n": 41,
-          "bias": -2.37,
-          "mae": 7.97,
-          "cf_mae": 8.34
+          "n": 29,
+          "bias": -1.45,
+          "mae": 6.46,
+          "cf_mae": 6.83
         },
         "50s": {
-          "n": 21,
-          "bias": 3.58,
-          "mae": 7.47,
-          "cf_mae": 9.95
+          "n": 24,
+          "bias": 2.0,
+          "mae": 6.47,
+          "cf_mae": 8.71
         },
         "60s": {
-          "n": 61,
-          "bias": 2.04,
-          "mae": 6.66,
-          "cf_mae": 8.39
+          "n": 74,
+          "bias": 2.94,
+          "mae": 7.41,
+          "cf_mae": 8.58
         },
         "70+": {
-          "n": 35,
-          "bias": 1.97,
-          "mae": 7.04,
-          "cf_mae": 8.74
+          "n": 43,
+          "bias": 0.91,
+          "mae": 6.37,
+          "cf_mae": 7.19
         }
       },
       "anchor_gap": {
         "<=400d": {
-          "n": 49,
-          "bias": 0.45,
-          "mae": 6.93,
-          "cf_mae": 7.16
+          "n": 52,
+          "bias": 0.61,
+          "mae": 7.01,
+          "cf_mae": 7.38
         },
         "400-800d": {
-          "n": 116,
-          "bias": 1.11,
-          "mae": 7.66,
-          "cf_mae": 8.88
+          "n": 129,
+          "bias": 0.62,
+          "mae": 6.81,
+          "cf_mae": 7.87
         },
         "800-1200d": {
-          "n": 37,
-          "bias": 2.9,
-          "mae": 4.82,
-          "cf_mae": 6.73
+          "n": 34,
+          "bias": 1.22,
+          "mae": 6.74,
+          "cf_mae": 9.09
         }
       },
       "high_range": {
-        "n": 11,
-        "bias": -9.08,
-        "mae": 10.61
+        "n": 13,
+        "bias": -10.14,
+        "mae": 11.32
       }
     },
     "fasting_glucose": {
       "sex": {
         "1.0": {
-          "n": 131,
-          "bias": -1.11,
-          "mae": 11.74,
-          "cf_mae": 15.21
+          "n": 156,
+          "bias": -0.62,
+          "mae": 10.69,
+          "cf_mae": 13.7
         },
         "2.0": {
-          "n": 88,
-          "bias": -2.49,
-          "mae": 12.63,
-          "cf_mae": 15.11
+          "n": 92,
+          "bias": -1.45,
+          "mae": 8.54,
+          "cf_mae": 8.15
         }
       },
       "age": {
         "<40": {
-          "n": 46,
-          "bias": 1.12,
-          "mae": 12.69,
-          "cf_mae": 15.7
+          "n": 54,
+          "bias": -0.48,
+          "mae": 11.16,
+          "cf_mae": 13.19
         },
         "40s": {
-          "n": 48,
-          "bias": -4.8,
-          "mae": 11.73,
-          "cf_mae": 15.4
+          "n": 40,
+          "bias": -1.86,
+          "mae": 7.9,
+          "cf_mae": 9.0
         },
         "50s": {
-          "n": 21,
-          "bias": -1.99,
-          "mae": 6.21,
-          "cf_mae": 6.24
+          "n": 31,
+          "bias": 1.34,
+          "mae": 6.47,
+          "cf_mae": 6.29
         },
         "60s": {
-          "n": 67,
-          "bias": -1.38,
-          "mae": 14.71,
-          "cf_mae": 18.93
+          "n": 85,
+          "bias": -0.26,
+          "mae": 10.3,
+          "cf_mae": 12.52
         },
         "70+": {
-          "n": 37,
-          "bias": -1.4,
-          "mae": 10.44,
-          "cf_mae": 12.51
+          "n": 36,
+          "bias": -4.25,
+          "mae": 12.44,
+          "cf_mae": 15.06
         }
       },
       "anchor_gap": {
         "<=400d": {
-          "n": 69,
-          "bias": 2.02,
-          "mae": 9.96,
-          "cf_mae": 13.71
+          "n": 87,
+          "bias": 1.01,
+          "mae": 9.04,
+          "cf_mae": 10.48
         },
         "400-800d": {
-          "n": 116,
-          "bias": -4.81,
-          "mae": 13.44,
-          "cf_mae": 15.48
+          "n": 130,
+          "bias": -2.29,
+          "mae": 10.4,
+          "cf_mae": 11.98
         },
         "800-1200d": {
-          "n": 34,
-          "bias": 1.54,
-          "mae": 11.85,
-          "cf_mae": 17.09
+          "n": 31,
+          "bias": -0.66,
+          "mae": 10.14,
+          "cf_mae": 13.45
         }
       },
       "high_range": {
-        "n": 23,
-        "bias": -35.76,
-        "mae": 45.17
+        "n": 25,
+        "bias": -31.77,
+        "mae": 35.01
       }
     }
   },
   "joint_on_forward_pairs": {
     "sbp": {
-      "n": 7,
-      "mae_joint": 8.22,
-      "mae_carry_forward": 8.86,
-      "n_with_anchor": 7
+      "n": 8,
+      "mae_joint": 7.08,
+      "mae_carry_forward": 8.88,
+      "n_with_anchor": 8
     },
     "dbp": {
-      "n": 7,
-      "mae_joint": 4.67,
-      "mae_carry_forward": 6.71,
-      "n_with_anchor": 7
+      "n": 8,
+      "mae_joint": 4.4,
+      "mae_carry_forward": 5.88,
+      "n_with_anchor": 8
     },
     "weight": {
-      "n": 15,
-      "mae_joint": 6.84,
-      "mae_carry_forward": 6.35,
-      "n_with_anchor": 11
+      "n": 18,
+      "mae_joint": 6.99,
+      "mae_carry_forward": 6.03,
+      "n_with_anchor": 12
     },
     "bmi": {
-      "n": 15,
-      "mae_joint": 1.86,
-      "mae_carry_forward": 1.97,
-      "n_with_anchor": 11
+      "n": 18,
+      "mae_joint": 2.01,
+      "mae_carry_forward": 1.88,
+      "n_with_anchor": 12
     },
     "fasting_glucose": {
-      "n": 6,
-      "mae_joint": 8.41,
-      "mae_carry_forward": 13.0,
-      "n_with_anchor": 6
+      "n": 7,
+      "mae_joint": 8.62,
+      "mae_carry_forward": 11.29,
+      "n_with_anchor": 7
     }
   },
   "stability": {
     "sbp": [
       {
         "seed": 42,
-        "best": "elasticnet",
+        "best": "mixed_effects",
         "route": "MODEL",
-        "cv_mae": 9.44,
-        "cf_mae": 11.16
+        "cv_mae": 9.25,
+        "cf_mae": 11.02
       },
       {
         "seed": 7,
         "best": "elasticnet",
         "route": "MODEL",
-        "cv_mae": 9.41,
-        "cf_mae": 11.04
+        "cv_mae": 9.4,
+        "cf_mae": 11.03
       },
       {
         "seed": 2024,
         "best": "elasticnet",
         "route": "MODEL",
-        "cv_mae": 9.04,
-        "cf_mae": 10.86
+        "cv_mae": 9.24,
+        "cf_mae": 11.15
       }
     ],
     "dbp": [
@@ -436,22 +436,22 @@
         "seed": 42,
         "best": "mixed_effects",
         "route": "MODEL",
-        "cv_mae": 6.42,
-        "cf_mae": 7.65
+        "cv_mae": 6.35,
+        "cf_mae": 7.59
       },
       {
         "seed": 7,
         "best": "mixed_effects",
         "route": "MODEL",
         "cv_mae": 6.51,
-        "cf_mae": 7.66
+        "cf_mae": 7.77
       },
       {
         "seed": 2024,
         "best": "mixed_effects",
         "route": "MODEL",
-        "cv_mae": 6.41,
-        "cf_mae": 7.67
+        "cv_mae": 6.53,
+        "cf_mae": 7.68
       }
     ],
     "fasting_glucose": [
@@ -459,22 +459,22 @@
         "seed": 42,
         "best": "mixed_effects",
         "route": "MODEL",
-        "cv_mae": 8.74,
-        "cf_mae": 9.74
+        "cv_mae": 9.24,
+        "cf_mae": 10.56
       },
       {
         "seed": 7,
         "best": "mixed_effects",
         "route": "MODEL",
-        "cv_mae": 9.71,
-        "cf_mae": 11.13
+        "cv_mae": 9.04,
+        "cf_mae": 10.3
       },
       {
         "seed": 2024,
         "best": "mixed_effects",
         "route": "MODEL",
-        "cv_mae": 9.79,
-        "cf_mae": 11.11
+        "cv_mae": 9.42,
+        "cf_mae": 10.92
       }
     ],
     "weight": [
@@ -489,15 +489,15 @@
         "seed": 7,
         "best": "mixed_effects",
         "route": "CARRY_FORWARD",
-        "cv_mae": 2.17,
-        "cf_mae": 2.19
+        "cv_mae": 2.2,
+        "cf_mae": 2.2
       },
       {
         "seed": 2024,
         "best": "mixed_effects",
         "route": "CARRY_FORWARD",
-        "cv_mae": 2.11,
-        "cf_mae": 2.12
+        "cv_mae": 2.19,
+        "cf_mae": 2.17
       }
     ]
   }

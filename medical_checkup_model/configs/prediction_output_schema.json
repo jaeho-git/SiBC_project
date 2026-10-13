@@ -1,0 +1,107 @@
+{
+ "name": "sibc_checkup_prediction",
+ "version": "2.0",
+ "grain": "user_key x item x kind(x method) (long) / user_key (wide)",
+ "purpose": "웨어러블·검진 이력 기반 건강검진 항목 산출. '실측'과 '예측'을 분리하며 상태 판정·안내는 하지 않는다(판단 Agent 입력)",
+ "items": [
+  {
+   "item": "sbp",
+   "item_kr": "수축기혈압",
+   "unit": "mmHg",
+   "measurable_by_wearable": true
+  },
+  {
+   "item": "dbp",
+   "item_kr": "이완기혈압",
+   "unit": "mmHg",
+   "measurable_by_wearable": true
+  },
+  {
+   "item": "weight",
+   "item_kr": "체중",
+   "unit": "kg",
+   "measurable_by_wearable": true
+  },
+  {
+   "item": "bmi",
+   "item_kr": "BMI",
+   "unit": "kg/m2",
+   "measurable_by_wearable": true
+  },
+  {
+   "item": "waist",
+   "item_kr": "허리둘레",
+   "unit": "cm",
+   "measurable_by_wearable": false
+  },
+  {
+   "item": "fasting_glucose",
+   "item_kr": "공복혈당",
+   "unit": "mg/dL",
+   "measurable_by_wearable": false
+  },
+  {
+   "item": "total_cholesterol",
+   "item_kr": "총콜레스테롤",
+   "unit": "mg/dL",
+   "measurable_by_wearable": false
+  },
+  {
+   "item": "hdl",
+   "item_kr": "HDL콜레스테롤",
+   "unit": "mg/dL",
+   "measurable_by_wearable": false
+  },
+  {
+   "item": "ldl",
+   "item_kr": "LDL콜레스테롤",
+   "unit": "mg/dL",
+   "measurable_by_wearable": false
+  },
+  {
+   "item": "triglyceride",
+   "item_kr": "중성지방",
+   "unit": "mg/dL",
+   "measurable_by_wearable": false
+  }
+ ],
+ "kind": {
+  "MEASURED": "웨어러블 기기가 같은 항목을 직접 잰 값의 요약(기준일 이전 180일 중앙값). 예측 아님 → 구간·정확도 없음",
+  "PREDICTED": "같은 항목의 측정값을 입력에서 제외하고 다른 데이터로 추정한 값"
+ },
+ "method": {
+  "DEVICE": "혈압계·체중계 측정 중앙값",
+  "DEVICE_DERIVED": "체중계 중앙값 × (직전 검진 BMI/체중)",
+  "HISTORY": "과거 검진값·경과일·추세 + 성별·연령 (개인화 M1). 웨어러블 미사용",
+  "HISTORY_WEARABLE": "과거 검진값 + 웨어러블 간접 신호(걸음·활동량·활동시간·악력) 통합 모델",
+  "WEARABLE_ONLY": "검진 이력 없음: 웨어러블 간접 신호 + 성별·연령 통합 모델"
+ },
+ "validation": {
+  "VALIDATED_OWN": "자체 사용자 61명 검증에서 직전값 대비 성능 확인",
+  "REFERENCE_ONLY": "자체 검증 불가('착용 뒤 검진' 15명). 공공데이터 내부 성능과 소표본 참고치만 존재",
+  "UNVALIDATED": "자체 검증 없음. 공공데이터 내부 성능만 존재",
+  "N/A": "실측 또는 보류"
+ },
+ "route": {
+  "M1_MODEL": "개인화 모델",
+  "CARRY_FORWARD": "직전 검진값 유지",
+  "MODEL_CROSS": "다른 항목 직전값 기반(지질)",
+  "JOINT_MODEL": "공공+자체 통합 모델 v1.4",
+  "ABSTAIN": "보류"
+ },
+ "fields": {
+  "value": "실측 중앙값 또는 예측값. ABSTAIN이면 null",
+  "lower/upper": "예측 행만: 85% 예측 구간. HISTORY는 자체 검증 잔차, HISTORY_WEARABLE·WEARABLE_ONLY는 공공 홀드아웃 잔차 기준(참고)",
+  "uses_wearable": "웨어러블 데이터 사용 여부",
+  "inputs": "사용한 입력의 설명",
+  "abstain_reason": "no_prior_checkup / stale_anchor(Nd) / no_wearable_signal / no_checkup_and_no_wearable_signal / no_demographics",
+  "basis_prev_checkup_value/date": "예측 행의 직전 검진 실제값·검진일",
+  "measured_n/first/last": "실측 행의 측정 횟수·기간",
+  "model_version": "M1 버전 + 통합 모델 버전"
+ },
+ "guarantees": [
+  "어떤 PREDICTED 행도 같은 항목의 웨어러블 측정값을 입력으로 쓰지 않는다(계약 테스트)",
+  "정상/주의/위험 판정·플래그·안내·변화 방향을 포함하지 않는다"
+ ],
+ "wide_columns": "measured_<item>, pred_hist_<item>, pred_wear_<item>, has_checkup"
+}

@@ -3,6 +3,12 @@
 4) 통합 모델 v1.3의 자체 forward 쌍 성능(웨어러블 반영 시)  5) 재현성(시드 변경 시 승격 안정성)
 """
 import json, re, warnings, numpy as np, pandas as pd, joblib
+
+import json as _json, re as _re
+from pathlib import Path as _Path
+_ROOT = _Path(__file__).resolve().parents[1]
+M1_VERSION = _json.loads((_ROOT/"configs/m1_serving_rules.json").read_text())["version"]
+JOINT_VERSION = sorted([d.name for d in (_ROOT/"01_Results").glob("v*") if (d/"train_report.json").is_file()], key=lambda v: [int(x) for x in _re.findall(r"\d+", v)])[-1]
 from sklearn.metrics import mean_absolute_error
 from sklearn.inspection import permutation_importance
 from sibc_checkup.m1 import build_m1_dataset, _sealed_split, RESULTS_DIR, _cv_compare, _promotion_rule
@@ -28,7 +34,7 @@ imp, sub = {}, {}
 for t in ["sbp","dbp","fasting_glucose"]:
     d, feats = build_m1_dataset(t); d = d[~d["abstain"]]
     _, sealed = _sealed_split(d)
-    art = joblib.load(RESULTS_DIR/"m1_v3"/f"{t}.joblib"); m = art["model"]; F = art["features"]
+    art = joblib.load(RESULTS_DIR/M1_VERSION/f"{t}.joblib"); m = art["model"]; F = art["features"]
     X = sealed[F]; y = sealed[t]
     pi = permutation_importance(m, X, y, n_repeats=20, random_state=0, scoring="neg_mean_absolute_error")
     top = sorted(zip(F, pi.importances_mean), key=lambda z:-z[1])[:6]
@@ -56,7 +62,7 @@ joint = {}
 for t in ["sbp","dbp","weight","bmi","fasting_glucose"]:
     d = fwd[fwd[t].notna()]
     if len(d) < 5: joint[t] = {"n": int(len(d)), "status":"too_few"}; continue
-    art = joblib.load(PROJECT_ROOT/"01_Results/v1.3"/f"{t}.joblib")
+    art = joblib.load(PROJECT_ROOT/f"01_Results/{JOINT_VERSION}"/f"{t}.joblib")
     p = art["model"].predict(d.reindex(columns=art["features"]))
     e = {"n": int(len(d)), "mae_joint": round(mean_absolute_error(d[t], p),2)}
     a = f"anchor_prev_label__{t}"

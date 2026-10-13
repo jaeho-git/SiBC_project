@@ -4,6 +4,7 @@
   "version": "0.2.0",
   "description": "DOCX reporting dependency for the SiBC prototype",
   "dependencies": {
-    "docx": "9.5.1"
+    "docx": "9.5.1",
+    "js-yaml": "^5.4.2"
   }
 }

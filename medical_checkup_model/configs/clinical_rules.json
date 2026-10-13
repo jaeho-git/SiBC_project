@@ -1,38 +1,94 @@
 {
   "thresholds": {
+    "bp_caution_120_80": {
+      "serve": true,
+      "base_target": "sbp",
+      "model_file": "flag_bp_caution_120_80.joblib",
+      "sealed_auroc": 0.769,
+      "baseline_prior_auroc": 0.653,
+      "reason": "beats_prior_status"
+    },
     "hypertension_140_90": {
       "serve": true,
       "base_target": "sbp",
       "model_file": "flag_hypertension_140_90.joblib",
-      "sealed_auroc": 0.82,
-      "baseline_prior_auroc": 0.77,
+      "sealed_auroc": 0.851,
+      "baseline_prior_auroc": 0.684,
       "reason": "beats_prior_status"
     },
     "fasting_glucose_ge100": {
       "serve": true,
       "base_target": "fasting_glucose",
       "model_file": "flag_fasting_glucose_ge100.joblib",
-      "sealed_auroc": 0.819,
-      "baseline_prior_auroc": 0.77,
+      "sealed_auroc": 0.828,
+      "baseline_prior_auroc": 0.772,
+      "reason": "beats_prior_status"
+    },
+    "fasting_glucose_ge126": {
+      "serve": true,
+      "base_target": "fasting_glucose",
+      "model_file": "flag_fasting_glucose_ge126.joblib",
+      "sealed_auroc": 0.841,
+      "baseline_prior_auroc": 0.711,
+      "reason": "beats_prior_status"
+    },
+    "bmi_ge23": {
+      "serve": true,
+      "base_target": "bmi",
+      "model_file": "flag_bmi_ge23.joblib",
+      "sealed_auroc": 0.973,
+      "baseline_prior_auroc": 0.916,
       "reason": "beats_prior_status"
     },
     "obesity_bmi_ge25": {
       "serve": true,
       "base_target": "bmi",
       "model_file": "flag_obesity_bmi_ge25.joblib",
-      "sealed_auroc": 0.962,
-      "baseline_prior_auroc": 0.863,
+      "sealed_auroc": 0.966,
+      "baseline_prior_auroc": 0.877,
+      "reason": "beats_prior_status"
+    },
+    "obesity2_bmi_ge30": {
+      "serve": true,
+      "base_target": "bmi",
+      "model_file": "flag_obesity2_bmi_ge30.joblib",
+      "sealed_auroc": 0.969,
+      "baseline_prior_auroc": 0.498,
       "reason": "beats_prior_status"
     },
     "abdominal_obesity": {
       "serve": true,
       "base_target": "waist",
       "model_file": "flag_abdominal_obesity.joblib",
-      "sealed_auroc": 0.955,
-      "baseline_prior_auroc": 0.861,
+      "sealed_auroc": 0.924,
+      "baseline_prior_auroc": 0.837,
       "reason": "beats_prior_status"
     },
+    "total_cholesterol_ge200": {
+      "serve": false,
+      "reason": "BLOCKED_BY_POLICY"
+    },
+    "total_cholesterol_ge240": {
+      "serve": false,
+      "reason": "BLOCKED_BY_POLICY"
+    },
+    "ldl_ge130": {
+      "serve": false,
+      "reason": "BLOCKED_BY_POLICY"
+    },
+    "ldl_ge160": {
+      "serve": false,
+      "reason": "BLOCKED_BY_POLICY"
+    },
     "high_triglyceride_ge150": {
+      "serve": false,
+      "reason": "BLOCKED_BY_POLICY"
+    },
+    "triglyceride_ge200": {
+      "serve": false,
+      "reason": "BLOCKED_BY_POLICY"
+    },
+    "low_hdl_lt40": {
       "serve": false,
       "reason": "BLOCKED_BY_POLICY"
     }
@@ -42,48 +98,48 @@
       "serve": true,
       "tau": 5.0,
       "model_file": "direction_sbp.joblib",
-      "sealed_accuracy": 0.48,
-      "baseline_accuracy": 0.302,
+      "sealed_accuracy": 0.46,
+      "baseline_accuracy": 0.326,
       "reason": "beats_baseline"
     },
     "dbp": {
       "serve": true,
       "tau": 5.0,
       "model_file": "direction_dbp.joblib",
-      "sealed_accuracy": 0.46,
-      "baseline_accuracy": 0.436,
+      "sealed_accuracy": 0.465,
+      "baseline_accuracy": 0.442,
       "reason": "beats_baseline"
     },
     "fasting_glucose": {
       "serve": true,
       "tau": 5.0,
       "model_file": "direction_fasting_glucose.joblib",
-      "sealed_accuracy": 0.575,
-      "baseline_accuracy": 0.425,
+      "sealed_accuracy": 0.524,
+      "baseline_accuracy": 0.399,
       "reason": "beats_baseline"
     },
     "weight": {
       "serve": false,
       "tau": 2.0,
       "model_file": "direction_weight.joblib",
-      "sealed_accuracy": 0.516,
-      "baseline_accuracy": 0.629,
+      "sealed_accuracy": 0.583,
+      "baseline_accuracy": 0.63,
       "reason": "does_not_beat_baseline"
     },
     "bmi": {
       "serve": false,
       "tau": 0.7,
       "model_file": "direction_bmi.joblib",
-      "sealed_accuracy": 0.502,
-      "baseline_accuracy": 0.577,
+      "sealed_accuracy": 0.552,
+      "baseline_accuracy": 0.609,
       "reason": "does_not_beat_baseline"
     },
     "waist": {
       "serve": false,
       "tau": 3.0,
       "model_file": "direction_waist.joblib",
-      "sealed_accuracy": 0.484,
-      "baseline_accuracy": 0.526,
+      "sealed_accuracy": 0.426,
+      "baseline_accuracy": 0.53,
       "reason": "does_not_beat_baseline"
     }
   }

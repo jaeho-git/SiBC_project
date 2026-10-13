@@ -1,97 +1,157 @@
 {
   "m1": {
     "sbp": {
-      "n_users": 59,
-      "mae_model": 8.78,
-      "mae_cf": 10.83,
-      "diff": -2.05,
+      "n_users": 61,
+      "mae_model": 9.16,
+      "mae_cf": 10.91,
+      "diff": -1.75,
       "diff_ci95": [
-        -2.94,
-        -1.24
+        -2.72,
+        -0.88
       ],
       "significant": true
     },
     "dbp": {
-      "n_users": 59,
-      "mae_model": 6.97,
-      "mae_cf": 8.07,
+      "n_users": 61,
+      "mae_model": 6.85,
+      "mae_cf": 7.94,
       "diff": -1.1,
       "diff_ci95": [
-        -1.76,
-        -0.45
+        -1.69,
+        -0.52
       ],
       "significant": true
     },
     "fasting_glucose": {
-      "n_users": 59,
-      "mae_model": 12.1,
-      "mae_cf": 15.17,
-      "diff": -3.07,
+      "n_users": 61,
+      "mae_model": 9.89,
+      "mae_cf": 11.64,
+      "diff": -1.75,
       "diff_ci95": [
-        -4.79,
-        -1.61
+        -2.8,
+        -0.75
       ],
       "significant": true
     }
   },
   "clf": {
-    "hypertension_140_90": {
-      "n_users": 59,
-      "auroc": 0.82,
+    "bp_caution_120_80": {
+      "n_users": 61,
+      "auroc": 0.769,
       "auroc_ci95": [
-        0.68,
-        0.916
+        0.673,
+        0.843
       ],
-      "prior_auroc": 0.77,
-      "diff_vs_prior": 0.05,
+      "prior_auroc": 0.653,
+      "diff_vs_prior": 0.116,
       "diff_ci95": [
-        -0.037,
-        0.122
-      ],
-      "significant": false
-    },
-    "fasting_glucose_ge100": {
-      "n_users": 59,
-      "auroc": 0.819,
-      "auroc_ci95": [
-        0.732,
-        0.888
-      ],
-      "prior_auroc": 0.77,
-      "diff_vs_prior": 0.049,
-      "diff_ci95": [
-        -0.004,
-        0.096
-      ],
-      "significant": false
-    },
-    "obesity_bmi_ge25": {
-      "n_users": 59,
-      "auroc": 0.962,
-      "auroc_ci95": [
-        0.923,
-        0.985
-      ],
-      "prior_auroc": 0.863,
-      "diff_vs_prior": 0.099,
-      "diff_ci95": [
-        0.043,
-        0.163
+        0.062,
+        0.169
       ],
       "significant": true
     },
-    "abdominal_obesity": {
-      "n_users": 59,
-      "auroc": 0.955,
+    "hypertension_140_90": {
+      "n_users": 61,
+      "auroc": 0.851,
       "auroc_ci95": [
-        0.907,
-        0.983
+        0.746,
+        0.923
       ],
-      "prior_auroc": 0.861,
-      "diff_vs_prior": 0.094,
+      "prior_auroc": 0.684,
+      "diff_vs_prior": 0.167,
       "diff_ci95": [
-        0.045,
-        0.164
+        0.087,
+        0.263
+      ],
+      "significant": true
+    },
+    "fasting_glucose_ge100": {
+      "n_users": 61,
+      "auroc": 0.828,
+      "auroc_ci95": [
+        0.744,
+        0.89
+      ],
+      "prior_auroc": 0.772,
+      "diff_vs_prior": 0.055,
+      "diff_ci95": [
+        0.018,
+        0.09
+      ],
+      "significant": true
+    },
+    "fasting_glucose_ge126": {
+      "n_users": 61,
+      "auroc": 0.841,
+      "auroc_ci95": [
+        0.687,
+        0.943
+      ],
+      "prior_auroc": 0.711,
+      "diff_vs_prior": 0.13,
+      "diff_ci95": [
+        0.019,
+        0.288
+      ],
+      "significant": true
+    },
+    "bmi_ge23": {
+      "n_users": 61,
+      "auroc": 0.973,
+      "auroc_ci95": [
+        0.945,
+        0.99
+      ],
+      "prior_auroc": 0.916,
+      "diff_vs_prior": 0.057,
+      "diff_ci95": [
+        0.026,
+        0.096
+      ],
+      "significant": true
+    },
+    "obesity_bmi_ge25": {
+      "n_users": 61,
+      "auroc": 0.966,
+      "auroc_ci95": [
+        0.927,
+        0.988
+      ],
+      "prior_auroc": 0.877,
+      "diff_vs_prior": 0.089,
+      "diff_ci95": [
+        0.04,
+        0.146
+      ],
+      "significant": true
+    },
+    "obesity2_bmi_ge30": {
+      "n_users": 61,
+      "auroc": 0.969,
+      "auroc_ci95": [
+        NaN,
+        NaN
+      ],
+      "prior_auroc": 0.498,
+      "diff_vs_prior": 0.472,
+      "diff_ci95": [
+        NaN,
+        NaN
+      ],
+      "significant": false
+    },
+    "abdominal_obesity": {
+      "n_users": 61,
+      "auroc": 0.924,
+      "auroc_ci95": [
+        0.872,
+        0.96
+      ],
+      "prior_auroc": 0.837,
+      "diff_vs_prior": 0.087,
+      "diff_ci95": [
+        0.03,
+        0.16
       ],
       "significant": true
     }

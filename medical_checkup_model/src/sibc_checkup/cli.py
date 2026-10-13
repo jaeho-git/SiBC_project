@@ -153,6 +153,18 @@ def cmd_serve_m1(index_time: str | None, no_wearable: bool) -> None:
     print(f"-> 01_Results/serving/m1_predictions_{it.isoformat()}.(parquet|csv)")
 
 
+def cmd_predict(index_time: str | None) -> None:
+    import json
+    from datetime import date
+
+    from .predict import predict_all, write_schema
+
+    it = date.fromisoformat(index_time) if index_time else date.today()
+    L, W = predict_all(it); write_schema()
+    print(json.dumps({"users": int(W.shape[0]), "rows": int(L.shape[0]), "routes": L.groupby("item")["route"].value_counts().unstack(fill_value=0).to_dict("index")}, ensure_ascii=False, indent=1))
+    print(f"-> 01_Results/predictions/predictions_(long|wide)_{it.isoformat()}.(parquet|csv), configs/prediction_output_schema.json")
+
+
 def cmd_eval_m0_forward() -> None:
     import json
 
@@ -165,12 +177,15 @@ def main() -> None:
     parser = argparse.ArgumentParser(prog="sibc_checkup")
     parser.add_argument("command",
                         choices=["build-table", "benchmark", "tune", "train",
-                                 "train-m1", "serve-m1", "eval-m0-forward", "pretrain", "all"])
+                                 "train-m1", "serve-m1", "predict", "eval-m0-forward", "pretrain", "all"])
     parser.add_argument("--index-time", default=None, help="serve-m1: 예측 기준일 YYYY-MM-DD")
     parser.add_argument("--no-wearable", action="store_true", help="serve-m1: 웨어러블 조회 생략")
     args = parser.parse_args()
     if args.command == "train-m1":
         cmd_train_m1()
+        return
+    if args.command == "predict":
+        cmd_predict(args.index_time)
         return
     if args.command == "serve-m1":
         cmd_serve_m1(args.index_time, args.no_wearable)

@@ -1,22 +1,22 @@
 {
-  "version": "m1_v3",
+  "version": "m1_v4",
   "rules": {
     "sbp": {
       "max_anchor_age_days": 1095,
       "nominal_coverage": 0.85,
       "route": "MODEL",
       "reason": "promoted",
-      "model": "elasticnet",
+      "model": "mixed_effects",
       "model_file": "sbp.joblib",
       "interval_method": "constant",
-      "cqr_Q": 3.74,
+      "cqr_Q": 3.532,
       "interval_offsets": [
-        -18.21,
-        15.76
+        -17.715,
+        16.094
       ],
-      "cv_mae": 9.44,
-      "cv_carry_forward_mae": 11.156,
-      "sealed_picp": 0.861
+      "cv_mae": 9.248,
+      "cv_carry_forward_mae": 11.021,
+      "sealed_picp": 0.86
     },
     "dbp": {
       "max_anchor_age_days": 1095,
@@ -26,14 +26,14 @@
       "model": "mixed_effects",
       "model_file": "dbp.joblib",
       "interval_method": "constant",
-      "cqr_Q": 2.291,
+      "cqr_Q": 2.558,
       "interval_offsets": [
-        -12.096,
-        11.468
+        -11.521,
+        11.629
       ],
-      "cv_mae": 6.418,
-      "cv_carry_forward_mae": 7.652,
-      "sealed_picp": 0.822
+      "cv_mae": 6.345,
+      "cv_carry_forward_mae": 7.589,
+      "sealed_picp": 0.842
     },
     "weight": {
       "max_anchor_age_days": 1095,
@@ -43,14 +43,14 @@
       "model": null,
       "model_file": "weight.joblib",
       "interval_method": "constant",
-      "cqr_Q": 0.756,
+      "cqr_Q": 0.94,
       "interval_offsets": [
-        -4.2,
-        3.8
+        -4.075,
+        3.7
       ],
-      "cv_mae": 2.207,
-      "cv_carry_forward_mae": 2.197,
-      "sealed_picp": 0.925
+      "cv_mae": 2.209,
+      "cv_carry_forward_mae": 2.2,
+      "sealed_picp": 0.878
     },
     "bmi": {
       "max_anchor_age_days": 1095,
@@ -60,31 +60,31 @@
       "model": null,
       "model_file": "bmi.joblib",
       "interval_method": "constant",
-      "cqr_Q": 0.381,
+      "cqr_Q": 0.418,
       "interval_offsets": [
-        -1.5,
+        -1.4,
         1.4
       ],
-      "cv_mae": 0.801,
-      "cv_carry_forward_mae": 0.804,
-      "sealed_picp": 0.925
+      "cv_mae": 0.811,
+      "cv_carry_forward_mae": 0.811,
+      "sealed_picp": 0.9
     },
     "waist": {
       "max_anchor_age_days": 1095,
       "nominal_coverage": 0.85,
       "route": "CARRY_FORWARD",
-      "reason": "improvement_below_threshold",
+      "reason": "not_majority_folds",
       "model": null,
       "model_file": "waist.joblib",
       "interval_method": "cqr",
-      "cqr_Q": 1.579,
+      "cqr_Q": 1.836,
       "interval_offsets": [
-        -7.5,
-        7.658
+        -7.875,
+        7.675
       ],
-      "cv_mae": 6.147,
-      "cv_carry_forward_mae": 6.129,
-      "sealed_picp": 0.854
+      "cv_mae": 5.641,
+      "cv_carry_forward_mae": 6.095,
+      "sealed_picp": 0.887
     },
     "fasting_glucose": {
       "max_anchor_age_days": 1095,
@@ -93,15 +93,15 @@
       "reason": "promoted",
       "model": "mixed_effects",
       "model_file": "fasting_glucose.joblib",
-      "interval_method": "cqr",
-      "cqr_Q": 2.622,
+      "interval_method": "constant",
+      "cqr_Q": 3.527,
       "interval_offsets": [
-        -14.709,
-        14.791
+        -13.982,
+        15.484
       ],
-      "cv_mae": 8.737,
-      "cv_carry_forward_mae": 9.739,
-      "sealed_picp": 0.817
+      "cv_mae": 9.241,
+      "cv_carry_forward_mae": 10.565,
+      "sealed_picp": 0.819
     },
     "total_cholesterol": {
       "max_anchor_age_days": 1095,
@@ -111,19 +111,19 @@
       "model": "mixed_effects",
       "model_file": "cross_total_cholesterol.joblib",
       "interval_method": "constant",
-      "cqr_Q": 10.405,
+      "cqr_Q": 10.741,
       "interval_offsets": [
-        -55.272,
-        56.977
+        -52.953,
+        56.894
       ],
-      "cv_mae": 30.189,
-      "cv_carry_forward_mae": 26.029,
-      "sealed_picp": 0.827,
+      "cv_mae": 30.639,
+      "cv_carry_forward_mae": 25.62,
+      "sealed_picp": 0.803,
       "cf_interval_offsets": [
-        -52.2,
-        42.8
+        -51.975,
+        42.275
       ],
-      "cv_mean_baseline_mae": 34.481
+      "cv_mean_baseline_mae": 33.657
     },
     "hdl": {
       "max_anchor_age_days": 1095,
@@ -133,63 +133,63 @@
       "model": "elasticnet",
       "model_file": "cross_hdl.joblib",
       "interval_method": "constant",
-      "cqr_Q": 4.083,
+      "cqr_Q": 3.491,
       "interval_offsets": [
-        -15.341,
-        15.938
+        -16.141,
+        15.792
       ],
-      "cv_mae": 8.744,
-      "cv_carry_forward_mae": 7.633,
-      "sealed_picp": 0.84,
+      "cv_mae": 8.966,
+      "cv_carry_forward_mae": 8.08,
+      "sealed_picp": 0.874,
       "cf_interval_offsets": [
-        -13.4,
+        -13.325,
         12.0
       ],
-      "cv_mean_baseline_mae": 9.935
+      "cv_mean_baseline_mae": 10.099
     },
     "ldl": {
       "max_anchor_age_days": 1095,
       "nominal_coverage": 0.85,
       "route": "MODEL_CROSS",
       "reason": "cross_promoted(promoted)",
-      "model": "elasticnet",
+      "model": "mixed_effects",
       "model_file": "cross_ldl.joblib",
       "interval_method": "constant",
-      "cqr_Q": 10.648,
+      "cqr_Q": 10.43,
       "interval_offsets": [
-        -53.393,
-        56.798
+        -52.466,
+        53.25
       ],
-      "cv_mae": 28.36,
-      "cv_carry_forward_mae": 23.331,
-      "sealed_picp": 0.895,
+      "cv_mae": 28.453,
+      "cv_carry_forward_mae": 23.94,
+      "sealed_picp": 0.872,
       "cf_interval_offsets": [
-        -44.0,
-        40.2
+        -43.25,
+        42.65
       ],
-      "cv_mean_baseline_mae": 31.821
+      "cv_mean_baseline_mae": 31.528
     },
     "triglyceride": {
       "max_anchor_age_days": 1095,
       "nominal_coverage": 0.85,
       "route": "MODEL_CROSS",
       "reason": "cross_promoted(promoted)",
-      "model": "elasticnet",
+      "model": "mixed_effects",
       "model_file": "cross_triglyceride.joblib",
       "interval_method": "cqr",
-      "cqr_Q": 12.994,
+      "cqr_Q": 12.059,
       "interval_offsets": [
-        -68.201,
-        90.494
+        -70.151,
+        91.919
       ],
-      "cv_mae": 48.345,
-      "cv_carry_forward_mae": 42.478,
-      "sealed_picp": 0.835,
+      "cv_mae": 47.914,
+      "cv_carry_forward_mae": 41.84,
+      "sealed_picp": 0.802,
       "cf_interval_offsets": [
-        -111.4,
-        33.8
+        -110.2,
+        39.65
       ],
-      "cv_mean_baseline_mae": 50.28
+      "cv_mean_baseline_mae": 52.431
     }
   }
 }

@@ -196,11 +196,12 @@ def _predict_target(row: pd.Series, t: str, rule: dict, version: str) -> dict:
     return out
 
 
-def serve_all(index_time: date | None = None, with_wearable: bool = True) -> pd.DataFrame:
+def serve_all(index_time: date | None = None, with_wearable: bool = True, include_clinical: bool = False) -> pd.DataFrame:
+    """수치 예측 산출. include_clinical=True 일 때만 (구) 판정 출력(flag_*/direction_*)을 덧붙인다 — 모델 산출물 아님."""
     index_time = index_time or date.today()
     cfg = load_rules()
     version, rules = cfg["version"], cfg["rules"]
-    crules = load_clinical_rules()
+    crules = load_clinical_rules() if include_clinical else {"thresholds": {}, "direction": {}}
     feat = build_serving_features(index_time, with_wearable)
     records = []
     for _, row in feat.iterrows():

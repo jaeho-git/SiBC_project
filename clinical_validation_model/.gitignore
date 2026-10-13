@@ -1,0 +1,27 @@
+.DS_Store
+.env
+.env.*
+!.env.example
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+*.egg-info/
+
+# Real or environment-scoped evidence stays local. Synthetic fixtures are versionable.
+00_Data/dev/*
+00_Data/stg/*
+00_Data/release/*
+!00_Data/dev/.gitkeep
+!00_Data/stg/.gitkeep
+!00_Data/release/.gitkeep
+
+# Run artifacts can contain pseudonymized subject-level output and remain local.
+01_Results/dev/*
+01_Results/stg/*
+01_Results/release/*
+!01_Results/dev/.gitkeep
+!01_Results/stg/.gitkeep
+!01_Results/release/.gitkeep

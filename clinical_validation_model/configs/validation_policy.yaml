@@ -1,0 +1,21 @@
+policy_version: 0.1.0
+evaluation_rule_statuses:
+  fixture: [APPROVED_FOR_TEST, APPROVED_FOR_OPERATION]
+  artifact: [APPROVED_FOR_TEST, APPROVED_FOR_OPERATION]
+  db: [APPROVED_FOR_OPERATION]
+operational_handoff_rule_statuses: [APPROVED_FOR_OPERATION]
+allowed_validation_statuses:
+  - VALIDATED
+  - VALIDATED_WITH_LIMITATIONS
+  - REVIEW_REQUIRED
+  - INSUFFICIENT_EVIDENCE
+  - CONTRADICTED
+  - NOT_APPLICABLE
+  - ABSTAIN
+future_evidence_action: REVIEW_REQUIRED
+stale_evidence_action: REVIEW_REQUIRED
+invalid_evidence_link_action: REVIEW_REQUIRED
+cross_taxonomy_overlap_action: DISCLOSE_ONLY
+conflicting_candidate_action: REVIEW_REQUIRED
+clinical_validation_status: BLOCKED_BY_REFERENCE_STANDARD
+

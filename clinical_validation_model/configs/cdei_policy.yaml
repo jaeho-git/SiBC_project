@@ -1,0 +1,16 @@
+policy_version: 0.1.0
+components:
+  - rule_traceability
+  - source_traceability
+  - evidence_linkage
+  - temporal_explainability
+  - criterion_transparency
+  - conflict_transparency
+  - limitation_disclosure
+  - decision_reproducibility
+  - narrative_faithfulness
+  - groundedness
+complete_threshold: 0.90
+partial_threshold: 0.60
+accuracy_interpretation_prohibited: true
+

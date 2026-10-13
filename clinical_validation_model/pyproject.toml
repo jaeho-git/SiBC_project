@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sibc-clinical-validation-prototype"
+version = "0.1.0"
+description = "Rule-based technical validation prototype inside the SiBC Clinical Layer"
+requires-python = ">=3.11"
+dependencies = [
+  "pandas>=2.2",
+  "psycopg2-binary>=2.9",
+  "pyarrow>=17",
+  "PyYAML>=6",
+  "python-docx>=1.2",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=8", "pytest-cov>=5"]
+
+[project.scripts]
+sibc-clinical-validation = "sibc_clinical_validation.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

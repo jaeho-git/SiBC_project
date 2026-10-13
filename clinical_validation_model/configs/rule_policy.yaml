@@ -1,0 +1,20 @@
+policy_version: 0.1.0
+rule_storage_format: yaml
+required_provenance_fields:
+  - source_ids
+  - source_version
+  - license_status
+  - clinical_review_status
+required_integrity_fields:
+  - source_rule_element_count
+  - implemented_rule_element_count
+  - omitted_elements
+  - modified_elements
+  - version_alignment_status
+operational_activation_requires:
+  - APPROVED_FOR_OPERATION
+  - LICENSE_APPROVED
+  - CLINICALLY_APPROVED
+nanda_content_policy: OPAQUE_REFERENCE_ONLY_UNTIL_LICENSED
+omaha_content_policy: OFFICIAL_STRUCTURE_UNCHANGED_WITH_ATTRIBUTION
+

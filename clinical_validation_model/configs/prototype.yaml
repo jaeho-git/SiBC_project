@@ -1,0 +1,13 @@
+project_root: /Users/jaeho.oh/Downloads/SiBC/SiBC_project/clinical_validation_model
+timezone: Asia/Seoul
+default_environment: release
+default_execution_mode: artifact
+random_seed: 20260806
+generator_version: 0.1.0
+model_version: 0.1.0
+artifact_source_environment: release
+medical_checkup_root: /Users/jaeho.oh/Downloads/SiBC/SiBC_project/medical_checkup_model
+query_limit: 1000
+statement_timeout_ms: 180000
+fixture_generation_timestamp: "2026-08-06T00:00:00Z"
+fixture_index_datetime: "2026-08-01T00:00:00Z"

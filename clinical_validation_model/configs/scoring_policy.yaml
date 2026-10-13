@@ -1,0 +1,22 @@
+policy_version: 0.1.0
+score_type: rule_criteria_fulfillment_index
+weights:
+  applicability_score: 0.10
+  required_criteria_score: 0.30
+  supporting_criteria_score: 0.10
+  evidence_sufficiency_score: 0.15
+  evidence_consistency_score: 0.10
+  temporal_alignment_score: 0.10
+  data_quality_score: 0.10
+  diagnostic_specificity_score: 0.025
+  rule_coverage_score: 0.025
+hard_gates:
+  - approved_rule
+  - applicability
+  - required_criteria
+  - exclusions
+  - contradictions
+  - upstream_validation
+  - temporal_leakage
+probability_interpretation_prohibited: true
+

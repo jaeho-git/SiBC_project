@@ -49,3 +49,9 @@ temp/
 *.db
 *.sqlite
 *.sqlite3
+
+# Clinical Validation contains deterministic, explicitly synthetic technical fixtures.
+# Real/dev/stg/release evidence and all run results remain ignored.
+!clinical_validation_model/00_Data/fixtures/
+!clinical_validation_model/00_Data/fixtures/**
+!clinical_validation_model/00_Data/fixtures/**/*.parquet

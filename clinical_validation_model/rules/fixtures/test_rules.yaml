@@ -1,0 +1,214 @@
+rules:
+  - rule_id: CLV-TEST-OMAHA-A
+    taxonomy: OMAHA
+    diagnosis_code_reference: TEST-OMAHA-A
+    diagnosis_name_reference: TEST_ONLY_OPAQUE_OMAHA_REFERENCE_A
+    diagnosis_type: TEST_PLACEHOLDER
+    rule_version: 0.1.0
+    status: APPROVED_FOR_TEST
+    applicability:
+      criteria: [APP-ADULT-CONTEXT]
+      population: [SYNTHETIC_TEST_CASES_ONLY]
+      required_context: [FIXTURE_MODE]
+      exclusions: []
+    required_evidence:
+      - criterion_id: REQ-ACTIVITY-PATTERN
+        feature_id: test_activity_pattern
+    supporting_evidence:
+      - criterion_id: SUP-SLEEP-CONTEXT
+        feature_id: test_sleep_context
+    related_factors: []
+    risk_factors: []
+    contradictory_evidence:
+      - criterion_id: CON-ACTIVITY-NORMAL
+        feature_id: test_activity_normal
+    exclusion_criteria:
+      - criterion_id: EXC-NONWEAR
+        feature_id: test_nonwear
+    temporal_requirements:
+      index_time_field: index_datetime
+      lookback_window_days: 30
+      freshness_limit_days: 30
+    measurement_requirements:
+      allowed_sources: [SYNTHETIC_TEST_SOURCE, MEDICAL_CHECKUP_ARTIFACT_REFERENCE]
+      allowed_units: [TEST_UNIT, FLAG]
+      minimum_quality: ACCEPTABLE
+      state_code_map:
+        TEST_MET: MET
+        TEST_NOT_MET: NOT_MET
+        TEST_NOT_ASSESSABLE: NOT_ASSESSABLE
+    conflicts:
+      mutually_exclusive_rules: [CLV-TEST-OMAHA-C]
+      review_rules: []
+    decision:
+      hard_gates: [APPROVED_RULE, APPLICABILITY, REQUIRED, EXCLUSION, CONTRADICTION, TEMPORAL]
+      allowed_statuses: [VALIDATED, VALIDATED_WITH_LIMITATIONS, REVIEW_REQUIRED, INSUFFICIENT_EVIDENCE, CONTRADICTED, NOT_APPLICABLE, ABSTAIN]
+      human_review_conditions: [BOUNDARY, STALE, CONFLICT]
+    provenance:
+      source_ids: [SIBC-SYNTHETIC-RULE-SPEC]
+      source_version: 0.1.0
+      license_status: TEST_PLACEHOLDER_NO_TAXONOMY_CONTENT
+      clinical_review_status: TEST_APPROVED_NOT_CLINICAL
+    integrity:
+      source_rule_element_count: 5
+      implemented_rule_element_count: 5
+      omitted_elements: []
+      modified_elements: []
+      version_alignment_status: ALIGNED_FOR_SYNTHETIC_TEST
+
+  - rule_id: CLV-TEST-NANDA-B
+    taxonomy: NANDA
+    diagnosis_code_reference: TEST-NANDA-B
+    diagnosis_name_reference: TEST_ONLY_OPAQUE_NANDA_REFERENCE_B
+    diagnosis_type: TEST_PLACEHOLDER
+    rule_version: 0.1.0
+    status: APPROVED_FOR_TEST
+    applicability:
+      criteria: [APP-ADULT-CONTEXT]
+      population: [SYNTHETIC_TEST_CASES_ONLY]
+      required_context: [FIXTURE_MODE]
+      exclusions: []
+    required_evidence:
+      - criterion_id: REQ-SLEEP-PATTERN
+        feature_id: test_sleep_pattern
+    supporting_evidence:
+      - criterion_id: SUP-ACTIVITY-CONTEXT
+        feature_id: test_activity_context
+    related_factors: []
+    risk_factors: []
+    contradictory_evidence: []
+    exclusion_criteria:
+      - criterion_id: EXC-DEVICE-INVALID
+        feature_id: test_device_invalid
+    temporal_requirements:
+      index_time_field: index_datetime
+      lookback_window_days: 30
+      freshness_limit_days: 30
+    measurement_requirements:
+      allowed_sources: [SYNTHETIC_TEST_SOURCE]
+      allowed_units: [TEST_UNIT, FLAG]
+      minimum_quality: ACCEPTABLE
+      state_code_map:
+        TEST_MET: MET
+        TEST_NOT_MET: NOT_MET
+        TEST_NOT_ASSESSABLE: NOT_ASSESSABLE
+    conflicts:
+      mutually_exclusive_rules: []
+      review_rules: []
+    decision:
+      hard_gates: [APPROVED_RULE, APPLICABILITY, REQUIRED, EXCLUSION, TEMPORAL]
+      allowed_statuses: [VALIDATED, VALIDATED_WITH_LIMITATIONS, REVIEW_REQUIRED, INSUFFICIENT_EVIDENCE, CONTRADICTED, NOT_APPLICABLE, ABSTAIN]
+      human_review_conditions: [BOUNDARY, STALE, CONFLICT]
+    provenance:
+      source_ids: [SIBC-SYNTHETIC-RULE-SPEC]
+      source_version: 0.1.0
+      license_status: OPAQUE_TEST_REFERENCE_NO_NANDA_CONTENT
+      clinical_review_status: TEST_APPROVED_NOT_CLINICAL
+    integrity:
+      source_rule_element_count: 4
+      implemented_rule_element_count: 4
+      omitted_elements: []
+      modified_elements: []
+      version_alignment_status: ALIGNED_FOR_SYNTHETIC_TEST
+
+  - rule_id: CLV-TEST-OMAHA-C
+    taxonomy: OMAHA
+    diagnosis_code_reference: TEST-OMAHA-C
+    diagnosis_name_reference: TEST_ONLY_OPAQUE_OMAHA_REFERENCE_C
+    diagnosis_type: TEST_PLACEHOLDER
+    rule_version: 0.1.0
+    status: APPROVED_FOR_TEST
+    applicability:
+      criteria: [APP-ADULT-CONTEXT]
+      population: [SYNTHETIC_TEST_CASES_ONLY]
+      required_context: [FIXTURE_MODE]
+      exclusions: []
+    required_evidence:
+      - criterion_id: REQ-CARDIO-PATTERN
+        feature_id: test_cardio_pattern
+    supporting_evidence: []
+    related_factors: []
+    risk_factors: []
+    contradictory_evidence: []
+    exclusion_criteria: []
+    temporal_requirements:
+      index_time_field: index_datetime
+      lookback_window_days: 30
+      freshness_limit_days: 30
+    measurement_requirements:
+      allowed_sources: [SYNTHETIC_TEST_SOURCE]
+      allowed_units: [TEST_UNIT]
+      minimum_quality: ACCEPTABLE
+      state_code_map:
+        TEST_MET: MET
+        TEST_NOT_MET: NOT_MET
+        TEST_NOT_ASSESSABLE: NOT_ASSESSABLE
+    conflicts:
+      mutually_exclusive_rules: [CLV-TEST-OMAHA-A]
+      review_rules: []
+    decision:
+      hard_gates: [APPROVED_RULE, APPLICABILITY, REQUIRED, EXCLUSION, CONTRADICTION, TEMPORAL]
+      allowed_statuses: [VALIDATED, REVIEW_REQUIRED, INSUFFICIENT_EVIDENCE, CONTRADICTED, NOT_APPLICABLE, ABSTAIN]
+      human_review_conditions: [BOUNDARY, STALE, CONFLICT]
+    provenance:
+      source_ids: [SIBC-SYNTHETIC-RULE-SPEC]
+      source_version: 0.1.0
+      license_status: TEST_PLACEHOLDER_NO_TAXONOMY_CONTENT
+      clinical_review_status: TEST_APPROVED_NOT_CLINICAL
+    integrity:
+      source_rule_element_count: 2
+      implemented_rule_element_count: 2
+      omitted_elements: []
+      modified_elements: []
+      version_alignment_status: ALIGNED_FOR_SYNTHETIC_TEST
+
+  - rule_id: CLV-RESEARCH-ONLY-D
+    taxonomy: OMAHA
+    diagnosis_code_reference: null
+    diagnosis_name_reference: RESEARCH_ONLY_OPAQUE_REFERENCE
+    diagnosis_type: RESEARCH_PLACEHOLDER
+    rule_version: 0.1.0
+    status: RESEARCH_ONLY
+    applicability:
+      criteria: [APP-ADULT-CONTEXT]
+      population: []
+      required_context: []
+      exclusions: []
+    required_evidence:
+      - criterion_id: REQ-RESEARCH-ONLY
+        feature_id: test_research_only
+    supporting_evidence: []
+    related_factors: []
+    risk_factors: []
+    contradictory_evidence: []
+    exclusion_criteria: []
+    temporal_requirements:
+      index_time_field: index_datetime
+      lookback_window_days: 30
+      freshness_limit_days: 30
+    measurement_requirements:
+      allowed_sources: [SYNTHETIC_TEST_SOURCE]
+      allowed_units: [TEST_UNIT]
+      minimum_quality: ACCEPTABLE
+      state_code_map:
+        TEST_MET: MET
+        TEST_NOT_MET: NOT_MET
+        TEST_NOT_ASSESSABLE: NOT_ASSESSABLE
+    conflicts:
+      mutually_exclusive_rules: []
+      review_rules: []
+    decision:
+      hard_gates: [APPROVED_RULE]
+      allowed_statuses: [ABSTAIN]
+      human_review_conditions: [RULE_NOT_APPROVED]
+    provenance:
+      source_ids: [SIBC-SYNTHETIC-RULE-SPEC]
+      source_version: 0.1.0
+      license_status: LICENSE_REVIEW_REQUIRED
+      clinical_review_status: NOT_REVIEWED
+    integrity:
+      source_rule_element_count: 2
+      implemented_rule_element_count: 2
+      omitted_elements: []
+      modified_elements: []
+      version_alignment_status: ALIGNED_FOR_SYNTHETIC_TEST

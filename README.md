@@ -72,6 +72,8 @@ SiBC_project/
 ├── .env.dev
 ├── .env.stg
 ├── .env.release
+├── .env.ddl
+├── .env.dml
 │
 ├── medical_checkup_model/
 │   ├── README.md
@@ -124,6 +126,14 @@ SiBC_project/
 .env.release
 ```
 
+접속 대상 DB의 권한에 따라 다음 파일을 구분해 사용합니다. DB마다 필요한 권한이
+다르므로, 작업 대상 DB에 맞는 파일을 사용합니다.
+
+| 파일 | 용도 |
+|---|---|
+| `.env.ddl` | DDL 권한이 필요한 DB의 접속정보 |
+| `.env.dml` | DML 권한이 필요한 DB의 접속정보 |
+
 환경 파일에는 DB 접속정보와 인증정보가 포함될 수 있으므로 Git에 업로드하지 않습니다.
 
 Git에 포함되는 `.env.example`에는 변수명만 작성하고 실제 값은 넣지 않습니다.
@@ -159,6 +169,8 @@ git push -u origin feature/medical-checkup-data-audit
 - `.env.dev`
 - `.env.stg`
 - `.env.release`
+- `.env.ddl`
+- `.env.dml`
 - DB 비밀번호 및 인증정보
 - 실제 사용자 식별정보
 - 원본 웨어러블 데이터

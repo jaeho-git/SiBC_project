@@ -55,3 +55,7 @@ temp/
 !clinical_validation_model/00_Data/fixtures/
 !clinical_validation_model/00_Data/fixtures/**
 !clinical_validation_model/00_Data/fixtures/**/*.parquet
+
+# Local backup archives and pptx inspection dumps (derived artifacts)
+*_backup_*.tar.gz
+*.inspect.ndjson

@@ -1,0 +1,142 @@
+{
+  "as_of_date": "2026-10-30",
+  "timezone": "Asia/Seoul",
+  "scope": "Current chat requests, three direct original attachments, four available references listed in the original handoff, and analysis documents.",
+  "original_attachment_count": 3,
+  "handoff_reference_list_count": 16,
+  "handoff_reference_found_count": 4,
+  "handoff_reference_not_found": [
+    "00_SiBC_Project_Instructions(2).md",
+    "01_SiBC_DataScience_Handbook(1).md",
+    "02_SiBC_Data_Quality_Framework(1).md",
+    "03_SiBC_Reliability_Model(1).md",
+    "04_SiBC_Health_Check_Prediction_Model(1).md",
+    "05_SiBC_Clinical_Layer_Evidence_Validation(1).md",
+    "06_SiBC_Behavior_Layer_Evidence_Validation(1).md",
+    "09_SiBC_Model_Validation_Framework(1).md",
+    "11_SiBC_AI_Working_Principles(1).md",
+    "13_SiBC_Regulatory_Considerations(1).md",
+    "14_SiBC_Terminology_and_Status_Dictionary(1).md",
+    "InvitesLoop_3plus1_Strategy.md"
+  ],
+  "filenames": "NFC in archive; original content bytes unchanged",
+  "files": [
+    {
+      "archive_path": "README.md",
+      "category": "package_guide",
+      "size_bytes": 2293,
+      "sha256": "d835b4430d771b48ab6561b67e799764ae6d03207bd0bab5e3e5f03717b5b03b"
+    },
+    {
+      "archive_path": "attachments/InvitesLoop_Codex_Competition_Handoff.md",
+      "source_path": "/Users/jaeho.oh/Downloads/InvitesLoop_Codex_Competition_Handoff.md",
+      "source_filename": "InvitesLoop_Codex_Competition_Handoff.md",
+      "category": "user_attachment",
+      "size_bytes": 22642,
+      "sha256": "7d7eba321ea9150def4a6e860d68d7a233c98a0a3cc07538744535fd915ac23d",
+      "source_content_unchanged": true,
+      "attachment_id": "A01"
+    },
+    {
+      "archive_path": "attachments/인바이츠루프_chronology(v6)_20261028.pptx",
+      "source_path": "/Users/jaeho.oh/Downloads/인바이츠루프_chronology(v6)_20261028.pptx",
+      "source_filename": "인바이츠루프_chronology(v6)_20261028.pptx",
+      "category": "user_attachment",
+      "size_bytes": 165448,
+      "sha256": "fefa43c230e1c9981851b92d7a432e219e650c1701205ef8838078de68495b80",
+      "source_content_unchanged": true,
+      "attachment_id": "A02"
+    },
+    {
+      "archive_path": "attachments/AI_운동처방_전문가_자문회의록.docx",
+      "source_path": "/Users/jaeho.oh/Downloads/AI_운동처방_전문가_자문회의록.docx",
+      "source_filename": "AI_운동처방_전문가_자문회의록.docx",
+      "category": "user_attachment",
+      "size_bytes": 41736,
+      "sha256": "c9c0f51d024b2a0ef16379d97f57d1ed9daf4aa1b322cc076457e10d83f1baf0",
+      "source_content_unchanged": true,
+      "attachment_id": "A03"
+    },
+    {
+      "archive_path": "handoff_references/InvitesLoop_V5_Competition_Analysis_Updated.md",
+      "source_path": "/Users/jaeho.oh/Downloads/InvitesLoop_V5_Competition_Analysis_Updated.md",
+      "source_filename": "InvitesLoop_V5_Competition_Analysis_Updated.md",
+      "category": "handoff_listed_reference",
+      "size_bytes": 29189,
+      "sha256": "d0182ba5528014f5b19eacedf14b453d48d9bfb266d79255a2dc94afe6bdc112",
+      "source_content_unchanged": true
+    },
+    {
+      "archive_path": "handoff_references/02_인바이츠루프 6대 지침.md",
+      "source_path": "/Users/jaeho.oh/Downloads/02_인바이츠루프 6대 지침.md",
+      "source_filename": "02_인바이츠루프 6대 지침.md",
+      "category": "handoff_listed_reference",
+      "size_bytes": 3602,
+      "sha256": "27d04eb0641612749a2e16375c240e488b9276d0034da6a1b087334119eae700",
+      "source_content_unchanged": true
+    },
+    {
+      "archive_path": "handoff_references/03_인바이츠루프 V5 프로토타입.md",
+      "source_path": "/Users/jaeho.oh/Downloads/03_인바이츠루프 V5 프로토타입.md",
+      "source_filename": "03_인바이츠루프 V5 프로토타입.md",
+      "category": "handoff_listed_reference",
+      "size_bytes": 33172,
+      "sha256": "97e6f1db3be8a50916c7e1d29a83f241c0201038b23f310427f4e477b109004d",
+      "source_content_unchanged": true
+    },
+    {
+      "archive_path": "handoff_references/04_인바이츠루프 3대 KPI.md",
+      "source_path": "/Users/jaeho.oh/Downloads/04_인바이츠루프 3대 KPI.md",
+      "source_filename": "04_인바이츠루프 3대 KPI.md",
+      "category": "handoff_listed_reference",
+      "size_bytes": 3413,
+      "sha256": "e3dc278f9087a003960437055f5a409e363b90d10b8d721cd3faf5f8bca1a74d",
+      "source_content_unchanged": true
+    },
+    {
+      "archive_path": "docs/InvitesLoop_Latest_Request_Handoff_20261030.md",
+      "source_path": "/Users/jaeho.oh/Downloads/SiBC/SiBC_project/v5_competition/docs/InvitesLoop_Latest_Request_Handoff_20261030.md",
+      "source_filename": "InvitesLoop_Latest_Request_Handoff_20261030.md",
+      "category": "consolidation",
+      "size_bytes": 17045,
+      "sha256": "63df6d135d8e8382a1fe51526c4103d575eb36aab01e6b28a56b7173fc797557",
+      "source_content_unchanged": true
+    },
+    {
+      "archive_path": "docs/InvitesLoop_Attachment_Reference_Inventory_20261030.md",
+      "source_path": "/Users/jaeho.oh/Downloads/SiBC/SiBC_project/v5_competition/docs/InvitesLoop_Attachment_Reference_Inventory_20261030.md",
+      "source_filename": "InvitesLoop_Attachment_Reference_Inventory_20261030.md",
+      "category": "consolidation",
+      "size_bytes": 9562,
+      "sha256": "079f5af9c9a90cf2ee1e6b36b7098cfe4572afa328b1f8fc024a28b4da603461",
+      "source_content_unchanged": true
+    },
+    {
+      "archive_path": "docs/UX_UI_Content_Strategy_v2_20261029.md",
+      "source_path": "/Users/jaeho.oh/Downloads/SiBC/SiBC_project/v5_competition/docs/UX_UI_Content_Strategy_v2_20261029.md",
+      "source_filename": "UX_UI_Content_Strategy_v2_20261029.md",
+      "category": "analysis",
+      "size_bytes": 24928,
+      "sha256": "e7b9de44298cb67b419de160ab65be9b3fff8af9c72956e4d506174134cc3235",
+      "source_content_unchanged": true
+    },
+    {
+      "archive_path": "docs/UX_UI_Concept_Comparison_Criteria_20261029.md",
+      "source_path": "/Users/jaeho.oh/Downloads/SiBC/SiBC_project/v5_competition/docs/UX_UI_Concept_Comparison_Criteria_20261029.md",
+      "source_filename": "UX_UI_Concept_Comparison_Criteria_20261029.md",
+      "category": "analysis",
+      "size_bytes": 12057,
+      "sha256": "cbb43482e42c281fe056a5c854f982336f8fa148191262ade7821eea9ded843b",
+      "source_content_unchanged": true
+    },
+    {
+      "archive_path": "docs/UX_UI_Research_Requirements_and_Multisource_Analysis_20261029.md",
+      "source_path": "/Users/jaeho.oh/Downloads/SiBC/SiBC_project/v5_competition/docs/UX_UI_Research_Requirements_and_Multisource_Analysis_20261029.md",
+      "source_filename": "UX_UI_Research_Requirements_and_Multisource_Analysis_20261029.md",
+      "category": "analysis",
+      "size_bytes": 30735,
+      "sha256": "0c345bac82b516213ae3709019bb3ea5b0afe67c87632aba6a1b039c73bc40b4",
+      "source_content_unchanged": true
+    }
+  ]
+}

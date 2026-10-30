@@ -1,0 +1,436 @@
+{
+  "as_of_date": "2026-10-30",
+  "timezone": "Asia/Seoul",
+  "current_authority": "docs/InvitesLoop_Integrated_Project_Brief_20261030.md",
+  "base_input": {
+    "path": "/Users/jaeho.oh/Downloads/InvitesLoop_Chat_Only_Verified_20261030.zip",
+    "sha256": "2234cff2973a2fa7e8b79d6b65c3c948d3aad9375a2b39c3ea0a5447a0060c81",
+    "crc_verified": true,
+    "declared_manifest_entries_verified": 9
+  },
+  "previous_codex_input": {
+    "path": "/Users/jaeho.oh/Downloads/SiBC/SiBC_project/v5_competition/deliverables/InvitesLoop_Latest_Requests_and_Attachments_20261030.zip",
+    "sha256": "70bcd3ea4dfd6360276bc46c27ee5d1cb2b50987eb976a1ad529fe745bd752e9",
+    "crc_verified": true
+  },
+  "counts": {
+    "baseline_members": 11,
+    "previous_codex_members": 14,
+    "identical_cross_package_members": 5,
+    "distinct_expanded_prior_members": 20,
+    "new_integrated_documents": 3,
+    "original_input_archive": 1,
+    "current_guide_and_manifest": 2,
+    "archive_members": 26
+  },
+  "handoff_reference_status": {
+    "total_named": 16,
+    "available": [
+      "InvitesLoop_V5_Competition_Analysis_Updated.md",
+      "InvitesLoop_3plus1_Strategy.md",
+      "02_인바이츠루프 6대 지침.md",
+      "03_인바이츠루프 V5 프로토타입.md",
+      "04_인바이츠루프 3대 KPI.md"
+    ],
+    "missing_originals": [
+      "00_SiBC_Project_Instructions(2).md",
+      "01_SiBC_DataScience_Handbook(1).md",
+      "02_SiBC_Data_Quality_Framework(1).md",
+      "03_SiBC_Reliability_Model(1).md",
+      "04_SiBC_Health_Check_Prediction_Model(1).md",
+      "05_SiBC_Clinical_Layer_Evidence_Validation(1).md",
+      "06_SiBC_Behavior_Layer_Evidence_Validation(1).md",
+      "09_SiBC_Model_Validation_Framework(1).md",
+      "11_SiBC_AI_Working_Principles(1).md",
+      "13_SiBC_Regulatory_Considerations(1).md",
+      "14_SiBC_Terminology_and_Status_Dictionary(1).md"
+    ],
+    "newly_resolved": [
+      "InvitesLoop_3plus1_Strategy.md"
+    ]
+  },
+  "duplicate_aliases": [
+    {
+      "filename": "InvitesLoop_Codex_Competition_Handoff.md",
+      "canonical_archive_path": "01_chatgpt_baseline/02_generated_in_this_chat/InvitesLoop_Codex_Competition_Handoff.md",
+      "previous_codex_member": "attachments/InvitesLoop_Codex_Competition_Handoff.md",
+      "method": "SHA-256 equality"
+    },
+    {
+      "filename": "InvitesLoop_V5_Competition_Analysis_Updated.md",
+      "canonical_archive_path": "01_chatgpt_baseline/02_generated_in_this_chat/InvitesLoop_V5_Competition_Analysis_Updated.md",
+      "previous_codex_member": "handoff_references/InvitesLoop_V5_Competition_Analysis_Updated.md",
+      "method": "SHA-256 equality"
+    },
+    {
+      "filename": "02_인바이츠루프 6대 지침.md",
+      "canonical_archive_path": "01_chatgpt_baseline/01_user_uploaded_originals/02_인바이츠루프 6대 지침.md",
+      "previous_codex_member": "handoff_references/02_인바이츠루프 6대 지침.md",
+      "method": "SHA-256 equality"
+    },
+    {
+      "filename": "03_인바이츠루프 V5 프로토타입.md",
+      "canonical_archive_path": "01_chatgpt_baseline/01_user_uploaded_originals/03_인바이츠루프 V5 프로토타입.md",
+      "previous_codex_member": "handoff_references/03_인바이츠루프 V5 프로토타입.md",
+      "method": "SHA-256 equality"
+    },
+    {
+      "filename": "04_인바이츠루프 3대 KPI.md",
+      "canonical_archive_path": "01_chatgpt_baseline/01_user_uploaded_originals/04_인바이츠루프 3대 KPI.md",
+      "previous_codex_member": "handoff_references/04_인바이츠루프 3대 KPI.md",
+      "method": "SHA-256 equality"
+    }
+  ],
+  "filename_policy": "NFC archive member paths; original paths in origins; content bytes preserved",
+  "files": [
+    {
+      "archive_path": "01_chatgpt_baseline/01_user_uploaded_originals/02_인바이츠루프 6대 지침.md",
+      "category": "chatgpt_period_uploaded_original",
+      "sha256": "27d04eb0641612749a2e16375c240e488b9276d0034da6a1b087334119eae700",
+      "size_bytes": 3602,
+      "content_preserved": true,
+      "origins": [
+        {
+          "container_path": "/Users/jaeho.oh/Downloads/InvitesLoop_Chat_Only_Verified_20261030.zip",
+          "member_path": "01_user_uploaded_originals/02_인바이츠루프 6대 지침.md",
+          "provenance_basis": "source package scope and manifest; CRC/declared hashes checked"
+        },
+        {
+          "container_path": "/Users/jaeho.oh/Downloads/SiBC/SiBC_project/v5_competition/deliverables/InvitesLoop_Latest_Requests_and_Attachments_20261030.zip",
+          "member_path": "handoff_references/02_인바이츠루프 6대 지침.md",
+          "provenance_basis": "prior Codex export; CRC and manifest hashes checked"
+        }
+      ]
+    },
+    {
+      "archive_path": "01_chatgpt_baseline/01_user_uploaded_originals/04_인바이츠루프 3대 KPI.md",
+      "category": "chatgpt_period_uploaded_original",
+      "sha256": "e3dc278f9087a003960437055f5a409e363b90d10b8d721cd3faf5f8bca1a74d",
+      "size_bytes": 3413,
+      "content_preserved": true,
+      "origins": [
+        {
+          "container_path": "/Users/jaeho.oh/Downloads/InvitesLoop_Chat_Only_Verified_20261030.zip",
+          "member_path": "01_user_uploaded_originals/04_인바이츠루프 3대 KPI.md",
+          "provenance_basis": "source package scope and manifest; CRC/declared hashes checked"
+        },
+        {
+          "container_path": "/Users/jaeho.oh/Downloads/SiBC/SiBC_project/v5_competition/deliverables/InvitesLoop_Latest_Requests_and_Attachments_20261030.zip",
+          "member_path": "handoff_references/04_인바이츠루프 3대 KPI.md",
+          "provenance_basis": "prior Codex export; CRC and manifest hashes checked"
+        }
+      ]
+    },
+    {
+      "archive_path": "01_chatgpt_baseline/01_user_uploaded_originals/03_인바이츠루프 V5 프로토타입.md",
+      "category": "chatgpt_period_uploaded_original",
+      "sha256": "97e6f1db3be8a50916c7e1d29a83f241c0201038b23f310427f4e477b109004d",
+      "size_bytes": 33172,
+      "content_preserved": true,
+      "origins": [
+        {
+          "container_path": "/Users/jaeho.oh/Downloads/InvitesLoop_Chat_Only_Verified_20261030.zip",
+          "member_path": "01_user_uploaded_originals/03_인바이츠루프 V5 프로토타입.md",
+          "provenance_basis": "source package scope and manifest; CRC/declared hashes checked"
+        },
+        {
+          "container_path": "/Users/jaeho.oh/Downloads/SiBC/SiBC_project/v5_competition/deliverables/InvitesLoop_Latest_Requests_and_Attachments_20261030.zip",
+          "member_path": "handoff_references/03_인바이츠루프 V5 프로토타입.md",
+          "provenance_basis": "prior Codex export; CRC and manifest hashes checked"
+        }
+      ]
+    },
+    {
+      "archive_path": "01_chatgpt_baseline/02_generated_in_this_chat/InvitesLoop_V5_Competition_Analysis.md",
+      "category": "chatgpt_period_generated_document",
+      "sha256": "bada95558782dd4caced8298bdea6752fa37a810d8883c931b08e5f3af33db15",
+      "size_bytes": 18695,
+      "content_preserved": true,
+      "origins": [
+        {
+          "container_path": "/Users/jaeho.oh/Downloads/InvitesLoop_Chat_Only_Verified_20261030.zip",
+          "member_path": "02_generated_in_this_chat/InvitesLoop_V5_Competition_Analysis.md",
+          "provenance_basis": "source package scope and manifest; CRC/declared hashes checked"
+        }
+      ]
+    },
+    {
+      "archive_path": "01_chatgpt_baseline/02_generated_in_this_chat/InvitesLoop_V5_Competition_Analysis_Updated.md",
+      "category": "chatgpt_period_generated_document",
+      "sha256": "d0182ba5528014f5b19eacedf14b453d48d9bfb266d79255a2dc94afe6bdc112",
+      "size_bytes": 29189,
+      "content_preserved": true,
+      "origins": [
+        {
+          "container_path": "/Users/jaeho.oh/Downloads/InvitesLoop_Chat_Only_Verified_20261030.zip",
+          "member_path": "02_generated_in_this_chat/InvitesLoop_V5_Competition_Analysis_Updated.md",
+          "provenance_basis": "source package scope and manifest; CRC/declared hashes checked"
+        },
+        {
+          "container_path": "/Users/jaeho.oh/Downloads/SiBC/SiBC_project/v5_competition/deliverables/InvitesLoop_Latest_Requests_and_Attachments_20261030.zip",
+          "member_path": "handoff_references/InvitesLoop_V5_Competition_Analysis_Updated.md",
+          "provenance_basis": "prior Codex export; CRC and manifest hashes checked"
+        }
+      ]
+    },
+    {
+      "archive_path": "01_chatgpt_baseline/02_generated_in_this_chat/InvitesLoop_3plus1_Strategy.md",
+      "category": "chatgpt_period_generated_document",
+      "sha256": "fe9130645f38a39eabfe5a7a8ae70ce45d557bd9627db8d58380a70afe2c360c",
+      "size_bytes": 16949,
+      "content_preserved": true,
+      "origins": [
+        {
+          "container_path": "/Users/jaeho.oh/Downloads/InvitesLoop_Chat_Only_Verified_20261030.zip",
+          "member_path": "02_generated_in_this_chat/InvitesLoop_3plus1_Strategy.md",
+          "provenance_basis": "source package scope and manifest; CRC/declared hashes checked"
+        }
+      ]
+    },
+    {
+      "archive_path": "01_chatgpt_baseline/02_generated_in_this_chat/InvitesLoop_Codex_Competition_Handoff.md",
+      "category": "chatgpt_period_generated_document",
+      "sha256": "7d7eba321ea9150def4a6e860d68d7a233c98a0a3cc07538744535fd915ac23d",
+      "size_bytes": 22642,
+      "content_preserved": true,
+      "origins": [
+        {
+          "container_path": "/Users/jaeho.oh/Downloads/InvitesLoop_Chat_Only_Verified_20261030.zip",
+          "member_path": "02_generated_in_this_chat/InvitesLoop_Codex_Competition_Handoff.md",
+          "provenance_basis": "source package scope and manifest; CRC/declared hashes checked"
+        },
+        {
+          "container_path": "/Users/jaeho.oh/Downloads/SiBC/SiBC_project/v5_competition/deliverables/InvitesLoop_Latest_Requests_and_Attachments_20261030.zip",
+          "member_path": "attachments/InvitesLoop_Codex_Competition_Handoff.md",
+          "provenance_basis": "prior Codex export; CRC and manifest hashes checked"
+        }
+      ]
+    },
+    {
+      "archive_path": "01_chatgpt_baseline/02_generated_in_this_chat/InvitesLoop_Competition_20261030_Master_Handoff.md",
+      "category": "chatgpt_period_generated_document",
+      "sha256": "a6ad07f6dac1e5ad1d1dbd5eb385f3b290dd37487470e9ff84b09756441ecefc",
+      "size_bytes": 12202,
+      "content_preserved": true,
+      "origins": [
+        {
+          "container_path": "/Users/jaeho.oh/Downloads/InvitesLoop_Chat_Only_Verified_20261030.zip",
+          "member_path": "02_generated_in_this_chat/InvitesLoop_Competition_20261030_Master_Handoff.md",
+          "provenance_basis": "source package scope and manifest; CRC/declared hashes checked"
+        }
+      ]
+    },
+    {
+      "archive_path": "01_chatgpt_baseline/02_generated_in_this_chat/CHAT_CONTEXT_LATEST.md",
+      "category": "chatgpt_period_generated_document",
+      "sha256": "7de6431deb387e1618213e2ce68ecd014b6b95bbd528557780660b10a609aa63",
+      "size_bytes": 2658,
+      "content_preserved": true,
+      "origins": [
+        {
+          "container_path": "/Users/jaeho.oh/Downloads/InvitesLoop_Chat_Only_Verified_20261030.zip",
+          "member_path": "02_generated_in_this_chat/CHAT_CONTEXT_LATEST.md",
+          "provenance_basis": "source package scope and manifest; CRC/declared hashes checked"
+        }
+      ]
+    },
+    {
+      "archive_path": "01_chatgpt_baseline/README_SCOPE_AND_MISSING_FILES.md",
+      "category": "chatgpt_package_scope_or_manifest",
+      "sha256": "06c7b3d93a27b5b499bca5380e6b4111bf601069ad3ed4130a6ec6daeece652a",
+      "size_bytes": 1109,
+      "content_preserved": true,
+      "origins": [
+        {
+          "container_path": "/Users/jaeho.oh/Downloads/InvitesLoop_Chat_Only_Verified_20261030.zip",
+          "member_path": "README_SCOPE_AND_MISSING_FILES.md",
+          "provenance_basis": "source package scope and manifest; CRC/declared hashes checked"
+        }
+      ]
+    },
+    {
+      "archive_path": "01_chatgpt_baseline/MANIFEST.csv",
+      "category": "chatgpt_package_scope_or_manifest",
+      "sha256": "66bcf654d021a6db39c6acf13a49f4bde4cb00166c3b104b30aae53cb8b8286c",
+      "size_bytes": 1691,
+      "content_preserved": true,
+      "origins": [
+        {
+          "container_path": "/Users/jaeho.oh/Downloads/InvitesLoop_Chat_Only_Verified_20261030.zip",
+          "member_path": "MANIFEST.csv",
+          "provenance_basis": "source package scope and manifest; CRC/declared hashes checked"
+        }
+      ]
+    },
+    {
+      "archive_path": "03_packaging_history/codex_previous/README.md",
+      "category": "prior_codex_package_scope_or_manifest",
+      "sha256": "d835b4430d771b48ab6561b67e799764ae6d03207bd0bab5e3e5f03717b5b03b",
+      "size_bytes": 2293,
+      "content_preserved": true,
+      "origins": [
+        {
+          "container_path": "/Users/jaeho.oh/Downloads/SiBC/SiBC_project/v5_competition/deliverables/InvitesLoop_Latest_Requests_and_Attachments_20261030.zip",
+          "member_path": "README.md",
+          "provenance_basis": "prior Codex export; CRC and manifest hashes checked"
+        }
+      ]
+    },
+    {
+      "archive_path": "02_codex_sources/인바이츠루프_chronology(v6)_20261028.pptx",
+      "category": "codex_user_uploaded_binary_original",
+      "sha256": "fefa43c230e1c9981851b92d7a432e219e650c1701205ef8838078de68495b80",
+      "size_bytes": 165448,
+      "content_preserved": true,
+      "origins": [
+        {
+          "container_path": "/Users/jaeho.oh/Downloads/SiBC/SiBC_project/v5_competition/deliverables/InvitesLoop_Latest_Requests_and_Attachments_20261030.zip",
+          "member_path": "attachments/인바이츠루프_chronology(v6)_20261028.pptx",
+          "provenance_basis": "prior Codex export; CRC and manifest hashes checked"
+        }
+      ]
+    },
+    {
+      "archive_path": "02_codex_sources/AI_운동처방_전문가_자문회의록.docx",
+      "category": "codex_user_uploaded_binary_original",
+      "sha256": "c9c0f51d024b2a0ef16379d97f57d1ed9daf4aa1b322cc076457e10d83f1baf0",
+      "size_bytes": 41736,
+      "content_preserved": true,
+      "origins": [
+        {
+          "container_path": "/Users/jaeho.oh/Downloads/SiBC/SiBC_project/v5_competition/deliverables/InvitesLoop_Latest_Requests_and_Attachments_20261030.zip",
+          "member_path": "attachments/AI_운동처방_전문가_자문회의록.docx",
+          "provenance_basis": "prior Codex export; CRC and manifest hashes checked"
+        }
+      ]
+    },
+    {
+      "archive_path": "docs/InvitesLoop_Latest_Request_Handoff_20261030.md",
+      "category": "codex_analysis_or_prior_consolidation_snapshot",
+      "sha256": "63df6d135d8e8382a1fe51526c4103d575eb36aab01e6b28a56b7173fc797557",
+      "size_bytes": 17045,
+      "content_preserved": true,
+      "origins": [
+        {
+          "container_path": "/Users/jaeho.oh/Downloads/SiBC/SiBC_project/v5_competition/deliverables/InvitesLoop_Latest_Requests_and_Attachments_20261030.zip",
+          "member_path": "docs/InvitesLoop_Latest_Request_Handoff_20261030.md",
+          "provenance_basis": "prior Codex export; CRC and manifest hashes checked"
+        }
+      ]
+    },
+    {
+      "archive_path": "docs/InvitesLoop_Attachment_Reference_Inventory_20261030.md",
+      "category": "codex_analysis_or_prior_consolidation_snapshot",
+      "sha256": "079f5af9c9a90cf2ee1e6b36b7098cfe4572afa328b1f8fc024a28b4da603461",
+      "size_bytes": 9562,
+      "content_preserved": true,
+      "origins": [
+        {
+          "container_path": "/Users/jaeho.oh/Downloads/SiBC/SiBC_project/v5_competition/deliverables/InvitesLoop_Latest_Requests_and_Attachments_20261030.zip",
+          "member_path": "docs/InvitesLoop_Attachment_Reference_Inventory_20261030.md",
+          "provenance_basis": "prior Codex export; CRC and manifest hashes checked"
+        }
+      ]
+    },
+    {
+      "archive_path": "docs/UX_UI_Content_Strategy_v2_20261029.md",
+      "category": "codex_analysis_or_prior_consolidation_snapshot",
+      "sha256": "e7b9de44298cb67b419de160ab65be9b3fff8af9c72956e4d506174134cc3235",
+      "size_bytes": 24928,
+      "content_preserved": true,
+      "origins": [
+        {
+          "container_path": "/Users/jaeho.oh/Downloads/SiBC/SiBC_project/v5_competition/deliverables/InvitesLoop_Latest_Requests_and_Attachments_20261030.zip",
+          "member_path": "docs/UX_UI_Content_Strategy_v2_20261029.md",
+          "provenance_basis": "prior Codex export; CRC and manifest hashes checked"
+        }
+      ]
+    },
+    {
+      "archive_path": "docs/UX_UI_Concept_Comparison_Criteria_20261029.md",
+      "category": "codex_analysis_or_prior_consolidation_snapshot",
+      "sha256": "cbb43482e42c281fe056a5c854f982336f8fa148191262ade7821eea9ded843b",
+      "size_bytes": 12057,
+      "content_preserved": true,
+      "origins": [
+        {
+          "container_path": "/Users/jaeho.oh/Downloads/SiBC/SiBC_project/v5_competition/deliverables/InvitesLoop_Latest_Requests_and_Attachments_20261030.zip",
+          "member_path": "docs/UX_UI_Concept_Comparison_Criteria_20261029.md",
+          "provenance_basis": "prior Codex export; CRC and manifest hashes checked"
+        }
+      ]
+    },
+    {
+      "archive_path": "docs/UX_UI_Research_Requirements_and_Multisource_Analysis_20261029.md",
+      "category": "codex_analysis_or_prior_consolidation_snapshot",
+      "sha256": "0c345bac82b516213ae3709019bb3ea5b0afe67c87632aba6a1b039c73bc40b4",
+      "size_bytes": 30735,
+      "content_preserved": true,
+      "origins": [
+        {
+          "container_path": "/Users/jaeho.oh/Downloads/SiBC/SiBC_project/v5_competition/deliverables/InvitesLoop_Latest_Requests_and_Attachments_20261030.zip",
+          "member_path": "docs/UX_UI_Research_Requirements_and_Multisource_Analysis_20261029.md",
+          "provenance_basis": "prior Codex export; CRC and manifest hashes checked"
+        }
+      ]
+    },
+    {
+      "archive_path": "03_packaging_history/codex_previous/MANIFEST.json",
+      "category": "prior_codex_package_scope_or_manifest",
+      "sha256": "4814127e559ada9bd9a697ffafe3e04b2fd9c373aab4c4cded454f37b4fc18f4",
+      "size_bytes": 7258,
+      "content_preserved": true,
+      "origins": [
+        {
+          "container_path": "/Users/jaeho.oh/Downloads/SiBC/SiBC_project/v5_competition/deliverables/InvitesLoop_Latest_Requests_and_Attachments_20261030.zip",
+          "member_path": "MANIFEST.json",
+          "provenance_basis": "prior Codex export; CRC and manifest hashes checked"
+        }
+      ]
+    },
+    {
+      "archive_path": "docs/InvitesLoop_Integrated_Project_Brief_20261030.md",
+      "category": "current_integrated_guidance",
+      "source_path": "/Users/jaeho.oh/Downloads/SiBC/SiBC_project/v5_competition/docs/InvitesLoop_Integrated_Project_Brief_20261030.md",
+      "sha256": "ff66f48ee85477c6e2db77dc9423e16439ea1b69ec8c54a560660d774e77664a",
+      "size_bytes": 24249,
+      "content_preserved": true
+    },
+    {
+      "archive_path": "docs/InvitesLoop_Integration_Decisions_20261030.md",
+      "category": "current_integrated_guidance",
+      "source_path": "/Users/jaeho.oh/Downloads/SiBC/SiBC_project/v5_competition/docs/InvitesLoop_Integration_Decisions_20261030.md",
+      "sha256": "d66f5aef9e21d48f06b36f83b417b0bb82659e493299346f003a987a87254f5b",
+      "size_bytes": 9617,
+      "content_preserved": true
+    },
+    {
+      "archive_path": "docs/InvitesLoop_Integrated_Source_Register_20261030.md",
+      "category": "current_integrated_guidance",
+      "source_path": "/Users/jaeho.oh/Downloads/SiBC/SiBC_project/v5_competition/docs/InvitesLoop_Integrated_Source_Register_20261030.md",
+      "sha256": "a5240e1deb2fe45a2f951a0bcb5483a20e7f6e3293bd2d239414651a06a0c19e",
+      "size_bytes": 13006,
+      "content_preserved": true
+    },
+    {
+      "archive_path": "04_input_archives/InvitesLoop_Chat_Only_Verified_20261030.zip",
+      "category": "original_input_archive",
+      "source_path": "/Users/jaeho.oh/Downloads/InvitesLoop_Chat_Only_Verified_20261030.zip",
+      "sha256": "2234cff2973a2fa7e8b79d6b65c3c948d3aad9375a2b39c3ea0a5447a0060c81",
+      "size_bytes": 62119,
+      "content_preserved": true
+    },
+    {
+      "archive_path": "README.md",
+      "category": "current_package_guide",
+      "sha256": "c6cf636dd4ea2d388007303e38fbd07bf42cd6c8f79ed0f0e28e01f21358d95f",
+      "size_bytes": 3272
+    }
+  ],
+  "limitations": [
+    "No complete raw prior chat transcript is reconstructed.",
+    "Package scope and hashes do not validate product, clinical, financial, or reported H1 performance.",
+    "The source scope mentions 20 omitted common documents without supplying their original files or full inventory.",
+    "Older source links and old packaging manifests retain their original context; the current source register supplies current mappings."
+  ]
+}

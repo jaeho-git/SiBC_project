@@ -1,0 +1,424 @@
+# 페르소나 생성기 매개변수 v1 (docs/persona_data_spec_20261027.md §3~§6)
+# source 표기: measured = release DB 집계(2026-10-27 조회, 식이 창 2026-09-01~10-26) 또는 문헌/외부 참조,
+#              assumption = 관측 목표를 맞추기 위한 가정(측정값 아님). 모든 값은 합성 데이터용이며 실제 성능 근거가 아니다.
+
+[meta]
+version = "persona.2026.10.27-v1"
+calibration_measured_at = "2026-10-27"
+calibration_window_start = 2026-08-31   # 생성 기간의 마지막 8주(월요일 시작). 운영 집계 창 9/1~10/26과 같은 길이
+calibration_window_end = 2026-10-25
+user_id_prefix = "99999999-0000-4000-8000-"
+
+[period]
+start = 2026-03-30          # 월요일. 210일 = 30주 (명세 §8)
+end = 2026-10-25            # 일요일
+today = 2026-10-27
+recompute_days = 35
+
+[intake]
+# 진짜 하루 섭취의 기준은 에너지 균형(기초대사량 × PAL)이다. 국민건강영양조사 기대값(manifest.expected_kcal)은 관측 분포 대조용으로만 남긴다.
+day_cv = 0.25                                   # measured: 사용자 내 하루 열량 변동 계수 중앙값 0.247 (3끼 기록일, 96명); 문헌 23~25%
+macro_share = { carb = 0.60, protein = 0.15, fat = 0.23 }   # measured: 하루 합계 에너지비 중앙값
+sodium_mg_per_kcal = 2.4                        # measured: 중앙값 2.37
+main_share = { BREAKFAST = 0.30, LUNCH = 0.38, DINNER = 0.32 }   # measured: 끼니 열량 중앙값 389/494/424
+true_skip_prob = { BREAKFAST = 0.10, LUNCH = 0.05, DINNER = 0.03 }   # assumption: 관측 부재율(13/23/28%)은 결식+미기록 혼합
+elderly_breakfast_skip_prob = 0.12              # assumption
+skip_transfer = 0.6                             # assumption: 결식 끼니 열량의 60%만 다른 끼니로 이전
+snack_prob = 0.5                                # assumption (관측 간식일 11%는 누락 포함)
+snack_share = 0.12                              # assumption: 간식이 있는 날 하루 열량 중 간식 몫
+snack_kcal_min = 40
+snack_kcal_max = 220
+late_night_rate = 0.11                          # measured: 21시 이후·00~04시 끼니 비율 11.1%
+late_night_after_midnight = 0.15                # assumption: 야식 중 자정 이후 비율
+late_log_rate = 0.22                            # assumption: 주요 끼니의 15%는 식후 2시간~23시 사이의 늦은 시각으로 기록됨(운영 점심·저녁 90백분위 20~21시에서 역산)
+full_day_prob = 0.65                            # assumption: 기록일 중 "그날 끼니를 모두 기록"하는 날의 비율. 나머지 날은 끼니별 확률(meal_prob)로 일부만 기록
+record_delay_within_30min = 0.70                # assumption
+record_delay_same_day = 0.25                    # assumption (나머지 5%는 다음 날)
+
+[intake.meal_hour]                              # measured: 중앙값 아침 8 / 점심 13 / 저녁 18시. [평균, 표준편차]
+BREAKFAST = [8.0, 1.0]
+LUNCH = [12.8, 1.0]
+DINNER = [18.3, 1.2]
+MORNING_SNACK = [10.3, 0.5]
+AFTERNOON_SNACK = [15.5, 0.8]
+LATE_NIGHT_SNACK = [22.2, 0.7]
+
+[expenditure]
+pal_elderly = 1.38          # FAO/WHO/UNU 2004 좌식 범주 하한 부근(고령·저활동); 운영 소모 중앙값 1,455 kcal에 맞춤
+pal_adult = 1.55
+pal_active = 1.80
+pal_sd = 0.05
+day_cv = 0.08               # measured: 사용자 내 소모 변동 계수 중앙값 0.105 (부분 착용일 변동과 합쳐 0.10 안팎이 되도록 0.08)
+device_bias_range = 0.08    # assumption: 사용자별 고정 편향 ±8%
+exercise_kcal_mean = 250    # assumption
+exercise_end_hour = 18.5
+exercise_days_per_week_default = 1
+exercise_days_per_week_active = 4
+
+[weight]
+kcal_per_kg = 7700          # 정적 환산. 동적 모델(Hall 등)의 과대 예측 경고 때문에 감쇠를 둠
+damping = 0.3               # assumption
+max_daily_change_kg = 0.15
+measure_noise_sd = 0.4      # measured: 사용자 내 체중 표준편차 중앙값 0.54 kg(추세 포함)
+
+[wearable]
+partial_n_records_min = 73      # measured: 심박 n_records 10백분위 73
+partial_n_records_max = 479     # 완전성 규칙 초안 §2: 480 미만 = 부분 착용
+full_n_records_min = 600
+full_n_records_max = 1300       # measured: 90백분위 1,205
+partial_burn_factor_min = 0.8   # assumption: 부분 착용일 소모 기록이 낮게 잡힘
+partial_burn_factor_max = 0.95
+device_scale = 0.87             # measured-derived: 운영 total_kcal_burned 중앙값 1,455는 기초대사량×PAL 추정보다 약 15% 낮음. 기기 총소모의 체계적 과소 추정으로 재현(§5.1 소모 타당성 평가 대상)
+steps_median = 5785             # measured
+steps_log_sd = 0.55             # measured 10~90백분위 1,246~14,162에서 역산
+resting_hr_min = 60
+resting_hr_max = 80
+ios_share = 0.15                # assumption (운영 지연 분포 전체가 Android형에 가깝다)
+weight_arrival_max_days = 1
+
+[wearable.arrival.android]      # measured: calories 원천 수신 지연 (data_check §1.3)
+median_days = 4.4
+p90_days = 23.5
+max_days = 30
+[wearable.arrival.ios]          # assumption: 백그라운드 전송
+median_days = 1.0
+p90_days = 7.0
+max_days = 30
+[wearable.arrival.extreme]      # P24용
+median_days = 20.0
+p90_days = 29.0
+max_days = 30
+
+# 축 A 기록 패턴: day_rate(평일, 주말), meal_prob(아침·점심·저녁·간식), 특수 동작 (명세 §4)
+[axis_a.A0]
+name = "비기록"
+day_rate = [0.0, 0.0]
+meal_prob = [0, 0, 0, 0]
+[axis_a.A1]
+name = "매일 착실"
+day_rate = [0.94, 0.94]
+meal_prob = [0.80, 0.40, 0.20, 0.4]        # 부분 기록일의 끼니별 확률(아침·점심·저녁·간식)
+[axis_a.A2]
+name = "주중 착실·주말 하락"
+day_rate = [0.95, 0.50]
+meal_prob = [0.80, 0.40, 0.20, 0.4]        # 부분 기록일의 끼니별 확률(아침·점심·저녁·간식)
+[axis_a.A3]
+name = "띄엄띄엄"
+day_rate = [0.35, 0.35]
+meal_prob = [0.80, 0.40, 0.20, 0.3]
+[axis_a.A4]
+name = "꾸준 → 공백 → 복귀"
+day_rate = [0.95, 0.95]
+meal_prob = [0.80, 0.40, 0.20, 0.4]        # 부분 기록일의 끼니별 확률(아침·점심·저녁·간식)
+gap_start_week_min = 18
+gap_start_week_max = 24
+gap_weeks_min = 2
+gap_weeks_max = 4
+[axis_a.A5]
+name = "꾸준 → 이탈"
+day_rate = [0.95, 0.95]
+meal_prob = [0.80, 0.40, 0.20, 0.4]        # 부분 기록일의 끼니별 확률(아침·점심·저녁·간식)
+dropout_week_min = 24
+dropout_week_max = 28
+[axis_a.A6]
+name = "늦게 시작"
+day_rate = [0.90, 0.90]
+meal_prob = [0.80, 0.40, 0.20, 0.4]        # 부분 기록일의 끼니별 확률(아침·점심·저녁·간식)
+start_week_min = 22
+start_week_max = 26
+[axis_a.A7]
+name = "저녁 누락형"
+day_rate = [0.90, 0.90]
+meal_prob = [0.95, 0.90, 0.30, 0.3]
+full_day_prob = 0.0
+[axis_a.A8]
+name = "간식·단일 끼니형"
+day_rate = [0.60, 0.60]
+meal_prob = [0.30, 0.30, 0.30, 0.8]
+full_day_prob = 0.0
+[axis_a.A9]
+name = "중복·수정 기록형"
+day_rate = [0.90, 0.90]
+meal_prob = [0.80, 0.40, 0.20, 0.4]        # 부분 기록일의 끼니별 확률(아침·점심·저녁·간식)
+duplicate_rate = 0.10
+edit_rate = 0.10
+draft_rate = 0.03
+[axis_a.A11]
+name = "가벼운 시험 사용자"
+day_rate = [0.08, 0.08]
+meal_prob = [0.80, 0.40, 0.20, 0.4]
+[axis_a.A10]
+name = "결식 표시 사용자"
+day_rate = [0.95, 0.95]
+meal_prob = [0.80, 0.40, 0.20, 0.4]        # 부분 기록일의 끼니별 확률(아침·점심·저녁·간식)
+skipped_rows = true
+
+# 축 B 값의 패턴: intake_factor 범위, 추세, 특수 (명세 §5.1)
+[axis_b.B1]
+name = "유지"
+factor = [1.00, 1.00]
+[axis_b.B2]
+name = "꾸준한 과잉"
+factor = [1.20, 1.30]
+[axis_b.B3]
+name = "점진적 증가"
+factor = [1.00, 1.00]
+trend_pct_per_week = 3.0
+trend_weeks = 6
+trend_start_week_from_end = -10
+[axis_b.B4]
+name = "점진적 감소(개선)"
+factor = [1.25, 1.25]
+trend_pct_per_week = -3.0
+trend_weeks = 6
+trend_start_week_from_end = -10
+[axis_b.B5]
+name = "주말 과잉"
+factor = [0.95, 0.95]
+weekend_factor = 1.42
+[axis_b.B6]
+name = "야식형"
+factor = [1.10, 1.10]
+late_night_rate = 0.30
+[axis_b.B7]
+name = "영양소 단위 과잉"
+factor = [1.00, 1.00]
+nutrient_bias = "sodium"
+[axis_b.B7S]
+name = "영양소 단위 과잉(당류)"
+factor = [1.00, 1.00]
+nutrient_bias = "sugar"
+[axis_b.B7F]
+name = "영양소 단위 과잉(포화지방)"
+factor = [1.00, 1.00]
+nutrient_bias = "satfat"
+[axis_b.B8]
+name = "저섭취"
+factor = [0.70, 0.80]
+nutrient_bias = "lowprotein"
+[axis_b.B9]
+name = "활동형"
+factor = [1.25, 1.25]
+active = true
+[axis_b.B10]
+name = "고령 단백질 부족"
+factor = [0.95, 0.95]
+nutrient_bias = "lowprotein"
+
+# 축 C 관측 왜곡: 기록 열량 계수 범위, 간식 누락률 (명세 §5.2)
+[axis_c.C0]
+name = "정확"
+report_factor = [1.00, 1.00]
+snack_drop = 0.2
+[axis_c.C1]
+name = "경미 과소보고"
+report_factor = [0.70, 0.80]
+snack_drop = 0.6
+[axis_c.C2]
+name = "심한 과소보고"
+report_factor = [0.55, 0.65]
+snack_drop = 0.9
+[axis_c.C3]
+name = "과대 기록"
+report_factor = [1.05, 1.05]
+snack_drop = 0.2
+
+# 축 D 장치 (명세 §5.3). wear_rate = 착용일 비율, partial_rate = 착용일 중 부분 착용 비율
+[axis_w.W0]
+owner = false
+[axis_w.W1]
+owner = true
+wear_rate = 0.55
+partial_rate = 0.40
+[axis_w.W2]
+owner = true
+wear_rate = 0.90
+partial_rate = 0.30
+[axis_s.S0]
+owner = false
+[axis_s.S1]
+owner = true
+measure_prob = 0.03       # 월 1~2회 (운영 8주 측정일 중앙값 2)
+[axis_s.S2]
+owner = true
+measure_prob = 0.07       # 격주 1회 안팎
+[axis_s.S3]
+owner = true
+measure_prob = 0.90       # 매일
+
+[profile]
+height_mean = { M = 168.0, F = 156.0 }   # assumption(한국 성인 평균 근사)
+height_elderly_offset = -3.0
+height_sd = 6.0
+age_band_range = { "19-29" = [19, 29], "30-49" = [30, 49], "50-64" = [50, 64], "65-74" = [65, 74], "75+" = [75, 84] }
+
+[food]
+unknown_status_rate = 0.03          # meal_food.analysis_status = UNKNOWN (영양소 NULL)
+name_variant_rate = 0.30            # 마스터에 없는 이름 변형 비율
+name_variants = ["(집)", " 한그릇", " 1인분"]
+input_type_share = { PHOTO = 0.60, MANUAL = 0.30, MIXED = 0.10 }   # loop-dev 비율 둥글림
+serving_qty_choices = [0.5, 1.0, 1.5, 2.0]
+serving_qty_weights = [0.10, 0.70, 0.12, 0.08]
+kcal_tolerance = 0.10
+
+# 보정 목표 (명세 §6). value/tol 단위는 지표마다 다름. 생성 기간 마지막 8주에서 재계산한다.
+[[calibration]]
+key = "recorder_share"
+label = "8주 안에 1일 이상 기록한 사용자 비율"
+value = 0.24
+tol = 0.05
+[[calibration]]
+key = "core_recorder_share"
+label = "핵심 기록자(8주 중 6주 이상 주 4일+) 비율"
+value = 0.11
+tol = 0.03
+[[calibration]]
+key = "rec_days_bucket_1_7"
+label = "기록 일수 1-7일 비율(기록자 중)"
+value = 0.30
+tol = 0.06
+[[calibration]]
+key = "rec_days_bucket_48_56"
+label = "기록 일수 48-56일 비율(기록자 중)"
+value = 0.38
+tol = 0.06
+[[calibration]]
+key = "three_main_share"
+label = "기록일 중 주요 끼니 3개 기록 비율"
+value = 0.59
+tol = 0.05
+[[calibration]]
+key = "absent_breakfast"
+label = "기록일의 아침 부재율"
+value = 0.13
+tol = 0.05
+[[calibration]]
+key = "absent_lunch"
+label = "기록일의 점심 부재율"
+value = 0.23
+tol = 0.05
+[[calibration]]
+key = "absent_dinner"
+label = "기록일의 저녁 부재율"
+value = 0.28
+tol = 0.05
+[[calibration]]
+key = "snack_day_share"
+label = "간식 기록이 있는 날 비율"
+value = 0.11
+tol = 0.04
+[[calibration]]
+key = "late_night_share"
+label = "야식(21시 이후·00~04시) 끼니 비율"
+value = 0.11
+tol = 0.03
+[[calibration]]
+key = "full_day_kcal_p50"
+label = "3끼 기록일 하루 열량 중앙값(kcal)"
+value = 1361
+tol = 100
+[[calibration]]
+key = "meal_kcal_breakfast"
+label = "아침 열량 중앙값(kcal)"
+value = 389
+tol = 60
+[[calibration]]
+key = "meal_kcal_lunch"
+label = "점심 열량 중앙값(kcal)"
+value = 494
+tol = 60
+[[calibration]]
+key = "meal_kcal_dinner"
+label = "저녁 열량 중앙값(kcal)"
+value = 424
+tol = 60
+[[calibration]]
+key = "meal_kcal_snack"
+label = "간식 열량 중앙값(kcal)"
+value = 87
+tol = 60
+[[calibration]]
+key = "intake_cv_median"
+label = "사용자 내 하루 열량 변동 계수 중앙값"
+value = 0.25
+tol = 0.04
+[[calibration]]
+key = "intake_bmr_ratio_p50"
+label = "관측 섭취/기초대사량 비율 중앙값(3끼 기록일)"
+value = 1.21
+tol = 0.08
+[[calibration]]
+key = "macro_carb"
+label = "탄수화물 에너지비 중앙값"
+value = 0.60
+tol = 0.04
+[[calibration]]
+key = "macro_protein"
+label = "단백질 에너지비 중앙값"
+value = 0.15
+tol = 0.04
+[[calibration]]
+key = "macro_fat"
+label = "지방 에너지비 중앙값"
+value = 0.23
+tol = 0.04
+[[calibration]]
+key = "heavy_with_burn"
+label = "핵심 기록자 중 소모 열량 보유 (검증 커버리지 위해 의도적 과대 표현)"
+value = 0.17
+tol = 0.30
+[[calibration]]
+key = "complete_week_share"
+label = "핵심 기록자의 식이 4일+ 주 중 완전 비율 (검증 커버리지 위해 의도적 과대 표현)"
+value = 0.20
+tol = 0.30
+[[calibration]]
+key = "burn_p50"
+label = "총 소모 중앙값(kcal)"
+value = 1455
+tol = 80
+[[calibration]]
+key = "burn_cv_median"
+label = "사용자 내 소모 변동 계수 중앙값"
+value = 0.105
+tol = 0.02
+[[calibration]]
+key = "hr_partial_share"
+label = "심박 n_records < 480 일 비율"
+value = 0.40
+tol = 0.08
+[[calibration]]
+key = "heavy_with_scale"
+label = "체중계 보유(핵심 기록자)"
+value = 0.45
+tol = 0.08
+[[calibration]]
+key = "weight_days_median"
+label = "체중 8주 측정일 중앙값(측정자)"
+value = 2
+tol = 1
+[[calibration]]
+key = "weight_sd_median"
+label = "사용자 내 체중 표준편차 중앙값(kg, 20회 이상 측정자)"
+value = 0.54
+tol = 0.15
+[[calibration]]
+key = "arrival_delay_p50"
+label = "소모 도착 지연 중앙값(일)"
+value = 4.4
+tol = 1.0
+[[calibration]]
+key = "arrival_delay_p90"
+label = "소모 도착 지연 90백분위(일)"
+value = 23.5
+tol = 4.0
+[[calibration]]
+key = "elderly_share"
+label = "65세 이상 비율"
+value = 0.58
+tol = 0.05
+[[calibration]]
+key = "bmi23_share"
+label = "BMI 23 이상 비율"
+value = 0.67
+tol = 0.05

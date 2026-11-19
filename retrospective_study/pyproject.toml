@@ -1,0 +1,15 @@
+[project]
+name = "sibc-retrospective-study"
+version = "0.1.0"
+description = "SiBC retrospective studies 01-03: cohort definitions, usable-user lists and analysis code"
+requires-python = ">=3.11"
+dependencies = [
+    "pandas>=2.0",
+    "numpy>=1.26",
+    "openpyxl>=3.1",
+    "scikit-learn>=1.3",
+    "scipy>=1.11",
+]
+
+[tool.uv]
+package = false

@@ -1,0 +1,6 @@
+-- Summary only. Full statements: 00_common/sql/common_extracts.sql (users, login) and 03_irs_risk_rank/sql/irs_extracts.sql.
+-- analysis extracts (2026-11-18/19): users.csv, login.csv, irs.csv (one row per calc with md5 input hashes and hypertension ranks), irs_inputs.csv (medicalRecord/lifestyleLog JSON per seq),
+-- res_*.csv (per seq x disease: IRS/MRS/LRS/PRS values and ranks from raw_data->'Results'). Session: default_transaction_read_only=on, timezone=Asia/Seoul.
+-- input hashes: med_h = md5((raw_data->'medicalRecord')::text); life_h = md5((select jsonb_agg(v order by k) from jsonb_each(raw_data->'lifestyleLog') e(k,v))::text); geno_h = md5((raw_data->'genotypes')::text)
+-- results: select seq, raw_data->>'SEX' sex, d.key disease, d.value->>'IRS' irs_p, d.value->>'MRS' mrs_p, d.value->>'LRS' lrs_p, d.value->>'PRS' prs_p, d.value->>'IRS-rank' irs_r, d.value->>'MRS-rank' mrs_r, d.value->>'LRS-rank' lrs_r, d.value->>'PRS-rank' prs_r from irs.irs_data_log, jsonb_each(raw_data->'Results') d where ...
+-- login: select user_id, customer_id, (login_dt at time zone 'Asia/Seoul')::date d, count(*) n from ichms.auth_user_login_history group by 1,2,3

@@ -1,0 +1,29 @@
+# retrospective_study: this repository is public.
+# Only code, SQL and README/design markdown are tracked here.
+
+# Research documents (protocols, method reports) stay on the local machine only
+*.docx
+*.doc
+*.pdf
+~$*
+**/docs/local/
+
+# User-level data and results (also covered by the repository root .gitignore)
+**/00_Data/*
+!**/00_Data/.gitkeep
+**/01_Results/*
+!**/01_Results/.gitkeep
+
+# Spreadsheets and extracts outside the data folders are never committed
+*.xlsx
+*.xls
+*.csv
+*.pkl
+*.pickle
+*.json
+!**/configs/*.json
+
+# Local DB connection settings
+.env
+.env.*
+!.env.example

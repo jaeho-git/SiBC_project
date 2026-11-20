@@ -25,10 +25,15 @@
 | 10 | [docs/IMPLEMENTATION_NOTES.md](docs/IMPLEMENTATION_NOTES.md) | 구현된 테이블·코드·명령 사용법 | 현행(구현은 방향 전환 전 구조, 확장 예정) |
 | 11 | [docs/survey_and_system_design.md](docs/survey_and_system_design.md) | 설문 최소화 설계(근거 수준, 보완 문항). 전달 방식 부분은 1번 문서로 대체 | 보조 |
 | 12 | [docs/HANDOVER_20261014.md](docs/HANDOVER_20261014.md) | 2026-10-21 방향 전환 전 인수인계. 기준 수치·데이터 자산·작업 규칙은 유효 | 이력 |
-| 13 | [docs/persona_data_spec_20261027.md](docs/persona_data_spec_20261027.md) | 페르소나(합성 사용자) 데이터 명세: 대상 테이블 포맷, 진실·관측 두 층, 기록·값·왜곡·장치 축, 운영 집계 보정 목표, 핵심 24유형·경계 18건, 생성기 구성 | 현행 |
+| 13 | [docs/persona_data_spec_20261027.md](docs/persona_data_spec_20261027.md) | 페르소나(합성 사용자) 데이터 명세: 대상 테이블 포맷, 진실·관측 두 층, 기록·값·왜곡·장치 축, 운영 집계 보정 목표, 핵심 24유형·경계 18건, 생성기 구성. docx `docs/SiBC_식이분석_페르소나데이터_명세_20261027.docx` | 현행 |
 | 14 | [docs/persona_calibration_20261027.md](docs/persona_calibration_20261027.md) | 페르소나 시험 생성의 보정 검사 결과(32개 지표, 합성) | 현행(조회 시점 기록) |
+| 15 | [docs/dietary_record_processing_logic_20261102.md](docs/dietary_record_processing_logic_20261102.md) | **개발자 인수용 처리 로직.** 끼니 입력 1건 → 음식 식별·1인분 환산 → 끼니 행 → 하루 누적 → 행동 층 → 하루 확정 → 습관 층 → 웨어러블 결합의 9단계, 페르소나 생성기 대응표, 수용 기준 | 현안(초안) |
+| 16 | [docs/wearable_persona_generation_logic_20261102.md](docs/wearable_persona_generation_logic_20261102.md) | 웨어러블 페르소나 생성 로직: 실제 경로와 생성 지점, 진실(소모·체중)→관측(착용·부분 착용·기기 편향·도착일) 순서, 지표별 규칙, 미생성 항목과 확장, 수용 기준. docx `docs/SiBC_식이분석_웨어러블_페르소나_생성로직_20261102.docx` | 현행(초안) |
+| 17 | [docs/persona_generation_logic_handover_20261102.md](docs/persona_generation_logic_handover_20261102.md) | **페르소나 생성 로직 통합(개발자 인수).** 입력 자료 5종(식약처 음식 풀·국민건강영양조사 모형·운영 집계 매개변수·공식·유형표)의 출처, 사용자 1명이 만들어지는 32단계, 출력 열별 계보, 새 사용자 추가 절차(`--user-seq-start`, `--append`), 구현 단계별 입력·정답표 대조, 수용 기준 9건. docx `docs/SiBC_식이분석_페르소나_생성로직_통합_개발자인수_20261102.docx` | 현행(초안) |
 
 회의 자료: [docs/advisory_questions_20261026.md](docs/advisory_questions_20261026.md)(식이분석 자문회의 질문지, 설계 비공개 전제) · docx `docs/SiBC_식이분석_자문회의_질문지_20261026.docx`.
+
+개발자 인수 자료: [docs/persona_generation_logic_handover_20261102.md](docs/persona_generation_logic_handover_20261102.md)(생성 로직 통합·출처·추가 생성) · [docs/dietary_record_processing_logic_20261102.md](docs/dietary_record_processing_logic_20261102.md)(식이 처리 순서) · [docs/wearable_persona_generation_logic_20261102.md](docs/wearable_persona_generation_logic_20261102.md)(웨어러블 생성 순서) · docx `docs/SiBC_식이분석_페르소나_생성로직_통합_개발자인수_20261102.docx`, `docs/SiBC_식이분석_식이기록_처리로직_개발자인수_20261102.docx`(md가 원본. `tools/md_to_docx_report.js`로 보고서 서식의 docx 생성, docx npm 패키지 필요).
 
 보고서(docx): `docs/SiBC_식이분석시스템_진행상황보고서_20261021.docx`, `docs/SiBC_식이분석_섭취활동_시간정렬_문헌조사보고서_20261022.docx`,
 `docs/SiBC_식이분석_참조데이터_수집분포보고서_국민건강영양조사_20261026.docx`. 그림 원본은 `docs/figures/`.
@@ -45,7 +50,7 @@
 | 웨어러블 baseline DB | release DB, 2026-10-26 복구, 60일 창 추가로 식이와 창 길이 통일. 새벽 자동 실행은 별도 처리 |
 | 외부 참조 분포 | 국민건강영양조사 2022~2024, 성인 16,106명, 참조 버전 `KNHANES_2022_2024_v1` |
 | 참조 데이터 표준화 | 1인분 환산 완료, 매핑표 1차. 2차는 `meal_food_master` 체계로 진행(매핑 규칙 판단 보류) |
-| 페르소나 데이터 | 생성기 구현 완료(`tools/build_persona_data.py`, 로컬 파일 전용, DB 적재 없음). 보정 32개 지표 통과, 오프라인 테스트 18건. 실제 생성은 지시 시 실행 |
+| 페르소나 데이터 | 생성기 구현 완료(`tools/build_persona_data.py`, 로컬 파일 전용, DB 적재 없음). 2026-11-02 생성분 710명(`01_Results/persona/`, 인분 0.5 단위·UTF-8 BOM). 보정 32개 지표 통과, 오프라인 테스트 19건. 새 사용자 추가는 별도 유형표 + `--user-seq-start` + `--append`(문서 17번) |
 | 다음 작업 | 페르소나 데이터 생성(로컬) → 설계 §8 4단계 행동 층 최소 구현 → 5단계 습관 층 확장과 평가 1차 |
 
 ## 디렉토리 구조

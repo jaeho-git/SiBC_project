@@ -9,6 +9,8 @@ Usage:
 	python tools/build_persona_data.py                       # full set, default seed
 	python tools/build_persona_data.py --codes P01,E01 --max-per-type 2 --out /tmp/x
 	python tools/build_persona_data.py --scale 0.5           # multiply every type's n
+	python tools/build_persona_data.py --types my_types.csv --user-seq-start 711 --append --out 01_Results/persona_add
+	                                                         # add new users next to an existing set (ids continue, SQL appends)
 
 Inputs (all tracked in git):
 	data/persona_params_v1.toml      parameters and calibration targets
@@ -16,7 +18,7 @@ Inputs (all tracked in git):
 	data/persona_food_pool_v1.csv    per-serving foods from the MFDS reference
 	data/knhanes_reference_model.json  expected daily energy (KNHANES_2022_2024_v1 regression)
 
-Outputs (CSV, UTF-8, header row, empty field = NULL):
+Outputs (CSV, UTF-8 with BOM for Excel, header row, empty field = NULL):
 	user_master, meal, meal_food, baseline_lifelog_daily, persona_manifest, persona_truth_daily,
 	load_local.sql (DDL + \\copy for a LOCAL PostgreSQL only), run_info.json
 """
@@ -258,7 +260,8 @@ class Profile:
 
 
 class Generator:
-	def __init__(self, params: dict, pool: Pool, energy: Energy, seed: int, out: Path, run_id: str):
+	def __init__(self, params: dict, pool: Pool, energy: Energy, seed: int, out: Path, run_id: str,
+			user_seq_start: int = 1, append: bool = False):
 		self.p = params
 		self.pool = pool
 		self.energy = energy
@@ -270,7 +273,8 @@ class Generator:
 		self.today: dt.date = params["period"]["today"]
 		self.n_weeks = ((self.end - self.start).days + 1) // 7
 		self.computed_at = dt.datetime.combine(self.today, dt.time(3, 0), tzinfo=KST)
-		self.user_seq = 0
+		self.user_seq = user_seq_start - 1   # first user gets user_seq_start
+		self.append = append
 		self.files = {}
 		self.writers = {}
 		self.counts = {}
@@ -281,7 +285,9 @@ class Generator:
 		for name, cols in (("user_master", USER_MASTER_COLS), ("meal", MEAL_COLS), ("meal_food", MEAL_FOOD_COLS),
 				("baseline_lifelog_daily", BASELINE_COLS), ("persona_manifest", MANIFEST_COLS),
 				("persona_truth_daily", TRUTH_COLS)):
-			f = (self.out / f"{name}.csv").open("w", encoding="utf-8", newline="")
+			# utf-8-sig: BOM lets Excel/Numbers detect UTF-8 so Korean food names display correctly;
+			# csv.DictReader with encoding="utf-8-sig" and psql \copy (header skipped) are unaffected.
+			f = (self.out / f"{name}.csv").open("w", encoding="utf-8-sig", newline="")
 			w = csv.writer(f)
 			w.writerow(cols)
 			self.files[name] = f
@@ -510,17 +516,39 @@ class Generator:
 			slot = rng.choices(("BREAD", "DRINK", "DAIRY"), weights=(0.45, 0.35, 0.20), k=1)[0]
 			main_slot = slot
 			items.append(pool.pick(rng, slot, bias if bias == "sugar" else None))
-		qty = [1.0] * len(items)
-		tol = self.p["food"]["kcal_tolerance"]
-		main_i = next(i for i, f in enumerate(items) if f.slot == main_slot)
-		others = sum(f.kcal * q for i, (f, q) in enumerate(zip(items, qty)) if i != main_i)
-		if items[main_i].kcal > 0:
-			q = (target - others) / items[main_i].kcal
-			qty[main_i] = min(3.0, max(0.25, round(q * 4) / 4))
-		total = sum(f.kcal * q for f, q in zip(items, qty))
-		if total > 0 and abs(total - target) / target > tol:
-			s = target / total
-			qty = [max(0.25, round(q * s * 4) / 4) for q in qty]
+		fp = self.p["food"]
+		step, q_min, q_max = fp["serving_qty_step"], fp["serving_qty_min"], fp["serving_qty_max"]
+		def snap(q: float) -> float:
+			return min(q_max, max(q_min, round(q / step) * step))
+		tol = fp["kcal_tolerance"]
+
+		def fit(items_: list[Food]) -> tuple[list[float], float]:
+			qty_ = [1.0] * len(items_)
+			mi = next(i for i, f in enumerate(items_) if f.slot == main_slot)
+			others = sum(f.kcal for i, f in enumerate(items_) if i != mi)
+			if items_[mi].kcal > 0:
+				qty_[mi] = snap((target - others) / items_[mi].kcal)
+			tot = sum(f.kcal * q for f, q in zip(items_, qty_))
+			if tot > 0 and abs(tot - target) / target > tol:
+				s = target / tot
+				qty_ = [snap(q * s) for q in qty_]
+				tot = sum(f.kcal * q for f, q in zip(items_, qty_))
+			return qty_, tot
+
+		# With 0.5-serving granularity a small target cannot be met by shrinking portions alone:
+		# drop side dishes (never the main item) until the total is within tolerance or one item is left.
+		qty, total = fit(items)
+		while total > target * (1 + tol) and len(items) > 1:
+			drop = max((i for i, f in enumerate(items) if f.slot != main_slot), key=lambda i: items[i].kcal, default=None)
+			if drop is None:
+				break
+			items.pop(drop)
+			qty, total = fit(items)
+		# Conversely a large target (e.g. a 1,300 kcal meal) needs more dishes once the main item is capped at 3 servings.
+		extra_slot = "SIDE" if meal_type in MAIN else rng.choice(("BREAD", "DAIRY"))
+		while total < target * (1 - tol) and len(items) < 7:
+			items.append(pool.pick(rng, extra_slot, bias))
+			qty, total = fit(items)
 		return list(zip(items, qty))
 
 	# ---- per-user simulation
@@ -819,10 +847,15 @@ class Generator:
 	# ---- local SQL
 	def write_sql(self):
 		schema = "sibc_persona"
-		ddl = f"""-- 로컬 PostgreSQL 전용 적재 스크립트 (persona generator {self.p['meta']['version']}, run {self.run_id}).
+		head = f"""-- 로컬 PostgreSQL 전용 적재 스크립트 (persona generator {self.p['meta']['version']}, run {self.run_id}).
 -- 공유 DB(loop-dev, release)에는 실행하지 않는다. psql -h localhost -f load_local.sql
 create schema if not exists {schema};
-drop table if exists {schema}.user_master, {schema}.meal, {schema}.meal_food, {schema}.baseline_lifelog_daily,
+"""
+		if self.append:
+			# 추가 생성분: 기존 테이블을 지우지 않고 행만 덧붙인다 (user_id는 --user-seq-start 로 이어 붙인 값이어야 한다)
+			ddl = head + "-- append 모드: 기존 sibc_persona 테이블에 행을 추가한다. DDL 없음.\n"
+		else:
+			ddl = head + f"""drop table if exists {schema}.user_master, {schema}.meal, {schema}.meal_food, {schema}.baseline_lifelog_daily,
 	{schema}.persona_manifest, {schema}.persona_truth_daily;
 create table {schema}.user_master (user_id uuid primary key, user_nm varchar, age integer, sex varchar, weight integer,
 	height integer, joined_dt date, created_at timestamptz, updated_at timestamptz);
@@ -849,13 +882,14 @@ create table {schema}.persona_truth_daily ({', '.join(c + ' text' for c in TRUTH
 # ----------------------------------------------------------------------------- main
 
 def run(params_path: Path, types_path: Path, pool_path: Path, model_path: Path, out: Path, seed: int,
-		codes: set[str] | None, scale: float, max_per_type: int | None) -> dict:
+		codes: set[str] | None, scale: float, max_per_type: int | None,
+		user_seq_start: int = 1, append: bool = False) -> dict:
 	params = tomllib.loads(params_path.read_text(encoding="utf-8"))
 	types = load_types(types_path)
 	pool = Pool(pool_path)
 	energy = Energy(model_path)
 	run_id = f"persona_{params['meta']['version'].rsplit('-', 1)[-1]}_seed{seed}"
-	g = Generator(params, pool, energy, seed, out, run_id)
+	g = Generator(params, pool, energy, seed, out, run_id, user_seq_start=user_seq_start, append=append)
 	g.open()
 	n_users = 0
 	try:
@@ -872,6 +906,8 @@ def run(params_path: Path, types_path: Path, pool_path: Path, model_path: Path, 
 		g.close()
 	g.write_sql()
 	info = {"version": params["meta"]["version"], "run_id": run_id, "seed": seed, "users": n_users,
+		"user_seq_start": user_seq_start, "user_seq_end": g.user_seq, "append": append,
+		"types_file": str(types_path), "params_file": str(params_path), "pool_file": str(pool_path),
 		"period": {"start": g.start.isoformat(), "end": g.end.isoformat(), "today": g.today.isoformat(), "weeks": g.n_weeks},
 		"rows": g.counts, "note": "synthetic persona data; local files only; never load into shared databases"}
 	(out / "run_info.json").write_text(json.dumps(info, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -889,9 +925,14 @@ def main() -> None:
 	ap.add_argument("--codes", help="comma-separated persona codes to generate (default: all)")
 	ap.add_argument("--scale", type=float, default=1.0, help="multiply every type's n")
 	ap.add_argument("--max-per-type", type=int, default=None)
+	ap.add_argument("--user-seq-start", type=int, default=1,
+		help="first user_id serial (12-digit suffix). Use last serial of an existing set + 1 when adding users")
+	ap.add_argument("--append", action="store_true",
+		help="write load_local.sql without DDL so the rows append to an existing local sibc_persona schema")
 	args = ap.parse_args()
 	codes = {c.strip() for c in args.codes.split(",")} if args.codes else None
-	info = run(args.params, args.types, args.pool, args.model, args.out, args.seed, codes, args.scale, args.max_per_type)
+	info = run(args.params, args.types, args.pool, args.model, args.out, args.seed, codes, args.scale, args.max_per_type,
+		user_seq_start=args.user_seq_start, append=args.append)
 	print(json.dumps(info, ensure_ascii=False, indent=2))
 
 

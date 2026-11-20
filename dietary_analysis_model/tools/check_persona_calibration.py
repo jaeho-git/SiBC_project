@@ -45,7 +45,7 @@ def mifflin(sex, w, h, age):
 
 
 def read(dir_: Path, name: str):
-	with (dir_ / f"{name}.csv").open(encoding="utf-8", newline="") as f:
+	with (dir_ / f"{name}.csv").open(encoding="utf-8-sig", newline="") as f:
 		return list(csv.DictReader(f))
 
 
@@ -308,6 +308,8 @@ def main() -> None:
 	ap.add_argument("--dir", type=Path, default=ROOT / "01_Results" / "persona")
 	ap.add_argument("--params", type=Path, default=ROOT / "data" / "persona_params_v1.toml")
 	ap.add_argument("--write-summary", type=Path, default=None)
+	ap.add_argument("--integrity-only", action="store_true",
+		help="exit code reflects integrity problems only (for small ad-hoc sets whose aggregates cannot match calibration targets)")
 	args = ap.parse_args()
 	params = tomllib.loads(args.params.read_text(encoding="utf-8"))
 	result, problems = compute_metrics(args.dir, params)
@@ -316,7 +318,7 @@ def main() -> None:
 	print(text)
 	if args.write_summary:
 		args.write_summary.write_text(text, encoding="utf-8")
-	failed = [r for r in rows if not r[5]]
+	failed = [] if args.integrity_only else [r for r in rows if not r[5]]
 	raise SystemExit(1 if failed or problems else 0)
 
 

@@ -257,9 +257,10 @@ unknown_status_rate = 0.03          # meal_food.analysis_status = UNKNOWN (영�
 name_variant_rate = 0.30            # 마스터에 없는 이름 변형 비율
 name_variants = ["(집)", " 한그릇", " 1인분"]
 input_type_share = { PHOTO = 0.60, MANUAL = 0.30, MIXED = 0.10 }   # loop-dev 비율 둥글림
-serving_qty_choices = [0.5, 1.0, 1.5, 2.0]
-serving_qty_weights = [0.10, 0.70, 0.12, 0.08]
-kcal_tolerance = 0.10
+serving_qty_step = 0.5              # 인분 수는 0.5 단위 (2026-11-02 결정)
+serving_qty_min = 0.5
+serving_qty_max = 3.0               # 상한 3인분
+kcal_tolerance = 0.10               # 끼니 목표 열량과 음식 합의 허용 오차. 0.5 단위 때문에 벗어나는 끼니는 그대로 둔다(합 = 음식 합은 항상 성립)
 
 # 보정 목표 (명세 §6). value/tol 단위는 지표마다 다름. 생성 기간 마지막 8주에서 재계산한다.
 [[calibration]]

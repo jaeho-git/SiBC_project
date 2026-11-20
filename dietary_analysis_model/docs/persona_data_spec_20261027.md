@@ -10,6 +10,10 @@
 
 ## 0. 목적과 경계
 
+### 핵심 결론
+
+> 실제 기록이 충분히 쌓이기 전에 식이분석의 행동 층·습관 층·웨어러블 결합·맥락 층을 끝까지 구현하고 검증하기 위해, **우리가 쓰는 테이블 포맷 그대로** 710명의 합성 사용자(핵심 24유형 94명, 가벼운·간헐 기록자 76명, 비기록자 520명, 경계 사례 20명)를 210일(2026-03-30~10-25) 분량으로 만든다. 사용자마다 **진짜 섭취·소모·체중(진실 층)**을 먼저 만들고 그 위에 기록 누락·과소보고·미착용·수신 지연(관측 층)을 씌우므로, 미기록과 결식, 미착용과 비활동을 구분하는 규칙을 정답 대비로 시험할 수 있다. 수치는 운영 DB 집계(2026-10-27 조회), 국민건강영양조사 참조, KDRIs, 문헌에서 가져오고 보정 목표 32개를 자동 검사한다. 산출물은 **로컬 파일로만** 두고 공유 DB에는 적재하지 않으며, 임계값 확정·거짓 알람률·행동 변화 효과는 페르소나로 측정하지 않는다.
+
 ### 0.1 왜 만드는가
 
 loop-dev의 식이 기록(17명, 104끼니)으로는 7/14/30/60/180일 창, 재계산, 조건표 6종, 창 상태 3종을 한 번도 끝까지 밟을 수 없다.
@@ -68,7 +72,7 @@ release DB에는 기록이 있지만 운영 데이터이므로 읽기만 하고,
 | `meal.status` | COMPLETED 기본. 결식 표시 페르소나(§4 A10)는 해당 끼니를 `SKIPPED` 행(영양소 NULL, `meal_food` 없음)으로 남긴다. DRAFT는 관측 왜곡 C에서 소수 생성 |
 | `meal.input_type` / `meal_food.source` | PHOTO 60 / MANUAL 30 / MIXED 10 %(loop-dev 비율을 둥글린 값). `meal_food.source`는 PHOTO / MANUAL / MY_FOOD |
 | `meal.edits_meal_id` | 수정 기록 페르소나(§4 A9)에서 원본 행을 가리킴. 원본은 남기고 수정본이 유효 |
-| `meal_food.serving_qty` | {0.5, 1, 1.5, 2} 중 선택(1이 70%) |
+| `meal_food.serving_qty` | 0.5 단위, 0.5~3.0 (끼니 목표 열량에 맞춰 조정, 2026-11-02 결정) |
 | `meal_food.analysis_status` | DONE 기본. UNKNOWN 3%(영양소 NULL) |
 | 영양소 21열 | `meal_food` = 참조 1인분 값 × `serving_qty` (관측 왜곡 적용 후). `meal` = 같은 끼니 `meal_food` 합. **합이 맞지 않는 행은 만들지 않는다** |
 | `provided_at`, `provided_timezone`, `created_at` | `eaten_at` + 기록 지연(§3.3), `Asia/Seoul` |
@@ -131,7 +135,7 @@ release DB에는 기록이 있지만 운영 데이터이므로 읽기만 하고,
 3. **끼니 배분**: 남은 끼니에 §3.2 비율로 배분하고 간식은 `snack_share`로 분리.
 4. **영양소 구성**: 끼니 열량을 다량영양소 비율(§3.1)로 나누고, 그 비율에 맞는 음식 1~5개를 참조표(§3.4)에서 골라 `serving_qty`를 정한 뒤 **음식 합이 끼니 열량과 ±10% 안에서 맞도록** 마지막 음식 양을 조정한다. 미량영양소는 음식에서 따라온다.
 5. **진짜 소모** = 기초대사량 × PAL × exp(N(0, 0.10)) (+ 운동 세션 열량).
-6. **진짜 체중**: 전날 체중 + (섭취 − 소모) / 7,700 × 0.5(§3.5). 
+6. **진짜 체중**: 전날 체중 + (섭취 − 소모) / 7,700 × 0.3(§3.5). 
 7. **관측**: A축으로 그날·그 끼니를 기록할지 정하고, C축으로 열량·간식을 깎고, D축으로 착용·부분 착용·체중 측정 여부와 수신 지연을 정한다.
 8. 출력 테이블에 쓰고, 진실은 `persona_truth_daily`에 쓴다.
 
@@ -182,7 +186,7 @@ release DB에는 기록이 있지만 운영 데이터이므로 읽기만 하고,
 | 음식 풀 | 1인분 환산표 `01_Results/food_nutrient_reference_per_serving.csv`의 **음식·산출** 3,140건(미량영양소 100 % 보유)과 매핑표 `data/food_code_map.csv`의 앱 음식명 | `food_reference.md` §1·§7 |
 | 끼니 유형별 풀 | 아침: 밥류·국류·죽·빵·우유, 점심·저녁: 밥·국·찌개·구이·볶음·나물·면류·일품, 간식: 과일·유제품·떡·빵·음료 | 식약처 분류(대·중) |
 | 음식명 | `food_name` = 참조 식품명, `food_name_norm` = 매핑표 정규화 규칙 적용 | 마스터 연결률 테스트에 쓰려면 70 %는 마스터에 있는 이름, 30 %는 없는 이름 |
-| 양 조정 | 끼니 진실 열량에 맞게 마지막 음식의 `serving_qty`를 0.5 단위로 조정, 오차 ±10 % 허용 | — |
+| 양 조정 | 끼니 목표 열량에 맞게 주식(또는 간식 1품)의 `serving_qty`를 0.5 단위·0.5~3.0 범위에서 조정하고, 오차가 ±10 %를 넘으면 전 품목을 같은 범위에서 비례 조정. 그래도 ±10 %를 넘으면 반찬을 빼거나(초과) 더해(미달, 최대 7품) 다시 맞춤. 남는 오차는 그대로 둠(`meal` 합 = 음식 합은 항상 성립) | 2026-11-02: 0.25 단위·상한 없음에서 변경(0.25인분 10 %, 사탕 6.5인분 같은 비현실 값 제거) |
 
 ### 3.5 소모와 체중
 
@@ -433,7 +437,7 @@ P12·P16은 웨어러블을 두지 않고(야식·가이드라인 시험에 불�
 | 매개변수 | `data/persona_params_v1.toml` | §3~§5의 모든 수치와 §6 보정 목표. 항목마다 주석으로 `measured`(운영 집계·문헌) / `assumption`(관측 목표 적합용 가정) 구분 |
 | 페르소나 유형 | `data/persona_types_v1.csv` | §7의 표 그대로(코드, 축, 프로필 구간, n, 경계 페르소나의 `overrides` JSON). 축 열은 `W0:0.52\|W1:0.24\|W2:0.24`처럼 세로줄로 혼합 비율을 쓸 수 있다 |
 | 음식 풀 | `data/persona_food_pool_v1.csv` ← `tools/build_persona_food_pool.py` | 1인분 환산표(`01_Results/…_per_serving.csv`, git 제외)에서 FULL 등급·품질 플래그 없음·열량 범위 안의 음식 260종을 슬롯(주식·면·국·반찬·김치·빵·음료·유제품)별로 결정적 추출. 집계된 공개 참조값만 담으므로 git에 둔다 |
-| 생성기 | `tools/build_persona_data.py` | 시드 고정, 표준 라이브러리만 사용. **DB 접속 코드 없음**(psycopg2 미사용, 환경 변수 미참조). 출력: `01_Results/persona/{user_master,meal,meal_food,baseline_lifelog_daily,persona_manifest,persona_truth_daily}.csv`, `load_local.sql`(로컬 PostgreSQL 전용), `run_info.json`. 옵션 `--out --seed --codes --scale --max-per-type` |
+| 생성기 | `tools/build_persona_data.py` | 시드 고정, 표준 라이브러리만 사용. **DB 접속 코드 없음**(psycopg2 미사용, 환경 변수 미참조). 출력: `01_Results/persona/{user_master,meal,meal_food,baseline_lifelog_daily,persona_manifest,persona_truth_daily}.csv`, `load_local.sql`(로컬 PostgreSQL 전용), `run_info.json`. 옵션 `--out --seed --codes --scale --max-per-type`, 추가 생성용 `--user-seq-start --append`(2026-11-02) |
 | 보정·정합성 검사 | `tools/check_persona_calibration.py` | §6 표를 생성 데이터에서 재계산해 통과/실패 보고(실패 시 종료 코드 1). 정합성: `meal` = Σ `meal_food`, `ymd` = `eaten_at` KST 날짜, SKIPPED·DRAFT 행에 영양소·음식 없음, 미착용일 기기 행 없음, 부분 착용 플래그와 `n_records < 480` 일치, UUID 접두어, manifest 일치. `--write-summary`로 요약 md 저장 |
 | 오프라인 테스트 | `tests/test_persona_generator.py` | 소규모 결정적 생성(17유형 × 최대 2명)으로 구조·정합성·경계 페르소나 동작(E01·E02·E08·E09·E10·E11·E13·E14·E16·E17)·체중 동역학·재현성 18건. DB 없이 2초 |
 
@@ -481,3 +485,5 @@ uv run --extra dev pytest tests/test_persona_generator.py
 |---|---|
 | 2026-10-27 | 초안. 목적·경계, 대상 테이블 포맷, 진실·관측 두 층 구조, 축 A/B/C/D 정의, 보정 목표표(release DB 집계 2026-10-27), 핵심 24유형·경계 18건, 기간 210일, 생성기 구성, 확인 사항 7건 |
 | 2026-10-27 | 생성기 구현(로컬 파일 전용, DB 적재 없음). 진실 섭취 기준을 에너지 균형으로 변경, 전 끼니 기록일 65 %·늦은 시각 기록 22 %·기기 체계 편향 0.87·감쇠 0.3 추가, A11 가벼운 시험 사용자와 P25·P26·P00 집단 추가, 유형별 n 조정(710명). 보정 32개 지표 통과, 오프라인 테스트 18건 |
+| 2026-11-02 | 인분 수를 0.5 단위·0.5~3.0으로 제한하고 재생성. CSV를 UTF-8 BOM으로 저장(Excel 한글 표시) |
+| 2026-11-02 | 새 사용자 추가 생성 옵션 `--user-seq-start`(일련번호 이어 붙임)·`--append`(적재 SQL에 DDL 없음), 검사기 `--integrity-only`. 입력 자료 출처·사용자 1명 생성 순서·출력 열 계보·추가 절차는 [persona_generation_logic_handover_20261102.md](persona_generation_logic_handover_20261102.md) |

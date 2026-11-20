@@ -35,7 +35,7 @@ chk = _load("check_persona_calibration")
 
 
 def _read(d: Path, name: str):
-	with (d / f"{name}.csv").open(encoding="utf-8", newline="") as f:
+	with (d / f"{name}.csv").open(encoding="utf-8-sig", newline="") as f:
 		return list(csv.DictReader(f))
 
 
@@ -67,6 +67,7 @@ def test_outputs_exist_and_no_db_code(out):
 	for n in ("user_master", "meal", "meal_food", "baseline_lifelog_daily", "persona_manifest", "persona_truth_daily"):
 		assert (out / f"{n}.csv").exists()
 	assert (out / "load_local.sql").exists() and (out / "run_info.json").exists()
+	assert (out / "meal_food.csv").read_bytes()[:3] == b"\xef\xbb\xbf"  # UTF-8 BOM so spreadsheets show Korean
 	src = (ROOT / "tools/build_persona_data.py").read_text(encoding="utf-8")
 	for forbidden in ("import psycopg2", "os.environ", "getenv", ".connect("):
 		assert forbidden not in src
@@ -268,3 +269,27 @@ def test_generation_is_deterministic(tmp_path):
 		h1 = hashlib.sha256((d1 / f"{n}.csv").read_bytes()).hexdigest()
 		h2 = hashlib.sha256((d2 / f"{n}.csv").read_bytes()).hexdigest()
 		assert h1 == h2, n
+
+
+def test_add_users_continue_ids_and_append_sql(tmp_path):
+	"""개별 사용자 추가 생성: 사용자 정의 유형표 1행, user_id 일련번호 이어 붙임, append SQL에 DDL 없음."""
+	types = tmp_path / "types_new.csv"
+	header = (ROOT / "data/persona_types_v1.csv").read_text(encoding="utf-8").splitlines()[0]
+	types.write_text(header + "\n" + 'N01,신규 사용자,F,65-74,24.0,26.0,A1,B1,C1,W2,S2,,ios,1,'
+		'"{""profile"": {""height_cm"": 156, ""weight_kg"": 62}}"\n', encoding="utf-8")
+	out = tmp_path / "add"
+	info = gen.run(ROOT / "data/persona_params_v1.toml", types, ROOT / "data/persona_food_pool_v1.csv",
+		ROOT / "data/knhanes_reference_model.json", out, 7, None, 1.0, None, user_seq_start=711, append=True)
+	assert info["users"] == 1 and info["user_seq_start"] == 711 and info["user_seq_end"] == 711
+	manifest = _read(out, "persona_manifest")
+	assert manifest[0]["user_id"].endswith("000000000711")
+	assert manifest[0]["height_cm"] == "156" and manifest[0]["weight_kg_start"] == "62"
+	sql = (out / "load_local.sql").read_text(encoding="utf-8")
+	assert "drop table" not in sql and "create table" not in sql
+	assert sql.count("\\copy sibc_persona.") == 6
+	# default mode keeps the DDL
+	out2 = tmp_path / "fresh"
+	gen.run(ROOT / "data/persona_params_v1.toml", types, ROOT / "data/persona_food_pool_v1.csv",
+		ROOT / "data/knhanes_reference_model.json", out2, 7, None, 1.0, None)
+	assert "create table" in (out2 / "load_local.sql").read_text(encoding="utf-8")
+	assert _read(out2, "persona_manifest")[0]["user_id"].endswith("000000000001")

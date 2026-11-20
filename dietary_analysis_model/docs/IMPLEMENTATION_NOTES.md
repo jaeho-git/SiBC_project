@@ -155,7 +155,9 @@ python tools/build_persona_food_pool.py                 # 1인분 환산표에�
 python tools/build_persona_data.py                      # 01_Results/persona/ 에 CSV 생성. 지시가 있을 때만 실행
 python tools/build_persona_data.py --codes P01,E01 --max-per-type 2 --out /path/to/tmp   # 소규모 시험
 python tools/check_persona_calibration.py               # 보정 목표 32개·정합성 검사 (실패 시 종료 코드 1)
+python tools/build_persona_data.py --types types_new.csv --user-seq-start 711 --append --out 01_Results/persona_add   # 새 사용자 추가 생성(번호 이어 붙임, SQL은 행 추가만)
+python tools/check_persona_calibration.py --dir 01_Results/persona_add --integrity-only   # 소수 추가분은 정합성만 검사
 uv run --extra dev pytest tests/test_persona_generator.py
 ```
 
-생성기는 DB에 접속하지 않으며, 생성 데이터는 loop-dev·release DB에 적재하지 않는다. 로컬 PostgreSQL에서 식이분석 코드를 돌려 볼 때만 `01_Results/persona/load_local.sql`을 로컬 DB에 실행한다.
+생성기는 DB에 접속하지 않으며, 생성 데이터는 loop-dev·release DB에 적재하지 않는다. 입력 자료의 출처와 새 사용자 추가 절차는 `docs/persona_generation_logic_handover_20261102.md`. 로컬 PostgreSQL에서 식이분석 코드를 돌려 볼 때만 `01_Results/persona/load_local.sql`을 로컬 DB에 실행한다.

@@ -27,4 +27,4 @@
 | `00_Data/extract_20261120/` | 같은 추출문으로 2026-11-20에 다시 뽑은 파일 | 올리지 않음 |
 | `docs/local/` | N 집계 문서, 연구계획서 원고 소스(`protocol_src/`), DB 작업 결과(2026-11-20) | 올리지 않음 |
 
-연구계획서 docx는 `protocol_src/`에서 `python3 build.py`로 다시 만듭니다(docx 모듈은 `medical_checkup_model/node_modules`).
+연구계획서 docx는 `protocol_src/`에서 다시 만듭니다. 2026-11-18 판은 `python3 build.py`, 2026-11-20 개정판은 `python3 build_r.py`입니다(docx 모듈은 `medical_checkup_model/node_modules`).

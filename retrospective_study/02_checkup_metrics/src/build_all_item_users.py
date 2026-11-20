@@ -11,7 +11,7 @@ version-3 extract cut at the same cutoff. For another cutoff pass --data-dir, --
 
 Rules
 - Exam date = measuredDt (YYYY-MM-DD); exams after the cutoff are ignored.
-- Items: 21 items (blood pressure gives two columns). Fields recorded under two names are merged into one item
+- Items: 22 items (systolic and diastolic blood pressure count as separate items). Fields recorded under two names are merged into one item
   (systolic/diastolic or "nnn/nn" blood pressure, both fasting-glucose names, both creatinine names, both urine-protein
   names, both chest-finding names). Rare fields (osteoporosis, BUN, haematocrit, platelets) are not used.
 - Same user x exam date x item more than once: keep the most recently inserted entry (ins_ts, health_sn, elem_no,

@@ -13,9 +13,14 @@ usage: RETRO_DB_ENV=<env file> python3 00_common/src/run_extract.py <sql file> <
   temporary file in the output folder, which is published with a hard link only when the query succeeds (the link
   fails if the output appeared meanwhile) and is always removed afterwards.
 - Prints the number of data records to stderr. Counts are not written anywhere else.
+- --forbid-scan TABLE (repeatable): before extracting, run EXPLAIN (FORMAT JSON) on the block and refuse unless every
+  plan node that reads TABLE is an Index Scan or Index Only Scan (a plan that never reads TABLE is refused too).
+  Inherited or partitioned tables are refused. Use it for blocks that must stay on an index of a very large table
+  (for example heartrate_days).
 """
 import argparse
 import csv
+import json
 import os
 import re
 import subprocess
@@ -83,12 +88,64 @@ def strip_semicolon(body):
 	return body
 
 
+def _psql_lines(out):
+	"""Data lines of psql aligned output (between the dashed header rule and the row-count footer)."""
+	lines = out.split("\n")
+	k = next((n for n, ln in enumerate(lines) if re.match(r"^-+(\+-+)*$", ln.strip())), None)
+	if k is None:
+		return []
+	data = []
+	for ln in lines[k + 1:]:
+		if re.match(r"^\(\d+ rows?\)$", ln.strip()):
+			break
+		data.append(ln)
+	return data
+
+
+def _plan_nodes(node):
+	yield node
+	for child in node.get("Plans", []):  # includes InitPlan / SubPlan children
+		yield from _plan_nodes(child)
+
+
+def check_plan(body, rel):
+	"""Refuse unless every access to table rel in the EXPLAIN (FORMAT JSON) plan is an index scan.
+	Inherited or partitioned tables are refused, because their plans name the child tables instead."""
+	if not re.match(r"^\w+$", rel):
+		sys.exit(f"refused: {rel!r} is not a plain table name")
+	q = (f"select (select count(*) from pg_inherits i join pg_class c on c.oid in (i.inhparent, i.inhrelid) "
+		 f"where c.relname = '{rel}') + (select count(*) from pg_class where relname = '{rel}' and relkind = 'p') n")
+	r = subprocess.run([DB_QUERY, q], capture_output=True, text=True)
+	vals = [ln.strip() for ln in _psql_lines(r.stdout) if ln.strip()]
+	if r.returncode != 0 or len(vals) != 1 or not vals[0].isdigit():
+		sys.exit(f"plan check failed: could not read the inheritance check for {rel}")
+	if int(vals[0]):
+		sys.exit(f"refused: {rel} is inherited or partitioned; --forbid-scan supports plain tables only")
+	r = subprocess.run([DB_QUERY, "explain (format json)\n" + body], capture_output=True, text=True)
+	if r.returncode != 0:
+		sys.exit(f"plan check failed (exit {r.returncode}): {r.stderr.strip()[-300:]}")
+	text = "\n".join(ln.rstrip()[:-1] if ln.rstrip().endswith("+") else ln for ln in _psql_lines(r.stdout))
+	try:
+		plans = json.loads(text)
+	except ValueError:
+		sys.exit("plan check failed: could not parse the JSON plan")
+	nodes = [n for p in plans for n in _plan_nodes(p["Plan"])]
+	hits = [n for n in nodes if n.get("Relation Name") == rel]
+	if not hits:
+		sys.exit(f"refused: the plan does not read table {rel}; check the table name")
+	bad = sorted({n["Node Type"] for n in hits if n["Node Type"] not in ("Index Only Scan", "Index Scan")})
+	if bad:
+		sys.exit(f"refused: the plan reads {rel} by {', '.join(bad)}; nothing extracted")
+	print(f"plan check: {rel} is read only by index scans ({len(hits)} plan nodes)", file=sys.stderr)
+
+
 def main():
 	ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
 	ap.add_argument("sql_file")
 	ap.add_argument("name")
 	ap.add_argument("out")
 	ap.add_argument("--list", action="append", default=[], metavar="KEY=FILE")
+	ap.add_argument("--forbid-scan", action="append", default=[], metavar="TABLE")
 	a = ap.parse_args()
 	if os.path.lexists(a.out):
 		sys.exit(f"refused: {a.out} already exists (extracts are never overwritten)")
@@ -102,6 +159,8 @@ def main():
 	left = re.findall(r"\{\{(\w+)\}\}", body)
 	if left:
 		sys.exit("missing --list for: " + ", ".join(sorted(set(left))))
+	for rel in a.forbid_scan:
+		check_plan(body, rel)
 	sql = f"copy (\n{body}\n) to stdout csv header"
 	out_dir = os.path.dirname(os.path.abspath(a.out))
 	os.makedirs(out_dir, exist_ok=True)

@@ -77,3 +77,81 @@ select i.user_id, (s.measured_dt at time zone 'Asia/Seoul')::date d, i.measure_p
 from discovery.disc_lifelog_user_step s join discovery.disc_lifelog_user_info i using (user_lifelog_sn)
 group by 1, 2, 3, 4, 5;
 -- @end
+
+-- Indicator extracts added 2026-11-20 (study 01 covers every wearable indicator). User x KST day aggregates only.
+
+-- @extract activity
+-- activity.csv: user x day (session start) exercise sessions and minutes
+select i.user_id, (coalesce(a.measured_start_dt, a.measured_dt) at time zone 'Asia/Seoul')::date d, min(i.measure_platform) plat,
+       count(*) n_sessions, sum(extract(epoch from a.measured_end_dt - a.measured_start_dt)) / 60 mins
+from discovery.disc_lifelog_user_activity a join discovery.disc_lifelog_user_info i using (user_lifelog_sn)
+group by 1, 2;
+-- @end
+
+-- @extract oxygen_saturation
+-- oxygen_saturation.csv: user x day mean SpO2 and number of readings
+select i.user_id, (o.measured_dt at time zone 'Asia/Seoul')::date d, min(i.measure_platform) plat,
+       avg(o.oxygen_saturation) spo2, count(*) n
+from discovery.disc_lifelog_user_oxygen_saturation o join discovery.disc_lifelog_user_info i using (user_lifelog_sn)
+group by 1, 2;
+-- @end
+
+-- @extract calories
+-- calories.csv: user x day calorie records (total and active burned; daily value rule is fixed in the analysis plan)
+select i.user_id, (c.measured_dt at time zone 'Asia/Seoul')::date d, min(i.measure_platform) plat,
+       sum(c.total_calories_burned) total_kcal, sum(c.active_calories_burned) active_kcal, max(c.total_calories_burned) max_total_kcal, count(*) n
+from discovery.disc_lifelog_user_calories c join discovery.disc_lifelog_user_info i using (user_lifelog_sn)
+group by 1, 2;
+-- @end
+
+-- @extract bodyfat
+-- bodyfat.csv: user x day x platform x device mean body composition
+select i.user_id, (b.measured_dt at time zone 'Asia/Seoul')::date d, i.measure_platform plat, i.measure_device_type dev,
+       avg(b.body_fat_percentage) fat_pct, avg(b.body_fat_mass) fat_mass, avg(b.skeletal_muscle_mass) muscle_mass, count(*) n
+from discovery.disc_lifelog_user_bodyfat b join discovery.disc_lifelog_user_info i using (user_lifelog_sn)
+group by 1, 2, 3, 4;
+-- @end
+
+-- @extract grip_strength
+-- grip_strength.csv: user x day x platform x device mean of the stronger hand
+select i.user_id, (g.measured_dt at time zone 'Asia/Seoul')::date d, i.measure_platform plat, i.measure_device_type dev,
+       avg(greatest(g.left_hand_grip_strength, g.right_hand_grip_strength)) grip, count(*) n
+from discovery.disc_lifelog_user_grip_strength g join discovery.disc_lifelog_user_info i using (user_lifelog_sn)
+group by 1, 2, 3, 4;
+-- @end
+
+-- @extract heartrate_days
+-- heartrate_days.csv: user x KST day on which at least one heart-rate record exists (presence only).
+-- The heart-rate table is very large, so this block is written to use only the (user_lifelog_sn, measured_dt) index:
+-- distinct batches by a recursive skip scan (a LATERAL ... LIMIT 1 step, so every access shows up as a plan node),
+-- their first/last time, then one LIMIT 1 probe per day (a LIMIT subquery is not flattened into a join). The plan is still the planner's choice, so always run it with
+--   run_extract.py ... heartrate_days <out> --forbid-scan disc_lifelog_user_heartrate
+-- which runs EXPLAIN first and refuses to extract unless every access to the table is an index scan. The check is a
+-- preflight: the extraction is planned again when it runs, so run both together in one command as above.
+-- Daily heart-rate values need a full scan and are left for a separately cleared extract.
+with recursive sns as (
+  (select h.user_lifelog_sn sn from discovery.disc_lifelog_user_heartrate h order by h.user_lifelog_sn limit 1)
+  union all
+  select n.sn
+  from sns s
+  cross join lateral (select h.user_lifelog_sn sn from discovery.disc_lifelog_user_heartrate h
+                      where h.user_lifelog_sn > s.sn order by h.user_lifelog_sn limit 1) n
+),
+b as (
+  select s.sn,
+         (select h.measured_dt from discovery.disc_lifelog_user_heartrate h
+          where h.user_lifelog_sn = s.sn and h.measured_dt is not null order by h.measured_dt limit 1) mn,
+         (select h.measured_dt from discovery.disc_lifelog_user_heartrate h
+          where h.user_lifelog_sn = s.sn and h.measured_dt is not null order by h.measured_dt desc limit 1) mx
+  from sns s
+)
+select i.user_id, x.kday d, min(i.measure_platform) plat
+from b join discovery.disc_lifelog_user_info i on i.user_lifelog_sn = b.sn
+cross join lateral (select g::date as kday from generate_series((b.mn at time zone 'Asia/Seoul')::date, (b.mx at time zone 'Asia/Seoul')::date, interval '1 day') g) x
+where (select 1 from discovery.disc_lifelog_user_heartrate h
+       where h.user_lifelog_sn = b.sn
+         and h.measured_dt >= (x.kday::timestamp at time zone 'Asia/Seoul')
+         and h.measured_dt < ((x.kday + 1)::timestamp at time zone 'Asia/Seoul')
+       limit 1) is not null
+group by 1, 2;
+-- @end

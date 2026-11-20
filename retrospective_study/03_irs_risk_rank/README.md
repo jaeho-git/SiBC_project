@@ -73,5 +73,5 @@ python3 00_common/src/run_extract.py 03_irs_risk_rank/sql/irs_extracts.sql res_b
 
 ## 결과물 (git 제외)
 
-- `01_Results/`: 기준선·추적 환산 비교 xlsx (10단계 결과)
+- `01_Results/`: 기준선·추적 환산 비교 xlsx (10단계 결과). `_20261120` 판은 대상자 시트 끝에 2026-11-20 개정 계획서의 대표 결과 열(전 질환, 최저 구간 제외, LRS는 설문 변경자만)을 더한 판이며, 나머지 열은 `_20261119` 판과 같습니다. 앱 사용량 xlsx(`SiBC_03_앱사용량_<tag>.xlsx`, `00_common/src/build_app_usage.py`)
 - `docs/local/`: 연구계획서 03, 기준선 정의·환산 방법 docx, IRS 재산출 현황 md, Codex 검토 기록

@@ -100,7 +100,18 @@ for i, r in MAIN.iterrows():
 	if r.tested:
 		d = abs(r.est) / SD_Y; lo_d = min(abs(r.lo), abs(r.hi)) / SD_Y if np.sign(r.lo) == np.sign(r.hi) else 0.0
 		MAIN.loc[i, "evalue"] = S.evalue_rr(np.exp(0.91 * d))[0]; MAIN.loc[i, "evalue_ci"] = S.evalue_rr(np.exp(0.91 * lo_d))[0] if lo_d > 0 else 1.0
-SENS = {k: item_table(k) for k in ["quasi", "alt", "year1", "src101", "src104", "susp1", "susp2"]}  # no site-stratified results in paper outputs
+# entry of baseline results into the service relative to registration (post hoc; insert timestamp of each selected result)
+_B = A2.BSEL.merge(A2.C[["d0"]], left_on="user_id", right_index=True)
+_B["lag"] = (pd.to_datetime(_B.ins_ts, errors="coerce").dt.normalize() - pd.to_datetime(_B.d0).dt.normalize()).dt.days
+_ul = _B.groupby("user_id").lag.max()
+ENTRY = pd.DataFrame([
+	dict(measure="users with a baseline checkup", value=int(_ul.size)),
+	dict(measure="users with every selected baseline result entered by the registration day", value=int((_ul <= 0).sum())),
+	dict(measure="users with at least one selected result entered after the registration day", value=int((_ul > 0).sum())),
+	dict(measure="largest entry delay after registration, days", value=int(_ul.max())),
+	dict(measure="selected results entered before the registration day", value=int((_B.lag < 0).sum())),
+] + [dict(measure=f"analysed users with the item entered by the registration day: {it}", value=int((A2.ITEMF[it].entry_reg.values == 1).sum())) for it in A2.ITEMS])
+SENS = {k: item_table(k) for k in ["quasi", "alt", "year1", "src101", "src104", "susp1", "susp2", "entry_reg"]}  # no site-stratified results in paper outputs
 FITLOG = pd.DataFrame([dict(item=it, bb_fallback_to_quasi=sum(bool(b["main"][it].get("fallback")) for b in B), not_converged=sum(b["main"][it].get("tested", False) and not b["main"][it].get("conv", False) for b in B),
                             theta_at_bound=sum(bool(b["main"][it].get("at_bound")) for b in B), not_tested_min_n=sum(not b["main"][it].get("tested", False) for b in B)) for it in A2.ITEMS])
 
@@ -397,7 +408,7 @@ NOTES2 = [
 	"S_high_rd / S_high_rr: logistic regression for high engagement (login days >= median); risk difference and risk ratio standardized over the users with the item.",
 	"Registration quarters are shown as order numbers (1 = earliest); no calendar labels.",
 	"E-value: from exp(0.91 x d), d = |difference| / SD of login days; CI E-value is 1 when the CI includes 0.",
-	"Sheet-specific methods: S_quasi = quasi-binomial (fractional logit) model with the same covariates; S_alt = disease-suspect cutoffs; S_year1 / S_src101 / S_src104 = main model in that subset (covariates constant in a subset dropped); S_susp1 / S_susp2 = outcome without suspect login days; S_summary = beta-binomial on the count of out-of-range components (summary_adj adds the mean checkup-to-registration days and any source-20101104 component); S_spline = beta-binomial with a restricted cubic spline of the raw value (descriptive).",
+	"Sheet-specific methods: S_quasi = quasi-binomial (fractional logit) model with the same covariates; S_alt = disease-suspect cutoffs; S_year1 / S_src101 / S_src104 = main model in that subset (covariates constant in a subset dropped); S_susp1 / S_susp2 = outcome without suspect login days; S_entry_reg (post hoc) = main model among users whose selected result for the item had been entered into the service by the registration day; S_summary = beta-binomial on the count of out-of-range components (summary_adj adds the mean checkup-to-registration days and any source-20101104 component); S_spline = beta-binomial with a restricted cubic spline of the raw value (descriptive).",
 ]
 with pd.ExcelWriter(OUT / "tables_02.xlsx") as xw:
 	pd.DataFrame({"note": NOTES2}).to_excel(xw, sheet_name="Notes", index=False)
@@ -408,6 +419,7 @@ with pd.ExcelWriter(OUT / "tables_02.xlsx") as xw:
 	HIGH.to_excel(xw, sheet_name="S_high_rd", index=False); HIGH_RR.to_excel(xw, sheet_name="S_high_rr", index=False)
 	DIAG.to_excel(xw, sheet_name="S_diagnostics", index=False); SEL.to_excel(xw, sheet_name="S_selection", index=False)
 	SEL_R.to_excel(xw, sheet_name="S_selection_reason", index=False); MISS.to_excel(xw, sheet_name="S_item_missing", index=False)
+	ENTRY.to_excel(xw, sheet_name="S_entry_timing", index=False)
 	DIST.to_excel(xw, sheet_name="S_fit_distribution", index=False); CALIB.to_excel(xw, sheet_name="S_fit_calibration", index=False)
 	FITLOG.to_excel(xw, sheet_name="S_fit_log", index=False)
 	pd.DataFrame([dict(analysis=k, **v) for k, v in SUMM.items()]).to_excel(xw, sheet_name="S_summary", index=False)

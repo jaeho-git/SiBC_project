@@ -31,7 +31,7 @@ U = U[U.age.notna() & U.sex.notna()].copy()  # complete-case for demographics (s
 N_DEMO_MISSING = N_BASELINE - len(U)
 USERS = list(U.index)
 U["female"] = (U.sex == "F").astype(float)
-U["jeju"] = (U.site == "제주").astype(float)
+U["site_b"] = (U.site == "B").astype(float)  # enrolment site indicator (adjustment only)
 U["age"] = U.age.astype(float)
 q = U.d0.dt.to_period("Q").astype(str)
 # quarters with fewer than 10 users are merged into the next later quarter (a single-user cell separates in resamples)
@@ -48,7 +48,7 @@ for qq in QUARTERS:
 	if qq != QREF:
 		U["q_" + qq] = (q == qq).astype(float)
 QCOLS = [c for c in U.columns if c.startswith("q_")]
-if U[["age", "female", "jeju"]].isna().any().any():
+if U[["age", "female", "site_b"]].isna().any().any():
 	raise SystemExit("missing demographics")
 
 # outcome: login days on registration+1..+28 (KST), and the suspect-login-day versions
@@ -149,6 +149,10 @@ def item_frame(item, alt=False):
 		x = np.where(np.isfinite(v), fn(v, sex).astype(float), np.nan)
 		f["x"] = x
 	f["d_check"] = b.d.reindex(USERS)
+	# entry into the service: day of the insert timestamp of the selected result relative to the registration day (0 = same day)
+	ins = pd.to_datetime(b.ins_ts, errors="coerce").dt.normalize().reindex(USERS)
+	f["entry_lag"] = (ins - pd.to_datetime(U.d0).dt.normalize()).dt.days.values
+	f["entry_reg"] = np.where(np.isfinite(f.entry_lag.values.astype(float)), (f.entry_lag.values <= 0).astype(float), np.nan)
 	return f
 
 
@@ -168,7 +172,7 @@ def panel_counts():
 	return M.notna().sum(axis=1).values, M.sum(axis=1, min_count=1).values
 N_MEAS, N_OUT = panel_counts()
 
-BASECOV = ["age", "female", "jeju"] + QCOLS
+BASECOV = ["age", "female", "site_b"] + QCOLS
 
 
 def fit_item(item, ycol="y", sub=None, cnt=None, alt=False, model="bb"):
@@ -259,8 +263,6 @@ def estimates(cnt=None):
 	e["alt"] = {it: fit_item(it, cnt=cnt, alt=True) for it in ITEMF_ALT}
 	yr = np.ones(len(U), bool)
 	e["year1"] = {it: fit_item(it, cnt=cnt, sub=(ITEMF[it].k.values <= 365)) for it in ITEMS}
-	e["ulsan"] = {it: fit_item(it, cnt=cnt, sub=(U.jeju.values == 0)) for it in ITEMS}
-	e["jeju"] = {it: fit_item(it, cnt=cnt, sub=(U.jeju.values == 1)) for it in ITEMS}
 	e["src101"] = {it: fit_item(it, cnt=cnt, sub=(ITEMF[it].src104.values == 0)) for it in ITEMS}
 	e["susp1"] = {it: fit_item(it, ycol="y_s1", cnt=cnt) for it in ITEMS}
 	e["susp2"] = {it: fit_item(it, ycol="y_s2", cnt=cnt) for it in ITEMS}
@@ -270,6 +272,7 @@ def estimates(cnt=None):
 	e["summary_s1"] = fit_summary(cnt, ycol="y_s1")
 	e["summary_adj"] = fit_summary(cnt, adj_timing=True)
 	e["src104"] = {it: fit_item(it, cnt=cnt, sub=(ITEMF[it].src104.values == 1)) for it in ITEMS}
+	e["entry_reg"] = {it: fit_item(it, cnt=cnt, sub=(ITEMF[it].entry_reg.values == 1)) for it in ITEMS}  # post hoc: result already in the service at registration
 	return e
 
 

@@ -94,7 +94,7 @@ SENS = {"equal_users": table("equal_users", list(A1.DAILY)), "no_trunc": table("
         "susp1": table("susp1", A1.ORDER), "susp2": table("susp2", A1.ORDER), "week12": table("week12", list(A1.DAILY)),
         "base2_13": table("base2_13", list(A1.DAILY)), "zero_steps": table("zero_steps", ["steps"]), "extended": table("extended", list(A1.POINT)),
         "t0_le56": table("t0_le56", A1.ORDER), "act_gap_zero": table("act_gap_zero", ["active_min"]), "no_plat1102": table("no_plat1102", A1.ORDER),
-        "act_calendar": table("act_calendar", ["active_min"])}
+        "act_calendar": table("act_calendar", ["active_min"]), "plausible": table("plausible", list(A1.DAILY))}
 DOSE = []
 for k in A1.ORDER:
 	r = E["dose"].get(k, {})
@@ -384,7 +384,7 @@ NOTES1 = [
 	"Standardized difference: adjusted difference divided by the pooled baseline SD of the two groups (frequency-weighted in each resample).",
 	"E-value: from exp(0.91 x d), d = adjusted difference / outcome SD; CI E-value is 1 when the CI includes 0 and blank when there is no CI.",
 	"S_collection_gap: days are relative to the first gap day; no calendar dates are shown.",
-	"Sheet-specific methods: S_equal_users = same model but users weighted equally (no 1/(tau2 + sigma2/n) factor); S_unadjusted = no propensity weighting and no propensity covariates (baseline value only); S_no_trunc = weights not truncated; S_dose = unweighted outcome regression with a restricted cubic spline of login days, adjusted for the baseline value and the propensity covariates; S_wear_days = cohort rebuilt with another baseline watch-wear threshold, point estimates only; S_act_calendar = main model plus the outcome-window start (days) as a covariate; S_strata = main model within baseline strata (exploratory, no multiplicity adjustment).",
+	"Sheet-specific methods: S_equal_users = same model but users weighted equally (no 1/(tau2 + sigma2/n) factor); S_unadjusted = no propensity weighting and no propensity covariates (baseline value only); S_no_trunc = weights not truncated; S_dose = unweighted outcome regression with a restricted cubic spline of login days, adjusted for the baseline value and the propensity covariates; S_wear_days = cohort rebuilt with another baseline watch-wear threshold, point estimates only; S_act_calendar = main model plus the outcome-window start (days) as a covariate; S_plausible (post hoc) = daily values above 60,000 steps, 1,440 exercise or sleep minutes, or 100% SpO2 removed before the usual daily rules; S_week12 = later outcome window (days 70-97), users whose window had closed by the cutoff; S_strata = main model within baseline strata (exploratory, no multiplicity adjustment).",
 ]
 with pd.ExcelWriter(OUT / "tables_01.xlsx") as xw:
 	T1.to_excel(xw, sheet_name="Table1", index=False); MAIN.to_excel(xw, sheet_name="Table2", index=False)

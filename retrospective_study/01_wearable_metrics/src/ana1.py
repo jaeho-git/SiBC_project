@@ -69,7 +69,13 @@ def source_gaps(src, min_run=3, **kw):
 ACT_GAP = source_gaps("activity.csv")  # session records lost for everyone: such days are missing, not 0 minutes
 
 
-def valid_rows(X, k, act_gap_zero=False):
+PLAUSIBLE = {"steps": ("걸음", 60000), "active_min": ("활동_분", 1440), "sleep_min": ("수면_분", 1440), "spo2": ("산소포화도", 100)}  # post hoc upper limits per day
+
+
+def valid_rows(X, k, act_gap_zero=False, plausible=False):
+	if plausible:  # post hoc sensitivity: drop physiologically impossible daily values (above the limit) before the usual rules
+		col, lim = PLAUSIBLE[k]
+		X = X[~(pd.to_numeric(X[col], errors="coerce") > lim)]
 	if k == "steps":
 		return X[X["걸음_유효"].astype(str).isin(["예", "True"]) & X["걸음"].notna() & (X["걸음"] > 0)]
 	if k == "active_min":
@@ -141,9 +147,9 @@ def user_table(T, users):
 			x = lg[(lg.user_id == u) & (lg.d >= a_) & (lg.d <= b_)]
 			cnt.append(int(x[r].sum()))
 		U["exp_" + r] = U.exp - np.array(cnt)
-	U["site_jeju"] = (T.loc[users, "사이트"] == "제주").astype(float)
+	U["site_b"] = (T.loc[users, "사이트"] == "B").astype(float)
 	U["out_start"] = (pd.to_datetime(T.loc[users, "추적_시작일"]) - pd.Timestamp("2026-01-01")).dt.days.astype(float)  # calendar time of the outcome window
-	if U.drop(columns=["site_jeju", "out_start"]).isna().any().any():
+	if U.drop(columns=["site_b", "out_start"]).isna().any().any():
 		raise SystemExit("missing user-level covariates")
 	return U
 
@@ -156,9 +162,10 @@ PSV = ["age", "female", "q_other", "t0_days", "pre_login", "plat1105", "plat1102
 MED = float(np.median(U.exp))
 A = (U.exp >= MED).astype(float).values
 USERS = list(U.index); UIDX = {u: i for i, u in enumerate(USERS)}
+W12 = (T.loc[USERS, "12주결과_확정"] == "예").values.astype(float)  # later outcome window closed by the cutoff
 
 
-def daily_data(X, users, k, window="결과", base_window="기준선", base_from=0, zero_steps=False, act_gap_zero=False):
+def daily_data(X, users, k, window="결과", base_window="기준선", base_from=0, zero_steps=False, act_gap_zero=False, plausible=False):
 	"""Per indicator: user-level baseline mean (>=4 valid days) and outcome rows (>=4 valid days)."""
 	Xu = X[X.user_id.isin(users)]
 	if zero_steps and k == "steps":
@@ -167,7 +174,7 @@ def daily_data(X, users, k, window="결과", base_window="기준선", base_from=
 		Xz.loc[wear & Xz["걸음"].isna(), "걸음"] = 0.0
 		v = Xz[wear & Xz["걸음"].notna()]
 	else:
-		v = valid_rows(Xu, k, act_gap_zero)
+		v = valid_rows(Xu, k, act_gap_zero, plausible)
 	col = DAILY[k][0]
 	bw = v[(v["구간"] == base_window) & (v["시간0후일"] >= base_from)]
 	ow = v[v["구간"] == window]
@@ -358,11 +365,13 @@ def estimates(cnt):
 		alt = U["exp_" + r].values
 		aa = (alt >= np.median(alt)).astype(float)
 		e["susp" + r[1]] = {k: effect(k, cnt, a=aa) for k in ORDER}
-	e["week12"] = {k: daily_effect(k, cnt, window="12주결과") for k in DAILY}
+	# later outcome window: only users whose window had closed by the data cutoff (12주결과_확정), as in the primary window
+	e["week12"] = {k: daily_effect(k, cnt * W12, window="12주결과") for k in DAILY}
 	e["base2_13"] = {k: daily_effect(k, cnt, base_from=2) for k in DAILY}
 	e["zero_steps"] = {"steps": daily_effect("steps", cnt, zero_steps=True)}
 	e["act_gap_zero"] = {"active_min": daily_effect("active_min", cnt, act_gap_zero=True)}  # collection-gap days counted as 0 minutes
 	e["act_calendar"] = {"active_min": daily_effect("active_min", cnt, extra=lambda kk: U.loc[kk, "out_start"].values)}  # calendar-time adjustment
+	e["plausible"] = {k: daily_effect(k, cnt, plausible=True) for k in DAILY}  # post hoc: impossible daily values removed
 	e["extended"] = {k: point_effect(k, cnt, ext=True) for k in POINT}
 	e["no_plat1102"] = {k: effect(k, np.where(U.plat1102.values == 1, 0, cnt)) for k in ORDER}
 	e["dose"] = {k: dose_response(k, cnt) for k in ORDER}  # positivity: this platform has no high-engagement user

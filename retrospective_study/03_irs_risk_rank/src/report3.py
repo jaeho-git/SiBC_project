@@ -171,7 +171,8 @@ for v, lab, kind in T1V:
 			return f"{s.mean():.1f} ({s.std(ddof=1):.1f})"
 		if kind == "pct":
 			return f"{int(s.sum())} ({100 * s.mean():.1f})"
-		return f"{s.median():.0f} ({s.quantile(.25):.0f}-{s.quantile(.75):.0f})"
+		md = s.median()  # a median of whole days can fall on a half day; show it rather than round it away
+		return (f"{md:.0f}" if float(md).is_integer() else f"{md:.1f}") + f" ({s.quantile(.25):.0f}-{s.quantile(.75):.0f})"
 	ok = x.notna()
 	row = dict(section=SECTION.get(v, "Baseline"), variable=lab, overall=fmt(x[ok]), high=fmt(x[ok & hi]), low=fmt(x[ok & ~hi]))
 	if v not in NO_SMD:

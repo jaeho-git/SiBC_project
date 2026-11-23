@@ -73,3 +73,19 @@ python3 00_common/src/login_day_check.py
   - 토큰 수가 양의 정수가 아님
 - 원천에 기록이 없는 달이 있을 때
 - 연구별 창이 28일이 아니거나, 창의 로그인 일수가 다를 때
+
+## 결과 분석 (`src/statlib.py`와 연구별 `ana*.py`, `report*.py`)
+
+연관 분석 전에 고정한 사양(로컬 `docs/local/분석사양_결과분석.md`)에 따라 세 연구의 추정, 부트스트랩, 표와 그림을 만듭니다. 결과(`01_Results/`)는 git에 올리지 않습니다.
+
+- `statlib.py`: numpy·scipy로 직접 구현한 통계 함수입니다. 가중 로지스틱 IRLS, Firth 보정 로지스틱, 베타이항 회귀, 제한 3차 스플라인, SMD·유효 표본 수, Benjamini-Hochberg, E-value가 있습니다. 주요 모형은 R(glm, lme4, 독립 구현한 베타이항 우도)과 같은 값을 내는지 대조했습니다.
+- 연구별 `ana*.py`: 점추정과 사용자 단위 부트스트랩 1,000회를 계산합니다. 모든 적합 단계의 수렴 여부를 기록하고, 수렴하지 않은 반복은 구간 계산에서 뺍니다.
+- 연구별 `report*.py`: 표(xlsx, Notes 시트 포함)와 그림(PNG)을 만듭니다. 유효 반복이 900회 미만이면 구간과 P를 보고하지 않습니다.
+- 논문용 표와 그림에는 날짜와 등록 기관 이름을 넣지 않습니다. 기관은 02 모형의 보정 변수로만 씁니다.
+
+```bash
+# retrospective_study/에서
+python3 03_irs_risk_rank/src/ana3.py --boot 1000 --workers 6 && python3 03_irs_risk_rank/src/report3.py
+python3 02_checkup_metrics/src/ana2.py --boot 1000 --workers 6 && python3 02_checkup_metrics/src/ana2_spline.py --boot 1000 --workers 6 && python3 02_checkup_metrics/src/report2.py
+python3 01_wearable_metrics/src/ana1.py --boot 1000 --workers 6 && python3 01_wearable_metrics/src/report1.py
+```

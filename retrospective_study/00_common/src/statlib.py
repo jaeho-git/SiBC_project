@@ -9,7 +9,9 @@
 - wls: weighted least squares
 - bh: Benjamini-Hochberg q values
 - evalue_rr: E-value for a risk ratio and its CI limit nearer the null
-Checked against R (glm quasibinomial / binomial with weights, lme4) in statlib_check.py.
+- firth_logit: Firth-penalized logistic regression; independent_columns: drops constant or collinear covariates
+The main fits were compared with R (glm quasibinomial and binomial with weights, lme4, and a separately coded
+beta-binomial likelihood) during the analysis; the comparison scripts are not part of this repository.
 """
 import numpy as np
 from scipy import optimize, special, stats

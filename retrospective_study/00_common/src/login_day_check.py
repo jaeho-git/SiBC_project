@@ -179,8 +179,8 @@ print("\n== G. single-token days by site and period (from 2025-12-08)")
 t = B.groupby(["site", "period", "tok"]).agg(days=("d", "size"), pct_action=("action", "mean"), pct_broad=("broad", "mean"), pct_upload=("upload", "mean"))
 t[["pct_action", "pct_broad", "pct_upload"]] = t[["pct_action", "pct_broad", "pct_upload"]].mul(100).round(1)
 print(t.to_string())
-print("\n== H. Ulsan, 2026-05 onward, single-token days: step upload x activity")
-H = lg[(lg.site == "울산") & (lg.d >= POST) & (lg.tok == "1")]
+print("\n== H. Site A, 2026-05 onward, single-token days: step upload x activity")
+H = lg[(lg.site == "A") & (lg.d >= POST) & (lg.tok == "1")]
 h = H.groupby("upload").agg(days=("d", "size"), pct_action=("action", "mean"), pct_broad=("broad", "mean"))
 h[["pct_action", "pct_broad"]] = h[["pct_action", "pct_broad"]].mul(100).round(1)
 print(h.to_string())

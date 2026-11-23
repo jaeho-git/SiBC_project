@@ -1,7 +1,7 @@
 import pandas as pd, numpy as np, json
 END=pd.Timestamp('2026-11-17'); B0=pd.Timestamp('2026-07-01 10:00'); TS=pd.Timestamp('2026-07-01 15:00')
 I=pd.read_pickle('I_final.pkl'); D=pd.read_pickle('D_final.pkl').reset_index(); L=pd.read_pickle('L.pkl')
-U=pd.read_csv('users.csv'); U['site']=np.where(U.ulsan_linked.notna(),'울산',np.where(U.jeju_linked.notna(),'제주',''))
+U=pd.read_csv('users.csv'); U['site']=np.where(U.site_a_linked.notna(),'A',np.where(U.site_b_linked.notna(),'B',''))
 Lg=pd.read_csv('login.csv',parse_dates=['d'])[['user_id','d']].drop_duplicates()
 first=I.sort_values(['t','seq']).drop_duplicates('user_id',keep='first').set_index('user_id')[['seq','t']]
 D=D.sort_values(['t_b','user_id']).reset_index(drop=True); D['sid']=['S%03d'%(i+1) for i in range(len(D))]

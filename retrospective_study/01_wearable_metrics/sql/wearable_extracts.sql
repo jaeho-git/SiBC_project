@@ -20,7 +20,7 @@ group by 1, 2;
 
 -- @extract bp
 -- bp.csv: user x day x platform x device mean blood pressure.
--- Site measurement (Ulsan centers) = platform 20301103 with device 20301301.
+-- Site measurement (site measurement centers) = platform 20301103 with device 20301301.
 select i.user_id, (b.measured_dt at time zone 'Asia/Seoul')::date d, i.measure_platform plat, i.measure_device_type dev,
        avg(b.systolic) sbp, avg(b.diastolic) dbp, count(*) n
 from discovery.disc_lifelog_user_bloodpressure b join discovery.disc_lifelog_user_info i using (user_lifelog_sn)
@@ -29,7 +29,7 @@ group by 1, 2, 3, 4;
 
 -- @extract body
 -- body.csv: user x day x platform x device mean weight and height.
--- Site measurement (Ulsan centers) = platform 20301103.
+-- Site measurement (site measurement centers) = platform 20301103.
 select i.user_id, (b.measured_dt at time zone 'Asia/Seoul')::date d, i.measure_platform plat, i.measure_device_type dev,
        avg(b.weight) weight, avg(b.height) height
 from discovery.disc_lifelog_user_body_info b join discovery.disc_lifelog_user_info i using (user_lifelog_sn)
@@ -52,7 +52,7 @@ group by 1, 2, 3, 4;
 
 -- @extract site_location_user
 -- site_location_user.csv: user x table x device x measure_location x KST measured day for platform 20301103, used to check
--- whether records from a location outside the Ulsan centres enter the 01 site-measurement baseline or follow-up.
+-- whether records from a location outside the site measurement centres enter the 01 site-measurement baseline or follow-up.
 select i.user_id, t.tbl, i.measure_device_type dev, coalesce(i.measure_location, '(null)') loc, (t.measured_dt at time zone 'Asia/Seoul')::date d, count(*) n
 from (select 'bp' tbl, user_lifelog_sn, measured_dt from discovery.disc_lifelog_user_bloodpressure
       union all select 'body' tbl, user_lifelog_sn, measured_dt from discovery.disc_lifelog_user_body_info) t

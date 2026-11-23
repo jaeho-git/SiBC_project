@@ -6,7 +6,7 @@
 
 -- @extract users
 -- users.csv: one row per user (ichms auth users plus sibc master users without an auth row).
--- Site links: earliest link to Ulsan / Jeju customer and whether an active link remains; operator customers; public customer;
+-- Site links: earliest link to the site A / site B deployment customer and whether an active link remains; operator customers; public customer;
 -- app customer link; latest withdrawal; test-group membership; current operator-group names.
 select u.user_id,
        u.created_dt auth_created,
@@ -14,10 +14,10 @@ select u.user_id,
        m.created_at master_created,
        m.age,
        m.sex,
-       (select min(linked_dt) from ichms.auth_user_customer c where c.user_id=u.user_id and c.customer_id='2e0a3387-7058-4f9e-a134-2017f7b7000b') ulsan_linked,
-       (select bool_or(unlinked_dt is null) from ichms.auth_user_customer c where c.user_id=u.user_id and c.customer_id='2e0a3387-7058-4f9e-a134-2017f7b7000b') ulsan_active,
-       (select min(linked_dt) from ichms.auth_user_customer c where c.user_id=u.user_id and c.customer_id='778d4ff7-ab76-4070-a9a9-716fac93d9c9') jeju_linked,
-       (select bool_or(unlinked_dt is null) from ichms.auth_user_customer c where c.user_id=u.user_id and c.customer_id='778d4ff7-ab76-4070-a9a9-716fac93d9c9') jeju_active,
+       (select min(linked_dt) from ichms.auth_user_customer c where c.user_id=u.user_id and c.customer_id='2e0a3387-7058-4f9e-a134-2017f7b7000b') site_a_linked,
+       (select bool_or(unlinked_dt is null) from ichms.auth_user_customer c where c.user_id=u.user_id and c.customer_id='2e0a3387-7058-4f9e-a134-2017f7b7000b') site_a_active,
+       (select min(linked_dt) from ichms.auth_user_customer c where c.user_id=u.user_id and c.customer_id='778d4ff7-ab76-4070-a9a9-716fac93d9c9') site_b_linked,
+       (select bool_or(unlinked_dt is null) from ichms.auth_user_customer c where c.user_id=u.user_id and c.customer_id='778d4ff7-ab76-4070-a9a9-716fac93d9c9') site_b_active,
        exists(select 1 from ichms.auth_user_customer c where c.user_id=u.user_id and c.customer_id in ('51d08d27-5063-49de-bb39-048036a3b98c','5ed973ec-87d8-4ff9-92a9-59a0587b8cc8','447662ba-7277-49c1-856e-fe1b0ec10381')) is_operator,
        exists(select 1 from ichms.auth_user_customer c where c.user_id=u.user_id and c.customer_id='b04d38cb-aa0c-463d-a21d-30900589050e') is_public,
        (select min(linked_dt) from ichms.auth_user_customer c where c.user_id=u.user_id and c.customer_id='b576a0e4-82c4-4c7e-a066-850c7383bcb8') app_linked,

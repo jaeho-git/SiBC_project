@@ -36,8 +36,8 @@ from common_cohort import COMMON_DATA, END, IRS_OVERLAP_COL, irs_comparison_user
 from data_xlsx import write_data_workbook, yn  # noqa: E402
 
 D = pd.Timedelta
-SITE_PLAT = 20301103  # site devices (Ulsan measurement points)
-EXCLUDED_LOC = {"마곡부스"}  # not an Ulsan measurement point
+SITE_PLAT = 20301103  # site devices (site measurement points)
+EXCLUDED_LOC = {"마곡부스"}  # not a site measurement point
 W12 = (70, 97)  # 12-week outcome window, days after the exposure start
 MAIN = {"대상자, 결과 확보", "대상자, 결과 결측"}
 
@@ -307,7 +307,7 @@ def coldoc():
 		("측정", "구간", "기준선 범위(노출 전 90일) / 노출 / 결과(노출 시작 28~55일) / 결과창 이후"),
 		("측정", "노출시작후일", "날짜 - 노출 시작일(일)"), ("측정", "플랫폼", "측정 플랫폼 코드(20301103 = 현장 기기)"), ("측정", "기기", "측정 기기 코드"),
 		("측정", "기록출처", "현장 기기 / 개인 기기"), ("측정", "측정장소", "현장 측정 장소(혈압·체중 표만 있음, 같은 날 여러 곳이면 | 로 구분)"),
-		("측정", "제외장소", "예 = 울산 거점이 아닌 장소(마곡부스). 요약에서 쓰지 않음"),
+		("측정", "제외장소", "예 = 사이트 측정 거점이 아닌 장소(마곡부스). 요약에서 쓰지 않음"),
 		("측정", "체중", "같은 날·플랫폼·기기의 평균(kg)"), ("측정", "키", "같은 날·플랫폼·기기의 평균(cm)"),
 		("측정", "체질량지수", "체중 ÷ (키/100)² (같은 행의 키가 있을 때만 계산)"),
 		("측정", "체지방률", "평균(%)"), ("측정", "체지방량", "평균(kg)"), ("측정", "골격근량", "평균(kg)"),

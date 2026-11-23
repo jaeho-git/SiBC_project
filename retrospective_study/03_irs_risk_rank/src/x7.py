@@ -8,7 +8,7 @@ I['per']=np.where(I.t<B0,'P0',np.where(I.t<B1,'P1','later'))
 I=I.sort_values(['user_id','t','seq'])
 U=pd.read_csv('users.csv')
 for c in ['is_operator','in_test_group']: U[c]=U[c]=='t'
-U['site']=np.where(U.ulsan_linked.notna(),'ulsan',np.where(U.jeju_linked.notna(),'jeju','none')); coh=set(U[(U.site!='none')&~U.is_operator&~U.in_test_group].user_id)
+U['site']=np.where(U.site_a_linked.notna(),'A',np.where(U.site_b_linked.notna(),'B','none')); coh=set(U[(U.site!='none')&~U.is_operator&~U.in_test_group].user_id)
 H=I[I.meas]
 pick=lambda df,keys,keep: df.sort_values(['t','seq']).drop_duplicates(keys,keep=keep).set_index(keys)  # whole-row selection
 base=pick(H[H.per=='P0'],'user_id','first'); F=pick(H[H.per=='P1'],'user_id','last')

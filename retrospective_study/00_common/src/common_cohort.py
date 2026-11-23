@@ -2,7 +2,7 @@
 """Common cohort shared by studies 01-03.
 
 Rule (same as 03_irs_risk_rank/src/x7b.py and the 2026-11-19 feasibility check):
-- linked to an approved deployment site (Ulsan or Jeju), not an operator account, not in a test group;
+- linked to an approved deployment site (site A or site B), not an operator account, not in a test group;
 - has a first app login (first login date in KST = registration date d0);
 - d0 + 28 days <= data cutoff, and no withdrawal on or before d0 + 28 days.
 
@@ -37,7 +37,7 @@ def load_common_cohort(data_dir: Path = COMMON_DATA, end: pd.Timestamp = END) ->
 	U = pd.read_csv(data_dir / "users.csv")
 	for c in ["is_operator", "in_test_group"]:
 		U[c] = U[c] == "t"
-	U["site"] = np.where(U.ulsan_linked.notna(), "울산", np.where(U.jeju_linked.notna(), "제주", ""))
+	U["site"] = np.where(U.site_a_linked.notna(), "A", np.where(U.site_b_linked.notna(), "B", ""))
 	login = pd.read_csv(data_dir / "login.csv", parse_dates=["d"])[["user_id", "d"]].drop_duplicates()
 	d0 = login.groupby("user_id").d.min()
 	C = U[(U.site != "") & ~U.is_operator & ~U.in_test_group].copy()

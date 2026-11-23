@@ -10,7 +10,7 @@ Indicators
   Baseline = T0..T0+13 (>= 7 valid days). Follow-up = T0+84..T0+111 (>= 7 valid days). A follow-up window counts as
   closed only when T0+111 <= cutoff - 28 days (allowance for late device sync).
 - Sleep (auxiliary): valid-day counts in the same baseline / follow-up windows.
-- Site measurement (wearable data measured on Ulsan center devices): lifelog platform 20301103
+- Site measurement (wearable data measured on site-center devices): lifelog platform 20301103
   (blood pressure: device 20301301; weight: same platform). Baseline = first measurement within registration
   -90..+56 days; follow-up = first measurement >= 90 days after the baseline measurement, up to the cutoff.
 Only availability is written (dates, day counts, status). Outcome values are not written, so no group difference is
@@ -174,7 +174,7 @@ def main():
 		("자료 기준일", f"{END.date()} (추출 {a.extract_date}, 조회 전용)"),
 		("걸음 기준", "시간 0 = 첫 걸음 기록일(등록 -28~+56일). 기준선 0~13일 중 7일 이상, 추적 84~111일 중 7일 이상. 추적 창 종료 후 28일(동기화 여유)이 지나야 확정"),
 		("수면", "걸음과 같은 창의 유효일 수(보조 지표). 추적 창이 닫히기 전에는 비워 둠"),
-		("현장 측정", "울산 거점 기기(lifelog 플랫폼 20301103; 혈압은 기기 20301301). 기준선 = 등록 -90~+56일 첫 측정, 추적 = 기준선 90일 이후 첫 측정. 제주는 현장 기기가 없음"),
+		("현장 측정", "사이트 A 측정 거점 기기(lifelog 플랫폼 20301103; 혈압은 기기 20301301). 기준선 = 등록 -90~+56일 첫 측정, 추적 = 기준선 90일 이후 첫 측정. 사이트 B는 현장 기기가 없음"),
 		("값을 넣지 않은 이유", "분석 계획 확정 전에 집단 간 결과 차이를 보지 않기 위해 날짜·일수·상태만 적음"),
 		("03 겹침", f"'{IRS_OVERLAP_COL}' = 03 연구 비교 대상에도 들어가는 사용자. 투고 시 표본 겹침을 밝힘. 03 결과 파일이 없으면 '확인 불가'"),
 		("만든 방법", "retrospective_study/01_wearable_metrics/src/build_usable_users.py (저장된 추출 파일만 사용)"),

@@ -17,7 +17,7 @@ I['d'] = I.t.dt.normalize(); I['model'] = np.where(I.t < B0, 'P0', np.where(I.t 
 I['geno'] = I['mode'].isin(['1', '4']); I['complete'] = I.geno & I.meas.astype(bool) & I.life_h.notna()
 U = pd.read_csv('users.csv')
 for c in ['is_operator', 'in_test_group']: U[c] = U[c] == 't'
-U['site'] = np.where(U.ulsan_linked.notna(), '울산', np.where(U.jeju_linked.notna(), '제주', ''))
+U['site'] = np.where(U.site_a_linked.notna(), 'A', np.where(U.site_b_linked.notna(), 'B', ''))
 Lg = pd.read_csv('login.csv', parse_dates=['d'])[['user_id', 'd']].drop_duplicates(); d0 = Lg.groupby('user_id').d.min()
 X = pd.read_csv('irs_inputs.csv').set_index('seq'); parse_fail = set()
 def core(seq):

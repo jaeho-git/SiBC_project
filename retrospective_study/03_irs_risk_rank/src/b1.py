@@ -2,7 +2,7 @@ import pandas as pd, numpy as np
 I=pd.read_pickle('I.pkl')
 U=pd.read_csv('users.csv')
 for c in ['is_operator','in_test_group']: U[c]=U[c]=='t'
-U['site']=np.where(U.ulsan_linked.notna(),'ulsan',np.where(U.jeju_linked.notna(),'jeju','none')); coh=set(U[(U.site!='none')&~U.is_operator&~U.in_test_group].user_id)
+U['site']=np.where(U.site_a_linked.notna(),'A',np.where(U.site_b_linked.notna(),'B','none')); coh=set(U[(U.site!='none')&~U.is_operator&~U.in_test_group].user_id)
 I['per']=np.select([I.t<'2026-07-01',I.t<'2026-08-02',I.t<'2026-08-26',I.t<'2026-09-06',I.t<'2026-09-16'],['P0','P1','P2','P3','P4'],'P5')
 isint=lambda s: s.notna()&(np.abs(s-np.round(s))<1e-9)
 for c in ['sbp','dbp','fbg']: I[c+'n']=pd.to_numeric(I[c],errors='coerce')

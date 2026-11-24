@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
-"""Figure 1 of the three manuscripts: three app screens per study from a demonstration account, with panel letters and the
-numbered markers that the figure captions explain. No screen is used in more than one study.
+"""Figure 1 of the three manuscripts: app screens from a demonstration account (three panels for studies 01 and 03, two for
+study 02), with panel letters and the numbered markers that the figure captions explain. No screen is used in more than one
+study.
 
 The screenshots are captured by the app development team and kept in the git-ignored folder 00_common/00_Data/app_screens/,
-one file per screen whose name starts with the two-digit screen number (01_*.png ... 09_*.png; see SCREENS).
+one file per screen whose name starts with the two-digit screen number (01_*.png ... 09_*.png; see SCREENS). Number 05 is not
+used: the app has no checkup result detail screen, so study 02 shows the checkup tab and the home screen only.
 
 Run from retrospective_study/:
   python3 00_common/src/fig1_app_screens.py                  check the screenshots and write fig1_app_screens.png per study
@@ -38,7 +40,6 @@ SCREENS = {
 	2: "건강 모니터링 주간 화면 위쪽: 주·요일 선택, 최근 동기화 시각, 걸음·수면·운동·심박 카드, 운동 기록 없는 날 \"–\"",
 	3: "건강 모니터링 주간 화면 아래쪽: 체중·혈당·혈압 카드와 측정일",
 	4: "건강검진 탭: 탭 목록, 건강검진 탭 선택, 연계된 검진과 검진일",
-	5: "건강검진 결과 상세: 혈압·혈당·간 수치, 기준 밖 값 1개 이상",
 	6: "홈 화면: 팝업 없음, 건강활동점수, 포인트, 아래 메뉴",
 	7: "건강 취약도 TOP 3: 질환별 1~100 점수, 의학적 진단이 아님 안내",
 	8: "건강 취약도 결과: 구간 범례와 질환 수, 현재·이전 계산 막대, 구간이 내려간 질환",
@@ -48,7 +49,7 @@ SCREENS = {
 # Panels per study: (screen number, panel title, marker numbers explained in the caption). Accent = marker colour.
 STUDY = {
 	"01": dict(accent=FS.S01["high"], panels=[(1, "Data linkage", [1]), (2, "Weekly monitoring", [1, 2]), (3, "Device measurements", [1])]),
-	"02": dict(accent=FS.S02_ITEM, panels=[(4, "Checkup results", [1, 2]), (5, "Result detail", [1]), (6, "Home screen", [1, 2, 3])]),
+	"02": dict(accent=FS.S02_ITEM, panels=[(4, "Health checkup tab", [1, 2]), (6, "Home screen", [1, 2, 3])]),
 	"03": dict(accent=FS.S03["high"], panels=[(7, "Top 3 diseases", [1]), (8, "Vulnerability results", [1, 2]), (9, "Lifestyle survey", [1, 2])]),
 }
 
@@ -109,7 +110,8 @@ def draw_study(study, paths, out, draft=False):
 	cfg = STUDY[study]
 	ims = [load(n, paths[n]) for n, _, _ in cfg["panels"]]
 	heights = [PANEL_W * im.shape[0] / im.shape[1] for im in ims]
-	fig_w = 3 * PANEL_W + 2 * GAP + 0.1
+	n_panels = len(cfg["panels"])
+	fig_w = n_panels * PANEL_W + (n_panels - 1) * GAP + 0.1
 	fig_h = max(heights) + TOP + 0.1
 	fig = plt.figure(figsize=(fig_w, fig_h))
 	unplaced = []

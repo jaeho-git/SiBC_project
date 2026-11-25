@@ -278,7 +278,7 @@ def fig_engagement():
 	y = np.sort(U.y.values); a2.step(y, np.arange(1, len(y) + 1) / len(y), where="post", color=C_HI)
 	a2.axvline(A2.MED, color="#888888", ls=":", lw=0.8); a2.text(A2.MED + 0.4, 0.05, f"median {A2.MED:.0f}", fontsize=7, color="#555555")
 	a1.set_xlabel("Day after registration"); a1.set_ylabel("Users logging in, %"); a1.set_ylim(0, 100); a1.legend(frameon=False, fontsize=7.5); a1.set_title("A", loc="left")
-	a2.set_xlabel("Login days in days 1-28"); a2.set_ylabel("Cumulative share of users"); a2.set_title("B", loc="left")
+	a2.set_xlabel("Login days in days 1-28"); a2.set_ylabel("Cumulative proportion of users"); a2.set_title("B", loc="left")
 	fig.tight_layout(); savefig(fig, "fig3_engagement.png")
 
 
@@ -336,8 +336,8 @@ def fig_fit():
 
 
 def fig_sensitivity():
-	cols = [("main", "Main"), ("quasi", "Quasi-\nbinomial"), ("alt", "Disease-\nsuspect\ncutoffs"), ("year1", "Checkup\nwithin\n1 year"),
-	        ("src101", "Source\n20101101\nonly"), ("susp1", "Suspect login\ndays removed\n(rule 1)")]
+	cols = [("main", "Main"), ("quasi", "Quasi-\nbinomial"), ("alt", "Alternative\ncutoffs"), ("year1", "Checkup\nwithin\n1 year"),
+	        ("src101", "Record\nsource\ntype 1 only"), ("susp1", "Token-only\nlogin days\nremoved (rule 1)")]
 	tabs = {"main": MAIN.set_index("item")}; tabs.update({k: SENS[k].set_index("item") for k, _ in cols[1:]})
 	fig, axes = plt.subplots(1, len(cols), figsize=(8, 6.5), sharey=True)
 	yy = np.arange(len(A2.ITEMS))[::-1]
@@ -353,7 +353,7 @@ def fig_sensitivity():
 			ax.plot(r.est, yv, "o", ms=3, mfc="white" if not (r.q < 0.05) else C_HI, mec="#333333")
 		ax.set_title(lab, fontsize=6.8); ax.set_xlim(-12, 12); ax.tick_params(axis="x", labelsize=6.5)
 	axes[0].set_yticks(yy); axes[0].set_yticklabels([EN[i] for i in A2.ITEMS], fontsize=6.5)
-	fig.text(0.01, 0.034, "Adjusted difference in login days (out of 28). Disease-suspect cutoffs: BMI>=30, BP>=140/90, glucose>=126, total cholesterol>=240, LDL>=160,",
+	fig.text(0.01, 0.034, "Adjusted difference in login days (out of 28). Alternative cutoffs: BMI>=30, BP>=140/90, glucose>=126, total cholesterol>=240, LDL>=160,",
 	         fontsize=6.5)
 	fig.text(0.01, 0.014, "triglycerides>=200, urine protein including trace (rows keep the main labels). No line: CI not reported (<900 valid resamples). Rule 2: Table S6.",
 	         fontsize=6.5)
@@ -392,7 +392,7 @@ def fig_timing():
 	k = A2.ITEMF["bmi"].k
 	v = np.sort(k.dropna().values)
 	ax.step(v, np.arange(1, len(v) + 1) / len(v), where="post", color=C_HI, label=f"All analysed users (n={len(v)})")
-	ax.set_xlabel("Days from the baseline checkup (BMI item) to registration"); ax.set_ylabel("Cumulative share of users")
+	ax.set_xlabel("Days from the baseline checkup (BMI item) to registration"); ax.set_ylabel("Cumulative proportion of users")
 	ax.axvline(365, color="#BBBBBB", lw=0.8, ls=":"); ax.text(368, 0.05, "1 year", fontsize=7, color="#777777"); ax.legend(frameon=False, fontsize=7.5)
 	fig.tight_layout(); savefig(fig, "figS3_checkup_timing.png")
 

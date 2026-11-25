@@ -288,7 +288,7 @@ def fig_exposure():
 	e = U.exp.values.astype(int); cnt = np.bincount(e, minlength=29)
 	ax.step(np.arange(29), np.cumsum(cnt) / cnt.sum(), where="post", color="#333333")
 	ax.axvline(A1.MED, color=C_HI, ls="--", lw=1); ax.text(A1.MED - 0.3, 0.55, f"median {A1.MED:.0f} days\n(high engagement: >= median)", ha="right", fontsize=7, color=C_HI)
-	ax.set_xlabel("Login days in the 28-day exposure window"); ax.set_ylabel("Cumulative share of users"); ax.set_xlim(0, 28.5)
+	ax.set_xlabel("Login days in the 28-day exposure window"); ax.set_ylabel("Cumulative proportion of users"); ax.set_xlim(0, 28.5)
 	ax.text(0.3, 0.92, f"n={len(e)}; {int((e == 28).sum())} users logged in on all 28 days", fontsize=7)
 	fig.tight_layout(); savefig(fig, "figS1_exposure.png")
 
@@ -334,8 +334,8 @@ def fig_dose():
 
 def fig_sens():
 	rows = [("main", "Main"), ("equal_users", "Users weighted equally"), ("no_trunc", "Weights not truncated"), ("unadjusted", "Baseline only, no weighting"),
-	        ("susp1", "Suspect login days removed"), ("week12", "12-week window"), ("base2_13", "Baseline days 2-13"), ("t0_le56", "Time 0 within 56 days"),
-	        ("no_plat1102", "Without platform 20301102"), ("zero_steps", "Wear days without steps as 0"), ("act_gap_zero", "Collection-gap days as 0"), ("act_calendar", "Adjusted for calendar time"),
+	        ("susp1", "Token-only login days removed"), ("week12", "Later outcome window (days 70-97)"), ("base2_13", "Baseline days 2-13"), ("t0_le56", "Time 0 within 56 days"),
+	        ("no_plat1102", "Without platform type C"), ("zero_steps", "Wear days without steps as 0"), ("act_gap_zero", "Collection-gap days as 0"), ("act_calendar", "Adjusted for calendar time"),
 	        ("extended", "Extended measurement window")]
 	tabs = {"main": MAIN.set_index("indicator")}; tabs.update({k: SENS[k].set_index("indicator") for k, _ in rows[1:]})
 	fig, axes = plt.subplots(2, 5, figsize=(8, 6.4), sharey=True); axes = axes.ravel()
@@ -354,7 +354,7 @@ def fig_sens():
 	for ax in axes[::5]:
 		ax.set_yticks(yy); ax.set_yticklabels([l for _, l in rows], fontsize=6)
 	fig.text(0.01, 0.024, "Adjusted difference in original units (high minus low); filled marker: main analysis. A marker without a line: CI not reported", fontsize=6.3)
-	fig.text(0.01, 0.006, "(<900 valid resamples). Rule 2 for suspect login days gave the same exposure groups as rule 1.", fontsize=6.3)
+	fig.text(0.01, 0.006, "(<900 valid resamples). Rule 2 for suspected token-only login days gave the same exposure groups as rule 1.", fontsize=6.3)
 	fig.tight_layout(rect=(0, 0.04, 1, 1)); savefig(fig, "figS4_sensitivity.png")
 
 

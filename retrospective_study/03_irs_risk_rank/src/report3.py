@@ -70,7 +70,7 @@ ROWS = [("main", "Primary: IRS, all 35 diseases"), ("pass18", "Crosswalk-validat
         ("incl_lowest", "Lowest band kept in the denominator"), ("base28", "Baseline within 28 days of registration"),
         ("pooled", "Disease-count-weighted proportion (pooled over diseases)"), ("life_ch", "Users with changed lifestyle input"),
         ("no_life_ch", "Users with unchanged lifestyle input"), ("no_trunc", "Weights not truncated"), ("unadjusted", "Unweighted, unadjusted"),
-        ("susp1", "Suspect login days removed (rule 1)"), ("susp2", "Suspect login days removed (rule 2)"),
+        ("susp1", "Token-only login days removed (rule 1)"), ("susp2", "Token-only login days removed (rule 2)"),
         ("gap_common", "Follow-up interval within the common range (exploratory)"), ("gap_adj", "Adjusted for log follow-up interval (exploratory)"),
         ("mrs_rep", "Medical rank (MRS)"), ("lrs_rep", "Lifestyle rank (LRS), changed input only")]
 rep = []
@@ -239,7 +239,7 @@ def fig_transitions():
 	for yv, n in zip(yy, g.n):
 		ax.text(1.01, yv, f"{int(n)}", va="center", fontsize=6.5)
 	ax.text(1.01, len(g) + 0.2, "n", fontsize=7)
-	ax.set_xlim(0, 1.08); ax.set_xlabel("Share of users above the lowest band at baseline")
+	ax.set_xlim(0, 1.08); ax.set_xlabel("Proportion of users above the lowest band at baseline")
 	ax.legend(loc="lower center", bbox_to_anchor=(0.45, 1.0), ncol=3, frameon=False, fontsize=8)
 	fig.tight_layout(rect=(0, 0.03, 1, 1)); fig.text(0.01, 0.01, "* crosswalk agreement >= 95% in each sex", fontsize=7)
 	savefig(fig, "fig3_band_transitions.png")
@@ -320,7 +320,7 @@ def fig_supp():
 		if not np.isfinite(r.diff_lo):
 			ax.text(r.diff_pp + 0.6, yv, f"{int(r.boot_valid)} valid resamples", fontsize=6.5, va="center", color="#777777")
 	ax.set_yticks(yy); ax.set_yticklabels(t.analysis, fontsize=7)
-	ax.set_xlabel("Difference in mean share of diseases moving to a lower band,\npercentage points (high minus low engagement)")
+	ax.set_xlabel("Difference in mean proportion of diseases moving to a lower band,\npercentage points (high minus low engagement)")
 	fig.text(0.01, 0.01, "Square: primary analysis. A marker without a line: CI not reported (<900 valid resamples). Rules 1 and 2 removed the same days.",
 	         fontsize=6.5)
 	fig.tight_layout(rect=(0, 0.03, 1, 1)); savefig(fig, "figS5_sensitivity.png")

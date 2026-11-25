@@ -152,7 +152,7 @@ def fig_transitions():
 # ------------------------------------------------------------------ Figure 5: specification curve for the primary contrast
 SPEC = [  # key, disease set, band scheme, denominator, baseline window, aggregation, weighting, exposure
 	("main", "All", "5 bands of 20 ranks", "Above lowest", "56 d", "User-level proportion", "Truncated IPTW", "All login days"),
-	("pass18", "Validated 18", "5 bands of 20 ranks", "Above lowest", "56 d", "User-level proportion", "Truncated IPTW", "All login days"),
+	("pass18", "18 meeting agreement criterion", "5 bands of 20 ranks", "Above lowest", "56 d", "User-level proportion", "Truncated IPTW", "All login days"),
 	("bands3", "All", "3 bands (1-34, 35-67, 68-100)", "Above lowest", "56 d", "User-level proportion", "Truncated IPTW", "All login days"),
 	("bands10", "All", "10 bands of 10 ranks", "Above lowest", "56 d", "User-level proportion", "Truncated IPTW", "All login days"),
 	("shift10", "All", "20-rank bands shifted by 10 (6 bands)", "Above lowest", "56 d", "User-level proportion", "Truncated IPTW", "All login days"),
@@ -178,8 +178,11 @@ def fig_spec():
 		for k, v in zip(DIMS, spec[1:]):
 			if v not in opts[k]:
 				opts[k].append(v)
-	nrow = sum(len(v) for v in opts.values())
-	fig, (a0, a1) = plt.subplots(2, 1, figsize=(7.6, 8.4), sharex=True, gridspec_kw={"height_ratios": [1, 1.9], "hspace": 0.06})
+	fig = plt.figure(figsize=(7.6, 11.4))
+	outer = fig.add_gridspec(2, 1, height_ratios=[2.9, 1.15], hspace=0.13)
+	top = outer[0].subgridspec(2, 1, height_ratios=[1, 1.9], hspace=0.06)
+	a0 = fig.add_subplot(top[0]); a1 = fig.add_subplot(top[1], sharex=a0); a2 = fig.add_subplot(outer[1])
+	plt.setp(a0.get_xticklabels(), visible=False)
 	x = np.arange(len(D))
 	FS.hgrid(a0)
 	a0.axhline(0, color=FS.AXIS, lw=0.9)
@@ -209,8 +212,44 @@ def fig_spec():
 	a1.set_xticks([]); a1.spines["bottom"].set_visible(False); a1.spines["left"].set_visible(False); a1.tick_params(axis="y", length=0)
 	a1.set_xlim(-0.7, len(D) - 0.3)
 	FS.panel(a1, "B", "Analytic choices (dark dot = choice used)")
+	mv = multiverse_directions(a2)
 	save(fig, "fig5_specification_curve.png")
-	return dict(range=(float(D.est.min()), float(D.est.max())), n=len(D))
+	return dict(range=(float(D.est.min()), float(D.est.max())), n=len(D), multiverse=mv)
+
+
+def multiverse_directions(ax):
+	"""Panel C: the post hoc multiverse differences for downward, upward and net movement, with the median and the 95% CI of the
+	median across specifications and the primary specification's estimate and 95% CI (read from robust_03.xlsx)."""
+	rb = pd.ExcelFile(OUT / "robust_03.xlsx")
+	rows = [("down", "R_specs", "R_curves", "Moving to a lower band"),
+	        ("up", "R_up_specs", "R_up_curves", "Moving to a higher band"),
+	        ("net", "R_net_specs", "R_net_curves", "Net movement\n(down − up) / all diseases")]
+	prim = rb.parse("R_primary_down_up_net").set_index("outcome")
+	rng = np.random.default_rng(5)
+	FS.vgrid(ax)
+	ax.axvline(0, color=FS.AXIS, lw=0.9)
+	out = {}
+	for i, (k, s_sheet, c_sheet, lab) in enumerate(rows):
+		y = 2 - i
+		sp = rb.parse(s_sheet); sp = sp[sp.reported]
+		cu = rb.parse(c_sheet).iloc[0]
+		ax.scatter(100 * sp.est, y + 0.12 + rng.uniform(-0.1, 0.1, len(sp)), s=4, color=HI, alpha=0.28, lw=0)
+		ax.hlines(y + 0.12, 100 * cu.median_lo, 100 * cu.median_hi, color=FS.INK, lw=2.6, zorder=3)
+		ax.scatter(100 * cu["median"], y + 0.12, s=36, color="white", edgecolor=FS.INK, lw=1.3, zorder=4)
+		p = prim.loc[k]
+		ax.hlines(y - 0.24, 100 * p.lo, 100 * p.hi, color=FS.INK2, lw=1.1)
+		ax.scatter(100 * p.est, y - 0.24, s=30, marker="D", color="white", edgecolor=FS.INK2, lw=1.1, zorder=4)
+		ax.text(1.01, y, f"CI above 0: {int(cu.n_pos)}\nCI below 0: {int(cu.n_neg)}", transform=ax.get_yaxis_transform(), va="center", fontsize=6.8, color=FS.INK2)
+		out[k] = dict(n=len(sp), median=float(cu["median"]), lo=float(cu.median_lo), hi=float(cu.median_hi), n_pos=int(cu.n_pos), n_neg=int(cu.n_neg))
+	ax.set_yticks([2, 1, 0]); ax.set_yticklabels([r[3] for r in rows], fontsize=7.4); ax.set_ylim(-0.6, 2.5)
+	ax.set_xlabel("Difference associated with higher engagement, percentage points")
+	FS.panel(ax, "C", f"Downward, upward, and net movement across {out['down']['n']} specifications (post hoc)")
+	from matplotlib.lines import Line2D
+	ax.legend(handles=[Line2D([], [], marker="o", ls="", color=HI, alpha=0.5, ms=3, label="Each specification"),
+	                   Line2D([], [], marker="o", ls="-", color=FS.INK, mfc="white", lw=2.2, label="Median (95% CI of the median)"),
+	                   Line2D([], [], marker="D", ls="-", color=FS.INK2, mfc="white", lw=1.1, label="Primary specification (95% CI)")],
+	          loc="upper center", bbox_to_anchor=(0.45, -0.2), ncol=3, fontsize=6.9)
+	return out
 
 
 def _band_poly(ax, x0, x1, y0a, y0b, y1a, y1b, color, alpha=0.75, z=1):

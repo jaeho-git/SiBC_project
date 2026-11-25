@@ -159,8 +159,9 @@ def fig_design():
 		return f"median {f(v.median())} login days (IQR {f(q1)}-{f(q3)})"
 	n_c = len(A2.C); n_valid = int((g != "No valid checkup").sum()); n_base = int((g == "Baseline checkup").sum()); n_an = len(U)
 	miss = [u for u in g.index[g == "Baseline checkup"] if u not in U.index]
-	fig = plt.figure(figsize=(10.2, 6.4))
-	a1 = fig.add_axes([0.0, 0.03, 0.55, 0.94]); a4 = fig.add_axes([0.63, 0.6, 0.25, 0.34]); a2 = fig.add_axes([0.63, 0.09, 0.25, 0.34])
+	fig = plt.figure(figsize=(10.2, 9.6))
+	a1 = fig.add_axes([0.0, 0.36, 0.55, 0.63]); a4 = fig.add_axes([0.63, 0.75, 0.25, 0.22]); a2 = fig.add_axes([0.63, 0.42, 0.25, 0.22])
+	a5 = fig.add_axes([0.40, 0.05, 0.42, 0.26])
 	a1.set_xlim(0, 100); a1.set_ylim(0, 100); a1.axis("off")
 	a1.text(0, 99, "A", fontsize=11, fontweight="bold", va="top")
 	main = [(f"Common cohort\nn={n_c}", 88), (f"Any valid health checkup\nn={n_valid}", 63), (f"Baseline checkup within 24 months\nbefore registration, n={n_base}", 38),
@@ -202,7 +203,49 @@ def fig_design():
 		a4.text(28.8, 100 * sh.values[-1] + dy, f"{short}\n(n={len(users)})", fontsize=6.8, va="center", color=FS.INK)
 	a4.set_xlim(1, 28); a4.set_ylim(0, 100); a4.set_xticks([1, 7, 14, 21, 28]); a4.set_xlabel("Day after registration"); a4.set_ylabel("Users logging in, %")
 	FS.panel(a4, "B", "Common cohort by checkup linkage")
+	linkage_contrasts(a5, g)
 	save(fig, "fig2_design_flow.png")
+
+
+def linkage_contrasts(ax, g):
+	"""Panel D: adjusted differences in engagement between linkage groups (post hoc robustness analysis, read from robust_02.xlsx).
+	Beta-binomial estimates with 95% CIs for 3 engagement measures; quasi-binomial and cumulative logit point estimates as open markers."""
+	R = pd.read_excel(OUT / "robust_02.xlsx", sheet_name="R_linkage")
+	R = R[R.kind == "diff"].set_index(["group", "outcome", "model"])
+	ok = A2.C.age.notna() & A2.C.sex.notna()  # the comparison used cohort users with recorded age and sex
+	n = g[ok.reindex(g.index).fillna(False).astype(bool)].value_counts()
+	nb, no, nn = int(n.get("Baseline checkup", 0)), int(n.get("Checkup outside the window", 0)), int(n.get("No valid checkup", 0))
+	groups = [("baseline-none", f"Baseline checkup (n={nb}) vs no valid checkup (n={nn})", FS.S02["valid"]),
+	          ("outside-none", f"Checkups only outside the window (n={no}) vs no valid checkup", FS.S02["outside"]),
+	          ("baseline-outside", "Baseline checkup vs checkups only outside the window", FS.INK2)]
+	outs = [("y", "Login days"), ("y_s1", "Login days without suspected token-only days"), ("y_act", "Feature-use days")]
+	FS.vgrid(ax)
+	ax.axvline(0, color=FS.AXIS, lw=0.9)
+	yt, yl, y = [], [], 0.0
+	for g, glab, col in groups:
+		ax.text(-0.01, y - 0.05, glab, transform=ax.get_yaxis_transform(), ha="right", va="center", fontsize=7.2, fontweight="bold", color=FS.INK)
+		y += 1
+		for o, olab in outs:
+			b = R.loc[(g, o, "bb")]
+			ax.hlines(y, b.lo, b.hi, color=col, lw=1.5)
+			ax.scatter(b.est, y, s=30, color=col, zorder=4)
+			ax.scatter(R.loc[(g, o, "quasi")].est, y - 0.3, s=16, marker="s", facecolor="white", edgecolor=col, lw=0.9, zorder=3)
+			ax.scatter(R.loc[(g, o, "ord")].est, y - 0.3, s=18, marker="^", facecolor="white", edgecolor=col, lw=0.9, zorder=3)
+			ax.text(1.01, y, f"{b.est:.1f} ({b.lo:.1f} to {b.hi:.1f})".replace("-", "−").replace("to −", "to −"), transform=ax.get_yaxis_transform(),
+			        va="center", fontsize=6.8, color=FS.INK)
+			yt.append(y); yl.append(olab); y += 1
+		y += 0.6
+	ax.set_yticks(yt); ax.set_yticklabels(yl, fontsize=7); ax.set_ylim(y - 0.4, -0.7)
+	ax.tick_params(axis="y", length=0)
+	ax.set_xlabel("Adjusted difference in days, days 1 to 28 after registration")
+	ax.text(1.01, -0.55, "Beta-binomial, days (95% CI)", transform=ax.get_yaxis_transform(), fontsize=6.8, color=FS.INK2)
+	FS.panel(ax, "D", "Adjusted differences by checkup linkage (post hoc)")
+	from matplotlib.lines import Line2D
+	ax.legend(handles=[Line2D([], [], marker="o", ls="-", color=FS.INK2, label="Beta-binomial (95% CI)"),
+	                   Line2D([], [], marker="s", ls="", mfc="white", mec=FS.INK2, label="Quasi-binomial"),
+	                   Line2D([], [], marker="^", ls="", mfc="white", mec=FS.INK2, label="Cumulative logit")],
+	          loc="upper center", bbox_to_anchor=(0.4, -0.16), ncol=3, fontsize=6.9)
+	return R
 
 
 # ------------------------------------------------------------------ Figure 3: user-by-day login raster ordered by checkup burden

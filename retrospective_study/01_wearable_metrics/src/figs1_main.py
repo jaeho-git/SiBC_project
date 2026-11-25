@@ -187,7 +187,8 @@ def fig_design():
 	from matplotlib.patches import FancyBboxPatch
 	f = flow_counts()
 	fig = plt.figure(figsize=(10.2, 6.4))
-	a0 = fig.add_axes([0.04, 0.79, 0.92, 0.18]); a1 = fig.add_axes([0.04, 0.50, 0.92, 0.27]); a2 = fig.add_axes([0.26, 0.06, 0.56, 0.38])
+	a0 = fig.add_axes([0.04, 0.79, 0.92, 0.18]); a1 = fig.add_axes([0.04, 0.50, 0.92, 0.27]); a2 = fig.add_axes([0.14, 0.06, 0.38, 0.38])
+	a3 = fig.add_axes([0.62, 0.06, 0.30, 0.38], sharey=a2)
 	# A: windows on one user's time line
 	a0.set_xlim(-3, 75); a0.set_ylim(0, 3); a0.axis("off")
 	for x0, w, lab, fc in [(0, 14, "Baseline\nfirst 14 days of\nwearable records", FS.NEUTRAL), (18, 28, "Exposure window\nlogin days in 28 days", "#cfe0f6"),
@@ -236,6 +237,25 @@ def fig_design():
 	from matplotlib.lines import Line2D
 	a2.legend(handles=[Line2D([], [], marker="o", ls="", color=HI, label=f"High engagement (of {nh})"), Line2D([], [], marker="s", ls="", color=LO, label=f"Low engagement (of {nl})")],
 	          loc="upper left", fontsize=7)
+	# C: difference in availability before and after adjustment (post hoc robustness analysis, read from robust_01.xlsx)
+	rb = pd.ExcelFile(OUT / "robust_01.xlsx")
+	cr = rb.parse("R_observability_crude"); cr = cr[cr.exposure == "login"].set_index("indicator")
+	ad = rb.parse("R_observability"); ad = ad[(ad.exposure == "login") & (ad.contrast == "median")].set_index("indicator")
+	FS.vgrid(a3)
+	a3.axvline(0, color=FS.AXIS, lw=0.9)
+	for yy, k in zip(y, order):
+		c, a = cr.loc[k], ad.loc[k]
+		a3.hlines(yy + 0.17, 100 * c.rd_lo, 100 * c.rd_hi, color=FS.INK2, lw=1.1)
+		a3.scatter(100 * c.rd, yy + 0.17, s=26, facecolor="white", edgecolor=FS.INK2, lw=1.1, zorder=3)
+		a3.hlines(yy - 0.17, 100 * a.rd_lo, 100 * a.rd_hi, color=HI, lw=1.4)
+		a3.scatter(100 * a.rd, yy - 0.17, s=30, color=HI, zorder=4)
+	a3.tick_params(axis="y", labelleft=False, length=0)
+	a3.set_xlim(-30, 60); a3.set_xticks([-20, 0, 20, 40, 60])
+	a3.set_xlabel("Difference in availability, high minus low\nengagement, percentage points")
+	FS.panel(a3, "C", "Before and after adjustment (post hoc)")
+	a3.legend(handles=[Line2D([], [], marker="o", ls="-", color=FS.INK2, mfc="white", label="Unadjusted (95% CI)"),
+	                   Line2D([], [], marker="o", ls="-", color=HI, label="Adjusted for propensity\nscore covariates (95% CI)")],
+	          loc="upper right", fontsize=6.8)
 	save(fig, "fig2_design_flow.png")
 	return pd.DataFrame(rows)
 

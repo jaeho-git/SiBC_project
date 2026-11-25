@@ -111,9 +111,12 @@ def fig_screen():
 		s = t[t.dom == dom]
 		size = np.where(s["item"].isin(["height", "weight"]), 40, 18 + 1.4 * s.n_abn.fillna(0))
 		a1.scatter(s.est, s.lp, s=size, marker=mk, facecolor=FS.S02_ITEM, alpha=0.85, edgecolor="white", lw=0.8, label=dom, zorder=3)
+	# label offsets (points) chosen so that labels do not cover neighbouring markers or each other
+	OFFS = {"tc": (-7, 6, "right"), "fbg": (8, -11, "left"), "gfr": (-7, -11, "right"), "sbp": (0, 11, "center"), "chest": (9, 3, "left"), "alt": (7, -12, "left")}
 	for _, r in t.iterrows():
 		if r.p < 0.2:
-			a1.annotate(LAB[r["item"]], (r.est, r.lp), xytext=(5, 2), textcoords="offset points", fontsize=7, color=FS.INK)
+			dx, dy, ha = OFFS.get(r["item"], (5, 2, "left"))
+			a1.annotate(LAB[r["item"]], (r.est, r.lp), xytext=(dx, dy), textcoords="offset points", fontsize=7, color=FS.INK, ha=ha, va="center")
 	a1.set_xlim(-7, 7); a1.set_ylim(0, max(2.9, -np.log10(p_bh1) + 0.3))
 	a1.set_xlabel("Adjusted difference in login days, out of range minus within range")
 	a1.set_ylabel("-log10 P")

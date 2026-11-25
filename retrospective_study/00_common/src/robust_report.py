@@ -170,7 +170,7 @@ if STUDY == "01":
 		ax.scatter(x[pm], t.est[pm], s=46, marker="D", facecolor="white", edgecolor=FS.INK, lw=1.1, zorder=4, label="Primary analysis")
 		ax.set_title(LAB[k], loc="left", fontsize=8.5); ax.set_xticks([])
 		c = main_cur.loc[k]
-		ax.text(0.02, 0.97, f"{int(c.n_reported)} specs; CI>0: {int(c.n_pos)}, CI<0: {int(c.n_neg)}\njoint test P={c.perm_p_count:.2f}", transform=ax.transAxes, va="top", fontsize=6.8, color=FS.INK2)
+		ax.text(0.02, 0.97, f"{int(c.n_reported)} specs; CI>0: {int(c.n_pos)}, CI<0: {int(c.n_neg)}\nexploratory permutation summary P={c.perm_p_count:.2f}", transform=ax.transAxes, va="top", fontsize=6.8, color=FS.INK2)
 	axes.flat[0].legend(loc="lower right", fontsize=6.2, handletextpad=0.2)
 	fig.supxlabel("Specifications ordered by estimate", fontsize=8.5); fig.supylabel("Adjusted difference (high minus low; 75th minus 25th percentile)", fontsize=8.5)
 	fig.tight_layout(); save(fig, "figS6_multiverse.png")
@@ -266,7 +266,7 @@ if STUDY == "02":
 	ax.set_yticks(range(len(order))); ax.set_yticklabels([LABI.get(x, x) for x in order["item"]])
 	ax.set_xlabel("z of the adjusted difference in login days (estimate / bootstrap SE)")
 	ax.text(0.01, 0.995, f"{JOINT['specs_reported']} specifications; |z|>1.96: {JOINT['specs_nominal_p05']} (permutation mean {JOINT['specs_nominal_perm_mean']:.0f}, P={JOINT['p_specs']:.2f})\n"
-	        f"paths with any q<.05: {JOINT['paths_any_q05']} of {JOINT['paths']} (P={JOINT['p_paths']:.2f}). Diamond: primary analysis",
+	        f"paths with any q<.05: {JOINT['paths_any_q05']} of {JOINT['paths']} (P={JOINT['p_paths']:.2f}); P: exploratory permutation summary. Diamond: primary analysis",
 	        transform=ax.transAxes, ha="left", va="top", fontsize=6.8, color=FS.INK2)
 	save(fig, "figS6_multiverse.png")
 
@@ -343,7 +343,7 @@ if STUDY == "03":
 	pm_ = m.loc[[prim]]
 	ax.scatter(100 * pm_.down, 100 * pm_.up, s=50, marker="D", facecolor="white", edgecolor=FS.INK, lw=1.1, zorder=4, label="Primary analysis")
 	ax.set_xlim(lim); ax.set_ylim(lim)
-	ax.set_xlabel("Difference in the share moving down, percentage points"); ax.set_ylabel("Difference in the share moving up, percentage points")
+	ax.set_xlabel("Difference in the proportion moving down, percentage points"); ax.set_ylabel("Difference in the proportion moving up, percentage points")
 	cn = CNET.iloc[0]
 	ax.text(0.02, 0.98, f"{len(m)} specifications; dashed line: equal differences\nnet movement (all evaluated diseases): median {100 * cn['median']:.1f} pp (95% CI {100 * cn['median_lo']:.1f} to {100 * cn['median_hi']:.1f})",
 	        transform=ax.transAxes, va="top", fontsize=6.8, color=FS.INK2)
@@ -365,8 +365,8 @@ if STUDY == "03":
 	ax.scatter(x[sig], 100 * t.est.values[sig], s=7, color=FS.S03["low"], lw=0, zorder=3, label="95% CI excludes 0")
 	pm = t.spec.apply(lambda s: s == ("login", "median", "dr", "bands5", "all", "iso_shift")).values
 	ax.scatter(x[pm], 100 * t.est[pm], s=50, marker="D", facecolor="white", edgecolor=FS.INK, lw=1.1, zorder=4, label="Primary analysis")
-	ax.set_ylabel("Difference in share moving down, pp"); ax.legend(loc="upper left", fontsize=7)
-	ax.text(0.99, 0.03, f"{len(t)} specifications; CI excludes 0: {int(sig.sum())}; joint permutation test P={c0.perm_p_count:.2f} (count), {c0.perm_p_median:.2f} (median)", transform=ax.transAxes, ha="right", fontsize=7, color=FS.INK2)
+	ax.set_ylabel("Difference in proportion moving down, pp"); ax.legend(loc="upper left", fontsize=7)
+	ax.text(0.99, 0.03, f"{len(t)} specifications; CI excludes 0: {int(sig.sum())}; exploratory permutation summary P={c0.perm_p_count:.2f} (count), {c0.perm_p_median:.2f} (median)", transform=ax.transAxes, ha="right", fontsize=7, color=FS.INK2)
 	rows, labels = [], []
 	LEV = {"exposure": ["login", "login_s1", "action"], "contrast": ["median", "tertile", "continuous"], "estimator": ["dr", "reg", "ipw", "ow"],
 	       "outcome": ["bands5", "bands3", "bands10", "shift10", "incl_lowest"], "diseases": ["all", "pass18"], "crosswalk": ["iso_shift", "iso_clip", "linear", "equip"]}

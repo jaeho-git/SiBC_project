@@ -138,7 +138,7 @@ def fig_screen():
 	a2.set_xticks(g); a2.set_xticklabels([str(i) for i in g[:-1]] + ["7+"]); a2.set_ylim(8, 22)
 	a2.set_xlabel("Out-of-range components among 11 panel items"); a2.set_ylabel("Login days on days 1-28")
 	a2.legend(loc="upper right", fontsize=7)
-	FS.panel(a2, "B", f"Summary indicator (n={int(ok.sum())})")
+	FS.panel(a2, "B", f"Out-of-range count (n={int(ok.sum())})")
 	save(fig, "fig4_item_screen.png")
 	return dict(m=len(t), p_bh1=p_bh1)
 

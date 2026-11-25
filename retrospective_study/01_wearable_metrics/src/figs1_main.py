@@ -111,7 +111,7 @@ def fig_gap():
 	a1.set_xlabel("Calendar days relative to the first flagged day (all users)")
 	a1.set_ylabel("Daily ratio")
 	a1.legend(loc="lower left", fontsize=7)
-	FS.panel(a1, "A", "Source-level completeness check")
+	FS.panel(a1, "A", "Source-level collection-gap check")
 	# B: session capture before and after the gap
 	FS.hgrid(a2)
 	lab = ["8 weeks\nbefore", "8 weeks\nafter"]
@@ -232,7 +232,7 @@ def fig_design():
 	a2.text(103, len(order) - 0.4, "n high/low", fontsize=7, color=FS.INK2)
 	a2.set_yticks(y); a2.set_yticklabels([lab[k] for k in order], fontsize=7.8); a2.set_xlim(0, 101)
 	a2.set_xlabel("Users with analyzable baseline and outcome data, % of engagement group")
-	FS.panel(a2, "B", "Who is measured: indicator-specific analysis sets")
+	FS.panel(a2, "B", "Data availability by indicator")
 	from matplotlib.lines import Line2D
 	a2.legend(handles=[Line2D([], [], marker="o", ls="", color=HI, label=f"High engagement (of {nh})"), Line2D([], [], marker="s", ls="", color=LO, label=f"Low engagement (of {nl})")],
 	          loc="upper left", fontsize=7)

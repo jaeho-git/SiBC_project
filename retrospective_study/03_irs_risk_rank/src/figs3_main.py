@@ -94,13 +94,13 @@ def fig_crosswalk():
 				ax.barh(yy, r.rate, height=0.72, color=col, edgecolor="white", hatch="////" if (kind == "up" and when == "after") else None)
 				ax.hlines(yy, r.lo, r.hi, color=FS.INK, lw=0.9)
 				ax.text(r.hi + 0.25, yy, f"{r.rate:.1f}", va="center", fontsize=6.8, color=FS.INK)
-				ypos.append(yy); ylab.append(f"{sc.upper()} {'false down' if kind == 'down' else 'false up'}, {when}")
+				ypos.append(yy); ylab.append(f"{sc.upper()} {'downward' if kind == 'down' else 'upward'}, {when}")
 				yy -= 1
 			yy -= 0.4
 		yy -= 0.6
 	ax.set_yticks(ypos); ax.set_yticklabels(ylab, fontsize=6.8); ax.yaxis.tick_right(); ax.tick_params(axis="y", length=0)
 	ax.set_xlim(0, 8); ax.set_xlabel("Bridge pairs, %")
-	FS.panel(ax, "C", "False band movement")
+	FS.panel(ax, "C", "Update-related reclassification")
 	h, l = axes[0].get_legend_handles_labels()
 	fig.legend(h, l, loc="lower left", bbox_to_anchor=(0.12, -0.035), ncol=2, fontsize=7.5)
 	save(fig, "fig3_crosswalk.png")
@@ -151,17 +151,17 @@ def fig_transitions():
 
 # ------------------------------------------------------------------ Figure 5: specification curve for the primary contrast
 SPEC = [  # key, disease set, band scheme, denominator, baseline window, aggregation, weighting, exposure
-	("main", "All", "5 bands of 20 ranks", "Above lowest", "56 d", "User share", "Truncated IPTW", "All login days"),
-	("pass18", "Validated 18", "5 bands of 20 ranks", "Above lowest", "56 d", "User share", "Truncated IPTW", "All login days"),
-	("bands3", "All", "3 bands (1-34, 35-67, 68-100)", "Above lowest", "56 d", "User share", "Truncated IPTW", "All login days"),
-	("bands10", "All", "10 bands of 10 ranks", "Above lowest", "56 d", "User share", "Truncated IPTW", "All login days"),
-	("shift10", "All", "20-rank bands shifted by 10 (6 bands)", "Above lowest", "56 d", "User share", "Truncated IPTW", "All login days"),
-	("incl_lowest", "All", "5 bands of 20 ranks", "All bands", "56 d", "User share", "Truncated IPTW", "All login days"),
-	("base28", "All", "5 bands of 20 ranks", "Above lowest", "28 d", "User share", "Truncated IPTW", "All login days"),
+	("main", "All", "5 bands of 20 ranks", "Above lowest", "56 d", "User-level proportion", "Truncated IPTW", "All login days"),
+	("pass18", "Validated 18", "5 bands of 20 ranks", "Above lowest", "56 d", "User-level proportion", "Truncated IPTW", "All login days"),
+	("bands3", "All", "3 bands (1-34, 35-67, 68-100)", "Above lowest", "56 d", "User-level proportion", "Truncated IPTW", "All login days"),
+	("bands10", "All", "10 bands of 10 ranks", "Above lowest", "56 d", "User-level proportion", "Truncated IPTW", "All login days"),
+	("shift10", "All", "20-rank bands shifted by 10 (6 bands)", "Above lowest", "56 d", "User-level proportion", "Truncated IPTW", "All login days"),
+	("incl_lowest", "All", "5 bands of 20 ranks", "All bands", "56 d", "User-level proportion", "Truncated IPTW", "All login days"),
+	("base28", "All", "5 bands of 20 ranks", "Above lowest", "28 d", "User-level proportion", "Truncated IPTW", "All login days"),
 	("pooled", "All", "5 bands of 20 ranks", "Above lowest", "56 d", "Pooled pairs", "Truncated IPTW", "All login days"),
-	("no_trunc", "All", "5 bands of 20 ranks", "Above lowest", "56 d", "User share", "Untruncated IPTW", "All login days"),
-	("unadjusted", "All", "5 bands of 20 ranks", "Above lowest", "56 d", "User share", "None (unadjusted)", "All login days"),
-	("susp1", "All", "5 bands of 20 ranks", "Above lowest", "56 d", "User share", "Truncated IPTW", "Token-only days removed"),
+	("no_trunc", "All", "5 bands of 20 ranks", "Above lowest", "56 d", "User-level proportion", "Untruncated IPTW", "All login days"),
+	("unadjusted", "All", "5 bands of 20 ranks", "Above lowest", "56 d", "User-level proportion", "None (unadjusted)", "All login days"),
+	("susp1", "All", "5 bands of 20 ranks", "Above lowest", "56 d", "User-level proportion", "Truncated IPTW", "Token-only days removed"),
 ]
 DIMS = ["Diseases", "Band scheme", "Denominator", "Baseline window", "Aggregation", "Weighting", "Exposure"]
 
@@ -188,7 +188,7 @@ def fig_spec():
 		a0.vlines(i, r.lo, r.hi, color=HI if main else FS.INK2, lw=1.6 if main else 1.1)
 		a0.scatter(i, r.est, s=46 if main else 30, color=HI if main else "white", edgecolor=HI if main else FS.INK2, lw=1.2, zorder=3,
 		           marker="D" if main else "o")
-	a0.set_ylabel("Difference in share moving to a\nlower band, percentage points")
+	a0.set_ylabel("Difference in proportion moving to a\nlower band, percentage points")
 	FS.panel(a0, "A", "Estimate and 95% CI under each outcome definition")
 	im = int(D.index[D.key == "main"][0])
 	a0.annotate("Primary", (im, D.loc[im, "hi"]), xytext=(0, 8), textcoords="offset points", ha="center", fontsize=7.5, color=HI, fontweight="bold")

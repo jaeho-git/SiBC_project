@@ -150,3 +150,19 @@ select disease_id,
        category_nm
 from irs.disease_info;
 -- @end
+
+-- @extract res_irsp
+-- res_irsp.csv (post hoc IRS+ analysis): per seq x disease IRS+ value and rank, with the IRS value and rank for an exact
+-- check against the frozen extracts. Covers the union of the seqs of res_b, res_miss and res_ob (lists from
+-- 00_Data/frozen_20261119/) and the calculation window of res_p1.
+select seq,
+       d.key disease,
+       d.value->>'IRS' irs_p,
+       d.value->>'IRS-rank' irs_r,
+       d.value->>'IRSp' irsp_p,
+       d.value->>'IRSp-rank' irsp_r
+from irs.irs_data_log,
+       jsonb_each(raw_data->'Results') d
+where seq in ({{seqs_b}}) or seq in ({{seqs_miss}}) or seq in ({{seqs_ob}})
+   or (create_date >= '2026-07-01 00:00:00+09' and create_date < '2026-08-02 00:00:00+09');
+-- @end

@@ -49,8 +49,8 @@ SCREENS = {
 # Panels per study: (screen number, panel title, marker numbers explained in the caption). Accent = marker colour.
 STUDY = {
 	"01": dict(accent=FS.S01["high"], panels=[(1, "Data linkage", [1]), (2, "Weekly monitoring", [1, 2]), (3, "Device measurements", [1])]),
-	"02": dict(accent=FS.S02_ITEM, panels=[(4, "Health checkup tab", [1, 2]), (6, "Home screen", [1, 2, 3])]),
-	"03": dict(accent=FS.S03["high"], panels=[(7, "Top 3 diseases", [1]), (8, "Vulnerability results", [1, 2]), (9, "Lifestyle survey", [1, 2])]),
+	"02": dict(accent=FS.S02_ITEM, panels=[(4, "Health checkup tab", [1, 2, 3]), (6, "Home screen", [1, 2, 3])]),
+	"03": dict(accent=FS.S03["high"], panels=[(7, "Top 3 disease groups", [1, 2]), (8, "Vulnerability results", [1, 2, 3]), (9, "Lifestyle survey", [1, 2])]),
 }
 
 # Per screen, set after looking at the proof sheets (all values are fractions of the image):
@@ -60,6 +60,19 @@ STUDY = {
 #   file    exact file name when the folder holds more than one file for the screen.
 STATUS_BAR = 0.06
 LAYOUT = {n: dict(crop=(None, None), markers={}, masks=[], file=None) for n in SCREENS}
+# The delivered screenshots (860 x 1864, one device) start below the status bar, so nothing is cropped. Screen 2 is the
+# weekly screen with a day without an exercise record selected; screen 3 is the lower part of the same week with another
+# day selected. Marker centres were placed on the proof sheets, in blank space next to the element each caption names.
+for _n in SCREENS:
+	LAYOUT[_n]["crop"] = (0.0, 1.0)
+LAYOUT[1]["markers"] = {1: (0.56, 0.337)}                                   # linked source and linkage status
+LAYOUT[2]["markers"] = {1: (0.20, 0.265), 2: (0.20, 0.711)}                 # last synchronization; exercise "-"
+LAYOUT[3]["markers"] = {1: (0.75, 0.218)}                                   # measurement date (weight)
+LAYOUT[4]["markers"] = {1: (0.436, 0.182), 2: (0.62, 0.216), 3: (0.12, 0.862)}  # tab; linked result; retrieve button
+LAYOUT[6]["markers"] = {1: (0.80, 0.46), 2: (0.70, 0.203), 3: (0.21, 0.955)}    # activity score; points; bottom menu
+LAYOUT[7]["markers"] = {1: (0.70, 0.298), 2: (0.88, 0.224)}                 # group score; not-a-diagnosis notice
+LAYOUT[8]["markers"] = {1: (0.10, 0.287), 2: (0.30, 0.635), 3: (0.33, 0.789)}   # categories (below the table); moved up; moved down
+LAYOUT[9]["markers"] = {1: (0.68, 0.229), 2: (0.12, 0.862)}                 # response date; retake button
 
 PANEL_W = 2.75  # inches per phone screen
 GAP = 0.42
